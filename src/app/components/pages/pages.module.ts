@@ -9,6 +9,7 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RecentOrdersComponent } from './recent-orders/recent-orders.component';
+import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-form.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { RecentOrdersComponent } from './recent-orders/recent-orders.component';
     CartComponent,
     CheckoutComponent,
     OrderConfirmationComponent,
-    RecentOrdersComponent
+    RecentOrdersComponent,
+    AddPatientFormComponent
   ],
   imports: [
     CommonModule,
