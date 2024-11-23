@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { PagesRoutingModule } from './pages-routing.module';
@@ -26,6 +26,8 @@ import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-fo
   imports: [
     CommonModule,
     PagesRoutingModule
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
 })
 export class PagesModule { }
