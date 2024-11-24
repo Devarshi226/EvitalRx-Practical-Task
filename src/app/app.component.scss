@@ -1,9 +1,6 @@
-app-header
-{
-  display: flex
-;
-    flex-direction: column;
-    align-items: center;
+app-header{
+  position: sticky !important;
+  z-index: 9999 !important;
 }
 
 app-footer{

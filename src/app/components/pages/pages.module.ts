@@ -10,6 +10,8 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RecentOrdersComponent } from './recent-orders/recent-orders.component';
 import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-form.component';
+import { SearchComponent } from './search/search.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -21,11 +23,14 @@ import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-fo
     CheckoutComponent,
     OrderConfirmationComponent,
     RecentOrdersComponent,
-    AddPatientFormComponent
+    AddPatientFormComponent,
+    SearchComponent
   ],
   imports: [
     CommonModule,
-    PagesRoutingModule
+    PagesRoutingModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

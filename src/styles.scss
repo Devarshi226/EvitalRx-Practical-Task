@@ -1,13 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
+
+$primary-palette: mat.define-palette(mat.$indigo-palette, 500);
+$accent-palette: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+$background-dark: #0f172a;
+
 
 .root-body {
 
+  background: linear-gradient(135deg, $background-dark, darken($background-dark, 5%));
 
-  background-image: linear-gradient(60deg, #6e77a3, #488eb9, #9663af);
+  // background-image: linear-gradient(60deg, #6e77a3, #488eb9, #9663af);
 
   background-size: 600% 600%;
   animation: animated 10s infinite linear;

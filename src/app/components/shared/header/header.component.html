@@ -26,9 +26,6 @@
     *ngIf="isLoggedIn"  [matMenuTriggerFor]="menu">
     <mat-icon>account_circle</mat-icon>
   </button>
-    <!-- <button  mat-icon-button  class="logout-icon"  aria-label="Logout" (click)="logout()" *ngIf="isLoggedIn">
-    <mat-icon>logout</mat-icon>
-  </button> -->
   <div *ngIf="!isLoggedIn">
     <button
       mat-button

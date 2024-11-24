@@ -17,6 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatRadioModule} from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 
@@ -44,6 +45,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatRadioModule,
     MatCheckboxModule,
     MatDividerModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
 
   ],
 })

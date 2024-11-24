@@ -1,1 +1,90 @@
-<p>checkout works!</p>
+<!-- cart.component.html -->
+<div class="cart-container">
+  <div class="cart-header">
+    <h1>Shopping Cart</h1>
+    <div class="cart-breadcrumb">
+      <span>Home</span> / <span>Cart</span>
+    </div>
+  </div>
+
+  <div class="cart-grid">
+    <!-- Left side - Cart Items -->
+    <div class="cart-items glass-card">
+      <div class="cart-section-header">
+        <h2>Cart Items ({{cartItems.length}})</h2>
+        <button class="clear-cart">Clear Cart</button>
+      </div>
+
+      <div class="cart-items-list">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <div class="item-image">
+            <img [src]="item.image" [alt]="item.name">
+          </div>
+
+          <div class="item-details">
+            <div class="item-info">
+              <h3>{{item.name}}</h3>
+              <p class="item-category">{{item.category}}</p>
+            </div>
+
+            <div class="item-price-qty">
+              <div class="quantity-controls">
+                <button>-</button>
+                <span>{{item.quantity}}</span>
+                <button>+</button>
+              </div>
+              <p class="item-price">${{item.price * item.quantity | number:'1.2-2'}}</p>
+            </div>
+          </div>
+
+          <button class="remove-item">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side - Order Summary -->
+    <div class="order-summary glass-card">
+      <h2>Order Summary</h2>
+
+      <div class="summary-details">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>${{subtotal | number:'1.2-2'}}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span>Free</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax</span>
+          <span>${{tax | number:'1.2-2'}}</span>
+        </div>
+
+        <div class="coupon-section">
+          <div class="input-group">
+            <input type="text" placeholder="Enter coupon code">
+            <button class="apply-btn">Apply</button>
+          </div>
+        </div>
+
+        <div class="summary-total">
+          <span>Total</span>
+          <span>${{total | number:'1.2-2'}}</span>
+        </div>
+
+        <button class="checkout-btn" [routerLink]="['/checkout']">
+          Proceed to Checkout
+        </button>
+
+        <div class="payment-methods">
+          <img src="assets/visa.png" alt="Visa">
+          <img src="assets/mastercard.png" alt="Mastercard">
+          <img src="assets/amex.png" alt="American Express">
+          <img src="assets/paypal.png" alt="PayPal">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
