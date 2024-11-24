@@ -1,0 +1,88 @@
+.mat-mdc-menu-content {
+  margin: 0;
+  padding: 8px 0;
+  list-style-type: none;
+  background: black;
+}
+
+.header-block{
+  border-radius: 20%;
+}
+.spacer{
+  width: 100%;
+}
+
+.spacer2{
+  width: 1%;
+}
+
+.sticky-toolbar{
+  position: sticky;
+  top: 0;
+  z-index: 9999 !important;
+}
+
+.header-menu{
+  display: flex;
+  font-size: 15px;
+  cursor: pointer;
+  gap: 5%;
+  flex-direction: row;
+}
+
+.header-logo{
+  display: flex;
+  align-items: center;
+  max-width: 125px;
+  cursor: pointer;
+}
+
+
+.mat-toolbar.mat-primary {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(190, 187, 187, 0.295);
+  color: rgb(226, 226, 226);
+  position: sticky !important;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 30px;
+  width: 95%;
+  align-items: center;
+  z-index: 9999 !important;
+  margin: 1rem 2.5rem 0 2.5rem;
+
+}
+
+
+.mat-toolbar.mat-primary {
+  transition: position 0.3s ease-in-out, top 0.3s ease-in-out;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  position: sticky !important;
+  }
+
+mat-menu {
+  min-width: 200px;
+}
+
+.cart-icon {
+  position: relative;
+}
+
+.mat-icon {
+  font-size: 24px;
+}
+
+::ng-deep .header-menu-option{
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.418);
+  color: rgb(77, 77, 77);
+}

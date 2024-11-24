@@ -1,0 +1,149 @@
+<div class="search-container">
+  <div class="search-header glass-card">
+    <button mat-icon-button class="back-button" routerLink="/dashboard">
+      <mat-icon class="material-icons">keyboard_backspace</mat-icon>
+    </button>
+    <div class="search-input-wrapper">
+      <mat-icon class="material-icons search-icon">search</mat-icon>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        [value]="selectedMedicine"
+        (input)="onSearch($event)"
+        placeholder="Search medicines, healthcare products..."
+        #searchInput
+      />
+      <button
+        mat-icon-button
+        class="clear-button"
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+      >
+        <mat-icon class="material-icons">close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="filters-section glass-card">
+    <div class="filter-group">
+      <mat-chip-listbox
+        [multiple]="true"
+      >
+        <mat-chip-option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+  </div>
+
+  <div
+    *ngIf="suggestions"
+    class="suggestions"
+    role="region"
+    aria-label="Search suggestions"
+  >
+    <div class="suggestion-header">
+      <mat-icon aria-hidden="true">help_outline</mat-icon>
+      <span>Did you mean?</span>
+    </div>
+    <div class="suggestion-pills">
+      <button
+        mat-stroked-button
+        class="pill-button"
+        (click)="buttonSearch(suggestions)"
+        [attr.aria-label]="'Search for ' + suggestions"
+      >
+        {{ suggestions }}
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="dataSource.length > 0">
+    <div class="results-header glass-card">
+      <div class="results-container">
+        <div class="results-count" aria-label="Results count">
+          <div class="count-badge">
+            <mat-icon class="material-icons-outlined">inventory_2</mat-icon>
+            <span>{{ dataSource.length }}</span>
+          </div>
+          <span class="count-text">products found</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="medicine-grid">
+      <div class="medicine-card" *ngFor="let medicine of dataSource">
+        <div class="medicine-image">
+          <img
+            [src]="medicine.image || '../../../../assets/medicine data.jpeg'"
+            [alt]="medicine.medicine_name"
+          />
+          <button
+            class="info-button"
+            (click)="openDialog(medicine)"
+            matTooltip="View Details"
+          >
+            <mat-icon>info_outline</mat-icon>
+          </button>
+        </div>
+
+        <div class="medicine-info">
+          <h3>{{ medicine.medicine_name }}</h3>
+
+          <div class="medicine-tags">
+            <span class="manufacturer">{{ medicine.manufacturer_name }}</span>
+            <span class="pack-size">{{ medicine.packing_size }}</span>
+          </div>
+
+          <div
+            class="medicine-availability"
+            *ngIf="medicine.available_for_patient === 'yes'"
+          >
+            <mat-icon>check_circle_outline</mat-icon>
+            <span>In Stock</span>
+          </div>
+          <div
+            class="medicine-availability"
+            *ngIf="medicine.available_for_patient === 'no'"
+          >
+            <mat-icon style="color: red">cancel</mat-icon>
+            <span>out of Stock</span>
+          </div>
+
+          <div class="medicine-meta">
+            <div class="price-info">
+              <span class="current-price">{{
+                medicine.price | currency : "INR" : "symbol"
+              }}</span>
+            </div>
+
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="AddtoCart(medicine)"
+              *ngIf="medicine.available_for_patient === 'yes'"
+            >
+              <mat-icon>add_shopping_cart
+              </mat-icon>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="empty-state glass-card" *ngIf="!dataSource.length">
+    <h3>Popular Searches</h3>
+    <div class="popular-pills">
+      <button
+        mat-stroked-button
+        *ngFor="let medicine of mostSearchedMedicines"
+        (click)="buttonSearch(medicine)"
+        class="pill-button"
+      >
+        {{ medicine }}
+      </button>
+    </div>
+  </div>
+</div>

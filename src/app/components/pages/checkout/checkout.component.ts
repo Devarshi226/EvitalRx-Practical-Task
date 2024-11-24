@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-checkout',
@@ -6,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent {
+
+
 
 }

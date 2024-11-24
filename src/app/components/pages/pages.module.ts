@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { PagesRoutingModule } from './pages-routing.module';
@@ -10,6 +10,9 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RecentOrdersComponent } from './recent-orders/recent-orders.component';
 import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-form.component';
+import { SearchComponent } from './search/search.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -21,11 +24,17 @@ import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-fo
     CheckoutComponent,
     OrderConfirmationComponent,
     RecentOrdersComponent,
-    AddPatientFormComponent
+    AddPatientFormComponent,
+    SearchComponent
   ],
   imports: [
     CommonModule,
-    PagesRoutingModule
-  ]
+    PagesRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatIconModule
+
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PagesModule { }

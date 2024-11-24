@@ -1,1 +1,62 @@
-<p>header works!</p>
+  <mat-toolbar color="primary" class="sticky-toolbar">
+
+    <img src="../../../../assets/image.png" alt="Logo" class="header-logo" routerLink="/pages/home">
+
+    <span class="spacer2"></span>
+
+    <div class="header-menu">
+
+
+
+        <div  *ngIf="LoggedInStatus" routerLink="/pages/home">Home</div>
+
+
+
+    </div>
+
+    <span class="spacer"></span>
+
+    <button mat-icon-button class="cart-icon" aria-label="Example icon-button with shopping cart icon" routerLink="/pages/cart" *ngIf="LoggedInStatus">
+      <mat-icon matBadge="{{cartItemsCount}}" matBadgeColor="warn">shopping_cart</mat-icon>
+    </button>
+    <button
+    mat-icon-button
+    class="profile-icon"
+    aria-label="Profile"
+    *ngIf="LoggedInStatus"  [matMenuTriggerFor]="menu">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <div *ngIf="!LoggedInStatus">
+    <button
+      mat-button
+      class="login-button"
+      aria-label="Login"
+      routerLink="/auth/login">
+      <mat-icon>login</mat-icon>
+      Login
+    </button>
+    <button
+      mat-button
+      class="signup-button"
+      aria-label="Sign-Up"
+
+      routerLink="/auth/register">
+      <mat-icon>person_add</mat-icon>
+      Sign-Up
+    </button>
+  </div>
+
+  </mat-toolbar>
+
+  <mat-menu #menu="matMenu" class="header-menu-option">
+    <div mat-menu-item *ngIf="LoggedInStatus" routerLink="/pages/orders">
+      <mat-icon>local_shipping</mat-icon>
+      <span>Orders</span>
+    </div>
+    <div mat-menu-item *ngIf="LoggedInStatus" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </div>
+  </mat-menu>
+
+

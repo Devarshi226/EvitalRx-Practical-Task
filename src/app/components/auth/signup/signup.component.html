@@ -1,1 +1,92 @@
-<p>signup works!</p>
+<div class="signup-container">
+  <div class="signup-header">
+    <h1>Create Account</h1>
+    <div class="signup-breadcrumb">
+      <span>Home</span> / <span>Register</span>
+    </div>
+  </div>
+
+  <div class="signup-card glass-card">
+    <h2>Sign Up</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="password-field-outline">
+        <mat-label class="password-field">Username</mat-label>
+        <input matInput formControlName="username" placeholder="Enter your username" class="password-field">
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="registerForm.get('username')?.errors?.['required']">
+          Username is required
+        </mat-error>
+        <mat-error *ngIf="registerForm.get('username')?.errors?.['minlength']">
+          Username must be at least 3 characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="password-field-outline">
+        <mat-label class="password-field">Email</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="Enter your email" class="password-field">
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="registerForm.get('email')?.errors?.['required']">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="registerForm.get('email')?.errors?.['email']">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="password-field-outline">
+        <mat-label class="password-field">Password</mat-label>
+        <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password"
+               placeholder="Enter your password" class="password-field">
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+          <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="registerForm.get('password')?.errors?.['required']">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="registerForm.get('password')?.errors?.['pattern']">
+          Password must contain at least one uppercase letter, one lowercase letter,
+          one number and one special character
+        </mat-error>
+        <mat-error *ngIf="registerForm.get('password')?.errors?.['minlength']">
+          Password must be at least 6 characters
+        </mat-error>
+      </mat-form-field>
+
+      <div class="terms-checkbox">
+        <mat-checkbox formControlName="acceptTerms" color="primary">
+          I accept the <a  class="terms-link">Terms of Service</a> and
+          <a  class="terms-link">Privacy Policy</a>
+        </mat-checkbox>
+        <mat-error *ngIf="registerForm.get('acceptTerms')?.errors?.['required'] &&
+                         registerForm.get('acceptTerms')?.touched" class="terms-error">
+          You must accept the terms and conditions
+        </mat-error>
+      </div>
+
+      <button mat-flat-button color="primary" type="submit"
+              class="signup-btn" [disabled]="registerForm.invalid || isLoading">
+        <span *ngIf="!isLoading">Create Account</span>
+        <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+      </button>
+
+      <div class="signup-prompt">
+        Already have an account? <a routerLink="/auth/login">Sign In</a>
+      </div>
+
+      <div class="social-signup">
+        <p>Or sign up with</p>
+        <div class="social-buttons">
+          <button mat-mini-fab class="social-btn google">
+            <mat-icon>android</mat-icon>
+          </button>
+          <button mat-mini-fab class="social-btn facebook">
+            <mat-icon>facebook</mat-icon>
+          </button>
+          <button mat-mini-fab class="social-btn apple">
+            <mat-icon>apple</mat-icon>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
