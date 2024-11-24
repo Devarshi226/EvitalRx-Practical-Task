@@ -1,0 +1,398 @@
+$primary-color: #6366f1;
+$secondary-color: #4f46e5;
+$background-dark: #0f172a;
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$glass-background: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$error-color: #ef4444;
+$success-color: #22c55e;
+
+@mixin glass-effect {
+  background: $glass-background;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+::ng-deep {
+  .password-field-outline {
+    .mdc-text-field--outlined {
+      background-color: transparent !important;
+    }
+
+    .mdc-floating-label {
+      color: $text-primary !important;
+    }
+
+    .mdc-text-field--outlined .mdc-notched-outline__leading,
+    .mdc-text-field--outlined .mdc-notched-outline__notch,
+    .mdc-text-field--outlined .mdc-notched-outline__trailing {
+      border-color: rgba($text-primary, 0.5) !important;
+    }
+
+    .mdc-text-field--focused .mdc-notched-outline__leading,
+    .mdc-text-field--focused .mdc-notched-outline__notch,
+    .mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: $primary-color !important;
+    }
+
+    .mat-mdc-form-field-input-control {
+      color: $text-primary !important;
+    }
+
+    .mat-mdc-icon-button {
+      color: $text-primary !important;
+    }
+
+    .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input::placeholder {
+      color: rgba($text-primary, 0.6) !important;
+    }
+  }
+
+  .mat-mdc-checkbox {
+    .mdc-checkbox__background {
+      border-color: $text-primary !important;
+    }
+
+    .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+      border-color: $primary-color !important;
+      background-color: $primary-color !important;
+    }
+
+    .mdc-form-field {
+      color: $text-primary !important;
+    }
+  }
+}
+
+.login-container {
+  min-height: 100vh;
+  padding: 2rem;
+  color: $text-primary;
+  @include flex-center;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba($primary-color, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba($secondary-color, 0.15) 0%, transparent 40%);
+    pointer-events: none;
+  }
+}
+
+
+::ng-deep .password-field{
+  color: $text-primary;
+}
+
+
+::ng-deep .mat-mdc-checkbox .mdc-form-field {
+  color: $text-primary;
+}
+
+::ng-deep .mdc-checkbox__background{
+  border-color: $text-primary !important;
+}
+
+::ng-deep .password-field{
+  color: $text-primary !important;
+}
+
+::ng-deep .password-field-outline{
+  border: #22c55e;
+}
+
+
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .login-breadcrumb {
+    color: $text-secondary;
+    font-size: 0.875rem;
+
+    span:last-child {
+      color: $text-primary;
+    }
+  }
+}
+
+.login-card {
+  @include glass-effect;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 480px;
+  animation: fadeIn 0.3s ease forwards;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+
+    &::ng-deep {
+      .mat-form-field-wrapper {
+        margin-bottom: 0;
+      }
+
+      .mat-form-field-outline {
+        color: $glass-border;
+      }
+
+      .mat-form-field-label {
+        color: $text-secondary !important;
+      }
+
+.mat-input-element {
+        color: $text-primary !important;
+        caret-color: $primary-color;
+      }
+
+      .mat-form-field-label.mat-form-field-empty {
+        color: rgba($text-secondary, 0.6) !important;
+      }
+
+      .mat-icon {
+        color: $text-secondary;
+      }
+
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-text-fill-color: $text-primary !important;
+        -webkit-box-shadow: 0 0 0 30px $background-dark inset !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+
+      .mat-focused {
+        .mat-form-field-outline {
+          color: $primary-color;
+        }
+        .mat-form-field-label {
+          color: $primary-color !important;
+        }
+        .mat-icon {
+          color: $primary-color;
+        }
+      }
+    }
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  ::ng-deep .mat-checkbox {
+    color: $text-secondary;
+
+    .mat-checkbox-frame {
+      border-color: $text-secondary;
+    }
+
+    &.mat-checkbox-checked .mat-checkbox-background {
+      background-color: $primary-color !important;
+    }
+  }
+
+  .forgot-password {
+    color: $primary-color;
+    text-decoration: none;
+    font-size: 0.875rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to right, $primary-color, $secondary-color) !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600;
+  color: $text-primary !important;
+  transition: all 0.3s ease;
+  height: 48px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  mat-spinner {
+    display: inline-block;
+    margin-left: 8px;
+    ::ng-deep circle {
+      stroke: $text-primary;
+    }
+  }
+}
+
+.signup-prompt {
+  text-align: center;
+  margin: 1.5rem 0;
+  color: $text-secondary;
+
+  a {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.social-login {
+  text-align: center;
+
+  p {
+    color: $text-secondary;
+    margin-bottom: 1rem;
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 25%;
+      height: 1px;
+      background: $glass-border;
+    }
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      right: 0;
+    }
+  }
+
+  .social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+
+    .social-btn {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid $glass-border;
+
+      &:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+
+      mat-icon {
+        color: $text-primary;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.terms-checkbox {
+  margin: 1rem 0;
+
+  ::ng-deep {
+    .mat-mdc-checkbox {
+      .mdc-checkbox__background {
+        border-color: $text-primary !important;
+      }
+
+      .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+        border-color: $primary-color !important;
+        background-color: $primary-color !important;
+      }
+
+      .mdc-form-field {
+        color: $text-primary !important;
+      }
+    }
+  }
+
+  .terms-link {
+    color: $primary-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.terms-error {
+  color: $error-color;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.login-card {
+  min-height: 600px;
+}
+
+
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+  }
+}

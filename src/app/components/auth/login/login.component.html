@@ -40,7 +40,7 @@
         <mat-checkbox formControlName="rememberMe" color="primary">
           Remember me
         </mat-checkbox>
-        <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+        <a routerLink="/auth/forgotpass" class="forgot-password">Forgot Password?</a>
       </div>
 
       <button mat-flat-button color="primary" type="submit"
@@ -50,7 +50,7 @@
       </button>
 
       <div class="signup-prompt">
-        Don't have an account? <a href="/signup">Sign Up</a>
+        Don't have an account? <a routerLink="/auth/register">Sign Up</a>
       </div>
 
       <div class="social-login">
