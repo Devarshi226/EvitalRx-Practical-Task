@@ -1,38 +1,107 @@
-<div class="prod-swip main-swip">
+<div class="dashboard-container">
+  <div class="search-section">
+    <div class="search-wrapper glass-card">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" placeholder="Search for medicines..." (click)="navigateToSearch()" readonly>
+      <div class="search-meta">
+        <span class="search-hint">Press to search</span>
+        <div class="shortcut-badge">/</div>
+      </div>
+    </div>
+  </div>
 
-  <div class="search-bar">
+
+
+
+  <div class="swiper-section glass-card">
+    <swiper-container class="swiper-container" effect="cube" grab-cursor="true" style="width: 57rem" loop="true"
+    autoplay='{"delay": 5000, "speed": 1000}'>
+    <swiper-slide>
+    <div class="imgbtn">
+    <img src="../../../../assets/evital-1.webp" loading="lazy" />
+    </div>
+    </swiper-slide>
+    <swiper-slide>
+    <div class="imgbtn">
+    <img src="../../../../assets/evital-2.webp" loading="lazy" />
+    </div>
+    </swiper-slide>
+    <swiper-slide>
+    <div class="imgbtn">
+    <img src="../../../../assets/evital-3.webp" loading="lazy" />
+    </div>
+    </swiper-slide>
+    <swiper-slide>
+    <div class="imgbtn">
+    <img src="../../../../assets/evital-5.png" loading="lazy" />
+    </div>
+    </swiper-slide>
+    </swiper-container>
 
   </div>
 
-  <swiper-container class="swiper-container" effect="cube" grab-cursor="true" style="width: 57rem" loop="true"
-      autoplay='{"delay": 5000, "speed": 1000}'>
+  <!-- <div class="info-cards">
+    <div class="card glass-card">
+      <div class="card-icon">
+        <mat-icon>access_time</mat-icon>
+      </div>
+      <h3>24/7 Service</h3>
+      <p>Get your medicines delivered anytime, anywhere. We're always here for your health needs.</p>
+    </div>
 
+    <div class="card glass-card">
+      <div class="card-icon">
+        <mat-icon>medication</mat-icon>
+      </div>
+      <h3>900+ Medicines</h3>
+      <p>Access to a vast collection of medicines, healthcare products, and wellness items.</p>
+    </div>
 
-      <swiper-slide>
-          <div class="imgbtn">
-              <img src="../../../../assets/evital-1.webp" loading="lazy" />
+    <div class="card glass-card">
+      <div class="card-icon">
+        <mat-icon>verified</mat-icon>
+      </div>
+      <h3>Certified Products</h3>
+      <p>All medicines are verified and sourced from licensed pharmacies.</p>
+    </div>
+  </div> -->
 
-          </div>
-      </swiper-slide>
-      <swiper-slide>
-          <div class="imgbtn">
-              <img src="../../../../assets/evital-2.webp" loading="lazy" />
-          </div>
-      </swiper-slide>
-      <swiper-slide>
-          <div class="imgbtn">
-              <img src="../../../../assets/evital-3.webp" loading="lazy" />
+  <div class="info-cards">
+    <mat-card class="info-card glass-card" appearance="outlined">
+      <mat-card-content>
+        <div class="card-icon">
+          <mat-icon>access_time</mat-icon>
+        </div>
+        <mat-card-title>24/7 Service</mat-card-title>
+        <mat-card-subtitle>
+          Get your medicines delivered anytime, anywhere. We're always here for your health needs.
+        </mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
 
-          </div>
-      </swiper-slide>
-      <swiper-slide>
-          <div class="imgbtn">
-              <img src="../../../../assets/evital-5.png" loading="lazy" />
+    <mat-card class="info-card glass-card" appearance="outlined">
+      <mat-card-content>
+        <div class="card-icon">
+          <mat-icon>medication</mat-icon>
+        </div>
+        <mat-card-title>900+ Medicines</mat-card-title>
+        <mat-card-subtitle>
+          Access to a vast collection of medicines, healthcare products, and wellness items.
+        </mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
 
-          </div>
-      </swiper-slide>
-
-
-  </swiper-container>
-
+    <mat-card class="info-card glass-card" appearance="outlined">
+      <mat-card-content>
+        <div class="card-icon">
+          <mat-icon>verified</mat-icon>
+        </div>
+        <mat-card-title>Certified Products</mat-card-title>
+        <mat-card-subtitle>
+          All medicines are verified and sourced from licensed pharmacies.
+        </mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
+

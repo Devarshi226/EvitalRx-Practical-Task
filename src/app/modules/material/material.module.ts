@@ -46,7 +46,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCheckboxModule,
     MatDividerModule,
     MatInputModule,
-    MatProgressSpinnerModule,
+    MatProgressSpinnerModule
 
   ],
 })

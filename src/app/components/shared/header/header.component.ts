@@ -49,7 +49,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.router.navigate(['/auth/register']);
     }else if (page === 'cart') {
 
-
+      this.router.navigate(['/pages/cart'])
 
       // this.SharedStatusService.elementSubject$.subscribe((element:any) => {
 

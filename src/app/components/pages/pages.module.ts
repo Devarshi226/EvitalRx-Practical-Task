@@ -12,6 +12,7 @@ import { RecentOrdersComponent } from './recent-orders/recent-orders.component';
 import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-form.component';
 import { SearchComponent } from './search/search.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -30,9 +31,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     PagesRoutingModule,
     ReactiveFormsModule,
-    FormsModule
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    FormsModule,
+    MatIconModule
 
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PagesModule { }
