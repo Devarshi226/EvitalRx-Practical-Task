@@ -1,6 +1,6 @@
   <mat-toolbar color="primary" class="sticky-toolbar">
 
-    <img src="../../../../assets/image.png" alt="Logo" class="header-logo" (click)="routeThePage('home')">
+    <img src="../../../../assets/image.png" alt="Logo" class="header-logo" routerLink="/pages/home">
 
     <span class="spacer2"></span>
 
@@ -8,7 +8,7 @@
 
 
 
-        <div  *ngIf="isLoggedIn" (click)="routeThePage('home')">Home</div>
+        <div  *ngIf="LoggedInStatus" routerLink="/pages/home">Home</div>
 
 
 
@@ -16,25 +16,22 @@
 
     <span class="spacer"></span>
 
-    <button mat-icon-button class="cart-icon" aria-label="Example icon-button with shopping cart icon" (click)="routeThePage('cart')" *ngIf="isLoggedIn">
+    <button mat-icon-button class="cart-icon" aria-label="Example icon-button with shopping cart icon" routerLink="/pages/cart" *ngIf="LoggedInStatus">
       <mat-icon matBadge="{{cartItemsCount}}" matBadgeColor="warn">shopping_cart</mat-icon>
     </button>
     <button
     mat-icon-button
     class="profile-icon"
     aria-label="Profile"
-    *ngIf="isLoggedIn"  [matMenuTriggerFor]="menu">
+    *ngIf="LoggedInStatus"  [matMenuTriggerFor]="menu">
     <mat-icon>account_circle</mat-icon>
   </button>
-    <!-- <button  mat-icon-button  class="logout-icon"  aria-label="Logout" (click)="logout()" *ngIf="isLoggedIn">
-    <mat-icon>logout</mat-icon>
-  </button> -->
-  <div *ngIf="!isLoggedIn">
+  <div *ngIf="!LoggedInStatus">
     <button
       mat-button
       class="login-button"
       aria-label="Login"
-      (click)="routeThePage('login')">
+      routerLink="/auth/login">
       <mat-icon>login</mat-icon>
       Login
     </button>
@@ -42,7 +39,8 @@
       mat-button
       class="signup-button"
       aria-label="Sign-Up"
-      (click)="routeThePage('signup')">
+
+      routerLink="/auth/register">
       <mat-icon>person_add</mat-icon>
       Sign-Up
     </button>
@@ -51,11 +49,11 @@
   </mat-toolbar>
 
   <mat-menu #menu="matMenu" class="header-menu-option">
-    <div mat-menu-item *ngIf="isLoggedIn" (click)="routeThePage('past-orders')">
+    <div mat-menu-item *ngIf="LoggedInStatus" routerLink="/pages/orders">
       <mat-icon>local_shipping</mat-icon>
       <span>Orders</span>
     </div>
-    <div mat-menu-item *ngIf="isLoggedIn" (click)="logout()">
+    <div mat-menu-item *ngIf="LoggedInStatus" (click)="logout()">
       <mat-icon>logout</mat-icon>
       <span>Logout</span>
     </div>

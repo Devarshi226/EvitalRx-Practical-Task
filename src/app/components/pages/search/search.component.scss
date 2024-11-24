@@ -1,0 +1,703 @@
+$primary-color: #6366f1;
+$secondary-color: #4f46e5;
+$background-dark: #0f172a;
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$glass-background: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$error-color: #ef4444;
+$success-color: #22c55e;
+
+@mixin glass-effect {
+  background: $glass-background;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+}
+
+.search-container {
+  min-height: 100vh;
+  padding: 1rem;
+  background: $background-dark;
+  color: $text-primary;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba($primary-color, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba($secondary-color, 0.15) 0%, transparent 40%);
+    pointer-events: none;
+  }
+}
+
+.search-header {
+
+    position: relative !important;
+  @include glass-effect;
+  position: sticky;
+  top: 1rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+
+  .back-button {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    background: rgba($glass-background, 0.5);
+    border: 1px solid $glass-border;
+    border-radius: 8px;
+    color: $text-primary;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba($primary-color, 0.1);
+      border-color: rgba($primary-color, 0.3);
+    }
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .search-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba($glass-background, 0.5);
+    border: 1px solid $glass-border;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+      border-color: $primary-color;
+      background: rgb(117 114 114 / 50%);
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+    }
+
+    .search-icon {
+      color: $text-primary;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: $text-primary;
+      font-size: 1rem;
+      padding: 0.5rem 0;
+
+      &::placeholder {
+        color: $text-primary;
+      }
+    }
+
+    .clear-button {
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      color: $text-secondary;
+      background: transparent;
+      border: none;
+
+      &:hover {
+        color: $text-primary;
+        background: rgba($glass-background, 0.8);
+      }
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+
+.results-header{
+  margin-bottom: 2%;
+}
+
+
+.results-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  margin: 1rem 0;
+
+  .count-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: $primary-color;
+    font-weight: 500;
+
+    mat-icon {
+      font-size: 1.125rem;
+      height: 1.125rem;
+      width: 1.125rem;
+    }
+
+    span {
+      font-size: 1rem;
+      color: $text-primary;
+    }
+  }
+
+  .count-text {
+    color: $text-secondary;
+    font-weight: 400;
+  }
+}
+
+.results-container {
+  position: relative;
+
+  .results-count {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
+.medicine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
+
+.medicine-card {
+  position: relative;
+  @include glass-effect;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-color: rgba($primary-color, 0.3);
+
+    .medicine-image {
+      .info-button {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transform: skewX(-15deg);
+    transition: 0.5s;
+  }
+
+  &:hover::after {
+    left: 100%;
+  }
+}
+
+.medicine-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: rgba($glass-background, 0.5);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .info-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(0) scale(1.05);
+    }
+
+    mat-icon {
+      font-size: 20px;
+      color: $text-primary;
+      height: 20px;
+      width: 20px;
+    }
+  }
+}
+
+.medicine-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.4;
+  }
+}
+
+.medicine-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+
+  span {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: rgba($glass-background, 0.5);
+    border: 1px solid $glass-border;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .manufacturer {
+    background: rgba($primary-color, 0.15);
+    color: $text-primary;
+  }
+
+  .pack-size {
+    background: rgba($secondary-color, 0.15);
+    color: $text-primary;
+  }
+}
+
+.medicine-availability {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+    color: $success-color;
+  }
+
+  span {
+    color: $text-primary;
+  }
+}
+
+.medicine-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid $glass-border;
+}
+
+.price-info {
+  .current-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: $text-primary;
+
+
+  }
+}
+
+button[mat-flat-button] {
+  min-width: 120px;
+  height: 40px;
+  border-radius: 20px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 0 20px;
+  background: rgba($primary-color, 0.2);
+  border: 1px solid rgba($primary-color, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: $text-primary;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    margin: 0;
+  }
+
+  &:hover {
+    background: rgba($primary-color, 0.3);
+    border-color: rgba($primary-color, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .medicine-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .medicine-image {
+    height: 180px;
+  }
+
+  .medicine-info {
+    padding: 16px;
+
+    h3 {
+      font-size: 1rem;
+    }
+  }
+
+  .medicine-meta {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+}
+
+.price-info {
+  text-align: center;
+
+  .current-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #d1d1d1;
+
+
+  }
+}
+
+button[mat-flat-button] {
+  width: 60%;
+  min-width: 120px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 4px 16px;
+  background: linear-gradient(45deg, #1976d2, #2196f3);
+  transition: all 0.3s ease;
+
+  mat-icon {
+    margin-right: 6px;
+    font-size: 18px;
+  }
+
+
+
+  &:hover {
+    background: linear-gradient(45deg, #1565c0, #1976d2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  }
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.medicine-card {
+  animation: cardEntrance 0.3s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+  .medicine-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .medicine-image {
+    height: 180px;
+  }
+
+  .medicine-info h3 {
+    font-size: 1rem;
+  }
+
+  .price-info .current-price {
+    font-size: 1.1rem;
+  }
+
+  button[mat-flat-button] {
+    min-width: 100px;
+    padding: 4px 12px;
+  }
+}
+
+
+
+
+
+@media (max-width: 768px) {
+  .search-container {
+    padding: 0.5rem;
+  }
+
+  .medicine-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-drawer {
+    width: 280px;
+  }
+
+  .filters-section {
+    flex-direction: column;
+
+    .filter-group {
+      width: 100%;
+    }
+
+    .filter-button {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+}
+
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background: rgba($primary-color, 0.1);
+    }
+  }
+
+  .mdc-checkbox__background {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .mat-mdc-radio-button {
+    .mdc-radio {
+      .mdc-radio__background {
+        border-color: rgba(255, 255, 255, 0.3) !important;
+      }
+    }
+  }
+}
+
+
+.suggestions {
+  @include glass-effect;
+  padding: 1.25rem;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+
+  .suggestion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: $text-primary;
+
+    mat-icon {
+      color: $primary-color;
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+    }
+
+    span {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+
+  .suggestion-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+
+
+
+.empty-state {
+  @include glass-effect;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 600px;
+
+  h3 {
+    color: $text-primary;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
+
+  .popular-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+}
+
+.pill-button {
+  background: rgba($glass-background, 0.3);
+  border: 1px solid $glass-border;
+  color: $text-primary;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-height: 36px;
+
+  &:hover {
+    background: rgba($primary-color, 0.2);
+    border-color: rgba($primary-color, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .suggestions,
+  .empty-state {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .suggestion-pills,
+  .popular-pills {
+    gap: 0.5rem;
+  }
+
+  .pill-button {
+    padding: 0.4rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+}

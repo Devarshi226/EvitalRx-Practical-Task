@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
 
 @Component({
   selector: 'app-header',
@@ -8,34 +9,42 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements AfterViewInit, OnInit {
+  private readonly TOKEN_KEY = 'auth_token';
+  private readonly CART_CHEKOUT_KEY = 'CART_CHEKOUT_DATA';
+  private readonly PATIENT_ID_KEY = 'PATIENT_ID';
+  private readonly SUBTOTAL_KEY = 'subtotal';
+  private readonly USER_ID_KEY = 'user_id';
 
-  isLoggedIn : Boolean = true;
+  LoggedInStatus : Boolean = false;
 
   cartItemsCount:string = '';
 
   cartItems : boolean = false;
 
-  constructor(private router:Router, private toastr: ToastrService) {
+  constructor(private router:Router, private toastr: ToastrService , private sharedData : ShareddataService) {
+
+    this.sharedData.isLoggedIn$.subscribe((status:boolean) => {
+      this.LoggedInStatus = status;
+    });
+
+    this.sharedData.cartData$.subscribe((element:any) => {
+
+      if (Array.isArray(element)) {
+        console.log('element',element);
+        this.cartItemsCount = element.length.toString();
+        console.log('cartItemsCount',this.cartItemsCount);
+      } else if(element.legnth === 0) {
+        console.warn('Expected an array from elementSubject$, got:', element);
+        this.cartItemsCount = '';
+      }
+    });
 
    }
 
   ngOnInit(): void {
-    // this.SharedStatusService.isLoggedIn$.subscribe((status) => {
-    //   this.isLoggedIn = status;
-    // });
-
-    // this.SharedStatusService.elementSubject$.subscribe((element:any) => {
-    //   if (Array.isArray(element)) {
-    //     this.cartItemsCount = element.length.toString();
-    //   } else {
-    //     console.warn('Expected an array from elementSubject$, got:', element);
-    //     this.cartItemsCount = '';
-    //   }
-    // });
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.updateToolbarPosition(), 0);
   }
 
   routeThePage(page:string) {
@@ -43,41 +52,19 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.router.navigate(['/pages/home']);
     } else if (page === 'past-orders') {
       this.router.navigate(['/pages/orders']);
-    } else if (page === 'login') {
-      this.router.navigate(['/auth/login']);
-    } else if (page === 'signup') {
-      this.router.navigate(['/auth/register']);
-    }else if (page === 'cart') {
-
-
-
-      // this.SharedStatusService.elementSubject$.subscribe((element:any) => {
-
-      //   if (element !== null && element !== undefined) {
-      //     this.cartItems = true;
-      //   } else {
-      //     this.cartItems = false
-      //   }
-      // });
-
-      if(this.cartItems){
-        this.router.navigate(['/pages/addtocart']);
-      }else{
-        this.toastr.warning('Cart is Empty!');
-      }
     }
 
-    else {
-    }
+
+
   }
 
   logout(){
-    // this.SharedStatusService.setLoginStatus(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('cartCheckoutResponse');
-    localStorage.removeItem('patientId');
-    localStorage.removeItem('saveSubtotal');
+    this.sharedData.setLoginStatus(false);
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_ID_KEY);
+    localStorage.removeItem(this.CART_CHEKOUT_KEY);
+    localStorage.removeItem(this.PATIENT_ID_KEY);
+    localStorage.removeItem(this.SUBTOTAL_KEY);
     this.toastr.warning('Logged Out!');
     this.router.navigate(['/auth/login']);
 
@@ -85,19 +72,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
 
 
-  updateToolbarPosition(): void {
-    const headerElement = document.querySelector('.mat-toolbar.mat-primary') as HTMLElement;
 
-    if (!headerElement) {
-      return;
-    }
 
-    if (!this.isLoggedIn) {
-      headerElement.style.position = 'absolute';
-    } else {
-      headerElement.style.position = 'sticky';
-    }
-  }
 
 
 }

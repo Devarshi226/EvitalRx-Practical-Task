@@ -1,1 +1,57 @@
-<p>forgetpass works!</p>
+<div class="forgot-container">
+  <div class="forgot-header">
+    <h1>Reset Password</h1>
+    <div class="forgot-breadcrumb">
+      <span>Home</span> / <span>Reset Password</span>
+    </div>
+  </div>
+
+  <div class="forgot-card glass-card">
+    <h2>Forgot Password?</h2>
+    <p class="reset-description">Enter your email address and we'll send you instructions to reset your password.</p>
+
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="password-field-outline">
+        <mat-label class="password-field">Email</mat-label>
+        <input matInput
+               type="email"
+               formControlName="email"
+               placeholder="Enter your email"
+               class="password-field">
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="forgotPasswordForm.get('email')?.errors?.['required']">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="forgotPasswordForm.get('email')?.errors?.['email']">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-flat-button
+              color="primary"
+              type="submit"
+              class="forgot-btn"
+              [disabled]="forgotPasswordForm.invalid || isLoading">
+        <span *ngIf="!isLoading">Send Reset Link</span>
+        <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+      </button>
+
+      <div class="back-to-forgot">
+        Remember your password? <a routerLink="/auth/login">Back to login</a>
+      </div>
+    </form>
+
+    <div class="success-message" *ngIf="emailSent">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <h3>Check Your Email</h3>
+      <p>We have sent password reset instructions to your email address.</p>
+      <button mat-stroked-button
+              class="resend-btn"
+              (click)="resendEmail()"
+              [disabled]="resendLoading">
+        <span *ngIf="!resendLoading">Resend Email</span>
+        <mat-spinner diameter="20" *ngIf="resendLoading"></mat-spinner>
+      </button>
+    </div>
+  </div>
+</div>

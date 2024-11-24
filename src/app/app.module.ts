@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -8,6 +8,11 @@ import { MaterialModule } from './modules/material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AuthApi } from './Api/firebase';
 
 @NgModule({
   declarations: [
@@ -21,6 +26,10 @@ import { RouterModule } from '@angular/router';
     SharedModule,
     RouterModule,
     BrowserAnimationsModule,
+    AngularFireModule.initializeApp(AuthApi.firebaseConfig),
+    AngularFireAuthModule,
+    HttpClientModule,
+    AngularFirestoreModule,
     ToastrModule.forRoot( {
       timeOut: 1000,
       positionClass: 'toast-top-center',
@@ -28,6 +37,8 @@ import { RouterModule } from '@angular/router';
     }),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
 })
 export class AppModule { }
