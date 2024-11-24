@@ -35,7 +35,6 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
-
 .search-section {
   max-width: 800px;
   margin: 2rem auto;
@@ -51,7 +50,6 @@ $glass-border: rgba(255, 255, 255, 0.1);
   gap: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 
   &:hover {
     border-color: rgba($primary-color, 0.5);
@@ -109,18 +107,6 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
-@media (max-width: 640px) {
-  .search-wrapper {
-    .search-meta {
-      .search-hint {
-        display: none;
-      }
-    }
-  }
-}
-
-
-
 .swiper-section {
   @include glass-effect;
   margin: 0 auto 3rem;
@@ -145,84 +131,6 @@ $glass-border: rgba(255, 255, 255, 0.1);
 
 .info-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  .card {
-    @include glass-effect;
-    padding: 2rem;
-    border-radius: 1rem;
-    text-align: center;
-    transition: transform 0.3s ease;
-
-    &:hover {
-      transform: translateY(-5px);
-    }
-
-    .card-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 1.5rem;
-      background: linear-gradient(135deg, $primary-color, $secondary-color);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-        color: $text-primary;
-      }
-    }
-
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      background: linear-gradient(to right, $primary-color, $secondary-color);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    p {
-      color: $text-secondary;
-      line-height: 1.6;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 1rem;
-  }
-
-  .search-wrapper {
-    margin: 1rem 0.5rem;
-  }
-
-  .swiper-section {
-    margin: 0 0.5rem 2rem;
-
-    .swiper-container img {
-      height: 300px;
-    }
-  }
-
-  .info-cards {
-    gap: 1rem;
-    padding: 0 0.5rem;
-  }
-}
-
-
-
-
-.info-cards {
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding: 2rem 0;
@@ -234,11 +142,18 @@ $glass-border: rgba(255, 255, 255, 0.1);
     border-radius: 1rem;
     padding: 1.5rem;
     transition: all 0.3s ease;
-    border: 1px solid $glass-border;
     overflow: hidden;
     height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+
+    .info-card-inner{
+      display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
 
     &:hover {
       transform: translateY(-5px);
@@ -248,14 +163,6 @@ $glass-border: rgba(255, 255, 255, 0.1);
         transform: scale(1.05);
         background: linear-gradient(135deg, $primary-color, $secondary-color);
       }
-    }
-
-    mat-card-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 1.5rem;
     }
 
     .card-icon {
@@ -297,7 +204,9 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
-// Material Card Overrides
+
+
+
 ::ng-deep {
   .mat-mdc-card {
     --mdc-elevated-card-container-color: transparent;
@@ -310,8 +219,23 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
-// Responsive adjustments
 @media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .search-wrapper {
+    margin: 1rem 0.5rem;
+  }
+
+  .swiper-section {
+    margin: 0 0.5rem 2rem;
+
+    .swiper-container img {
+      height: 300px;
+    }
+  }
+
   .info-cards {
     grid-template-columns: 1fr;
     padding: 1rem;
@@ -320,5 +244,11 @@ $glass-border: rgba(255, 255, 255, 0.1);
     .info-card {
       padding: 1.5rem;
     }
+  }
+}
+
+@media (max-width: 640px) {
+  .search-wrapper .search-meta .search-hint {
+    display: none;
   }
 }

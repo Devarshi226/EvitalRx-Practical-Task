@@ -1,1 +1,154 @@
-<p>view-details works!</p>
+<div class="medicine-dialog glass-card">
+  <div class="dialog-header">
+    <h2>Medicine Details</h2>
+    <button mat-icon-button (click)="dialogRef.close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="medicine-overview">
+      <div class="medicine-image">
+        <img [src]="data.medicine_image" [alt]="data.medicine_name">
+        <div class="rx-badge" *ngIf="data.is_rx_required">
+          <mat-icon>assignment</mat-icon>
+          Prescription Required
+        </div>
+      </div>
+
+      <div class="medicine-info">
+        <h1>{{data.medicine_name}}</h1>
+        <p class="manufacturer">By {{data.manufacturer_name}}</p>
+
+        <div class="pack-info">
+          <mat-chip-list>
+            <mat-chip>{{data.dosage_type | titlecase}}</mat-chip>
+            <mat-chip>{{data.packing_size}}</mat-chip>
+          </mat-chip-list>
+        </div>
+
+        <div class="price-section">
+          <span class="price">₹{{data.mrp}}</span>
+          <span class="gst">+{{data.gst_percentage}}% GST</span>
+        </div>
+      </div>
+    </div>
+
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="details-tabs">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">info</mat-icon>
+          Overview
+        </ng-template>
+        <div class="tab-content">
+          <section>
+            <h3>How it works</h3>
+            <p>{{data.how_medicine_works}}</p>
+          </section>
+          <section>
+            <h3>How to use</h3>
+            <p>{{data.how_to_use}}</p>
+          </section>
+        </div>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">warning</mat-icon>
+          Safety Info
+        </ng-template>
+        <div class="tab-content">
+          <div class="safety-grid">
+            <mat-card class="safety-card" *ngIf="data.side_effects">
+              <mat-card-header>
+                <mat-icon color="warn">sick</mat-icon>
+                <mat-card-title>Side Effects</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{data.side_effects}}</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="safety-card" *ngIf="data.alcohol">
+              <mat-card-header>
+                <mat-icon>liquor</mat-icon>
+                <mat-card-title>Alcohol</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{data.alcohol}}</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="safety-card" *ngIf="data.pregnancy">
+              <mat-card-header>
+                <mat-icon>pregnant_woman</mat-icon>
+                <mat-card-title>Pregnancy</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p [innerHTML]="data.pregnancy"></p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="safety-card" *ngIf="data.driving">
+              <mat-card-header>
+                <mat-icon>drive_eta</mat-icon>
+                <mat-card-title>Driving</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{data.driving}}</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">medical_services</mat-icon>
+          Medical Info
+        </ng-template>
+        <div class="tab-content">
+          <div class="medical-grid">
+            <mat-card class="medical-card" *ngIf="data.kidney">
+              <mat-card-header>
+                <mat-icon>kidney</mat-icon>
+                <mat-card-title>Kidney</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p [innerHTML]="data.kidney"></p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="medical-card" *ngIf="data.liver">
+              <mat-card-header>
+                <mat-icon>monitor_heart</mat-icon>
+                <mat-card-title>Liver</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p [innerHTML]="data.liver"></p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="medical-card" *ngIf="data.lactation">
+              <mat-card-header>
+                <mat-icon>child_care</mat-icon>
+                <mat-card-title>Lactation</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{data.lactation}}</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="dialogRef.close()">Close</button>
+    <button mat-flat-button color="primary" (click)="addToCart()">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Add to Cart
+    </button>
+  </mat-dialog-actions>
+</div>

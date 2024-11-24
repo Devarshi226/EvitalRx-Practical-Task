@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { FirebaseAuthService } from 'src/app/services/authentication/firebase-auth.service';
+import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +19,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private auth: FirebaseAuthService,
+    private toster :ToastrService,
+    private dataService: ShareddataService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -28,7 +34,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Any initialization logic
+
   }
 
 
@@ -41,13 +47,21 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       try {
         this.isLoading = true;
-        // Add your authentication logic here
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
-        // await this.authService.login(this.loginForm.value);
-        // this.router.navigate(['/dashboard']);
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        await this.auth.login(this.loginForm.value).subscribe((res) => {
+
+          this.toster.success('Login successful');
+          this.loginForm.reset();
+          this.dataService.setLoginStatus(true);
+          this.router.navigate(['/pages/dashboard']);
+        }, error => {
+          this.toster.error('Invalid Credentials');
+          this.router.navigate(['/auth/login']);
+        });
+
       } catch (error) {
         console.error('Login error:', error);
-        // Handle error (show message, etc.)
       } finally {
         this.isLoading = false;
       }

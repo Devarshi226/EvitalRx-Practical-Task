@@ -140,330 +140,379 @@ $success-color: #22c55e;
 }
 
 
+.results-header{
+  margin-bottom: 2%;
+}
+
 
 .results-count {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  background: rgba($glass-background, 0.5);
-  border: 1px solid $glass-border;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  margin: 1rem 0;
 
   .count-badge {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    background: rgba($primary-color, 0.1);
-    border-radius: 8px;
+    gap: 0.25rem;
     color: $primary-color;
+    font-weight: 500;
 
     mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 1.125rem;
+      height: 1.125rem;
+      width: 1.125rem;
     }
 
     span {
-      font-weight: 600;
-      font-size: 1.125rem;
+      font-size: 1rem;
+      color: $text-primary;
     }
   }
 
   .count-text {
     color: $text-secondary;
-    font-size: 0.875rem;
+    font-weight: 400;
   }
 }
 
-.filters-section {
-  @include glass-effect;
-  padding: 1rem;
-  border-radius: 16px;
-  margin-bottom: 1.5rem;
+.results-container {
+  position: relative;
 
-  .filter-group {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-
-    &::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-    }
-
-    .mat-mdc-chip {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: $text-primary;
-
-      &.mat-mdc-chip-selected {
-        background: rgba($primary-color, 0.2);
-        border-color: $primary-color;
-      }
-    }
-  }
-
-  .filter-button {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: $text-primary;
-    margin-left: auto;
-    padding: 0.5rem 1rem;
-
-    mat-icon {
-      margin-right: 0.5rem;
-    }
-
-    &:hover {
-      background: rgba($primary-color, 0.1);
-      border-color: $primary-color;
-    }
+  .results-count {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
 }
 
-// Medicine Grid
 .medicine-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  padding: 0.5rem;
+  gap: 24px;
+  padding: 24px;
+}
 
-  .medicine-card {
-    @include glass-effect;
-    border-radius: 16px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
+.medicine-card {
+  position: relative;
+  @include glass-effect;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
-    &:hover {
-      transform: translateY(-5px);
-    }
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-color: rgba($primary-color, 0.3);
 
     .medicine-image {
-      position: relative;
-      height: 200px;
-      overflow: hidden;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .discount-badge {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: $primary-color;
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.875rem;
-        font-weight: 500;
+      .info-button {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
+  }
 
-    .medicine-info {
-      padding: 1.5rem;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transform: skewX(-15deg);
+    transition: 0.5s;
+  }
 
-      h3 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-
-      .medicine-description {
-        color: $text-secondary;
-        font-size: 0.875rem;
-        margin-bottom: 1rem;
-        line-height: 1.5;
-      }
-
-      .medicine-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .price-info {
-          .current-price {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: $text-primary;
-          }
-
-          .original-price {
-            margin-left: 0.5rem;
-            color: $text-secondary;
-            text-decoration: line-through;
-            font-size: 0.875rem;
-          }
-        }
-
-        .add-to-cart {
-          background: linear-gradient(to right, $primary-color, $secondary-color);
-          color: white;
-          padding: 0.5rem 1.5rem;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-
-          &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba($primary-color, 0.3);
-          }
-
-          mat-icon {
-            margin-right: 0.5rem;
-          }
-        }
-      }
-    }
+  &:hover::after {
+    left: 100%;
   }
 }
 
-// Empty State
-.empty-state {
-  @include glass-effect;
-  text-align: center;
-  padding: 3rem 2rem;
-  border-radius: 16px;
-  max-width: 400px;
-  margin: 2rem auto;
+.medicine-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: rgba($glass-background, 0.5);
 
-  mat-icon {
-    font-size: 48px;
-    height: 48px;
-    width: 48px;
-    color: $text-secondary;
-    margin-bottom: 1rem;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
   }
 
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
+  .info-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 
-  p {
-    color: $text-secondary;
-    margin-bottom: 1.5rem;
-  }
-
-  button {
-    background: linear-gradient(to right, $primary-color, $secondary-color);
-    color: white;
-    padding: 0.75rem 2rem;
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(0) scale(1.05);
+    }
 
     mat-icon {
       font-size: 20px;
+      color: $text-primary;
       height: 20px;
       width: 20px;
-      margin-right: 0.5rem;
-      color: white;
     }
   }
 }
 
-// Filter Drawer
-.filter-drawer {
-  width: 320px;
-  border: none;
-  background: $background-dark;
+.medicine-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 
-  .drawer-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    h2 {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
-      margin: 0;
-
-      mat-icon {
-        color: $primary-color;
-      }
-    }
-  }
-
-  .drawer-content {
-    padding: 1.5rem;
-
-    .filter-section {
-      margin-bottom: 2rem;
-
-      h3 {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        mat-icon {
-          color: $primary-color;
-        }
-      }
-
-      mat-slider {
-        width: 100%;
-        margin: 1rem 0;
-      }
-
-      .price-inputs {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        mat-form-field {
-          flex: 1;
-        }
-      }
-
-      mat-checkbox, mat-radio-button {
-        display: block;
-        margin-bottom: 0.75rem;
-      }
-    }
-  }
-
-  .drawer-footer {
-    position: sticky;
-    bottom: 0;
-    padding: 1rem 1.5rem;
-    background: $background-dark;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    gap: 1rem;
-
-    button {
-      flex: 1;
-
-      &:first-child {
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
-      &:last-child {
-        background: linear-gradient(to right, $primary-color, $secondary-color);
-      }
-
-      mat-icon {
-        margin-right: 0.5rem;
-      }
-    }
+  h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.4;
   }
 }
 
-// Responsive Design
+.medicine-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+
+  span {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: rgba($glass-background, 0.5);
+    border: 1px solid $glass-border;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .manufacturer {
+    background: rgba($primary-color, 0.15);
+    color: $text-primary;
+  }
+
+  .pack-size {
+    background: rgba($secondary-color, 0.15);
+    color: $text-primary;
+  }
+}
+
+.medicine-availability {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+    color: $success-color;
+  }
+
+  span {
+    color: $text-primary;
+  }
+}
+
+.medicine-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid $glass-border;
+}
+
+.price-info {
+  .current-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: $text-primary;
+
+
+  }
+}
+
+button[mat-flat-button] {
+  min-width: 120px;
+  height: 40px;
+  border-radius: 20px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 0 20px;
+  background: rgba($primary-color, 0.2);
+  border: 1px solid rgba($primary-color, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: $text-primary;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    margin: 0;
+  }
+
+  &:hover {
+    background: rgba($primary-color, 0.3);
+    border-color: rgba($primary-color, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .medicine-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .medicine-image {
+    height: 180px;
+  }
+
+  .medicine-info {
+    padding: 16px;
+
+    h3 {
+      font-size: 1rem;
+    }
+  }
+
+  .medicine-meta {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+}
+
+.price-info {
+  text-align: center;
+
+  .current-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #d1d1d1;
+
+
+  }
+}
+
+button[mat-flat-button] {
+  width: 60%;
+  min-width: 120px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 4px 16px;
+  background: linear-gradient(45deg, #1976d2, #2196f3);
+  transition: all 0.3s ease;
+
+  mat-icon {
+    margin-right: 6px;
+    font-size: 18px;
+  }
+
+
+
+  &:hover {
+    background: linear-gradient(45deg, #1565c0, #1976d2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  }
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.medicine-card {
+  animation: cardEntrance 0.3s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+  .medicine-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .medicine-image {
+    height: 180px;
+  }
+
+  .medicine-info h3 {
+    font-size: 1rem;
+  }
+
+  .price-info .current-price {
+    font-size: 1.1rem;
+  }
+
+  button[mat-flat-button] {
+    min-width: 100px;
+    padding: 4px 12px;
+  }
+}
+
+
+
+
+
 @media (max-width: 768px) {
   .search-container {
     padding: 0.5rem;
@@ -491,7 +540,6 @@ $success-color: #22c55e;
   }
 }
 
-// Material Overrides
 ::ng-deep {
   .mat-mdc-form-field {
     .mat-mdc-text-field-wrapper {
@@ -513,5 +561,143 @@ $success-color: #22c55e;
         border-color: rgba(255, 255, 255, 0.3) !important;
       }
     }
+  }
+}
+
+
+.suggestions {
+  @include glass-effect;
+  padding: 1.25rem;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+
+  .suggestion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: $text-primary;
+
+    mat-icon {
+      color: $primary-color;
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+    }
+
+    span {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+
+  .suggestion-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+
+
+
+.empty-state {
+  @include glass-effect;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 600px;
+
+  h3 {
+    color: $text-primary;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
+
+  .popular-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+}
+
+.pill-button {
+  background: rgba($glass-background, 0.3);
+  border: 1px solid $glass-border;
+  color: $text-primary;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-height: 36px;
+
+  &:hover {
+    background: rgba($primary-color, 0.2);
+    border-color: rgba($primary-color, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .suggestions,
+  .empty-state {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .suggestion-pills,
+  .popular-pills {
+    gap: 0.5rem;
+  }
+
+  .pill-button {
+    padding: 0.4rem 0.875rem;
+    font-size: 0.8125rem;
   }
 }

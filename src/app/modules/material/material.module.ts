@@ -18,6 +18,9 @@ import {MatRadioModule} from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatChipsModule } from '@angular/material/chips';
 
 
 
@@ -46,8 +49,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCheckboxModule,
     MatDividerModule,
     MatInputModule,
-    MatProgressSpinnerModule
-
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatTabsModule,
+    MatChipsModule
   ],
 })
 export class MaterialModule { }

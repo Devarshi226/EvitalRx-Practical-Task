@@ -1,18 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { EvitalApiService } from 'src/app/services/evitalrx/evital-api.service';
+import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
+import { ViewDetailsComponent } from '../view-details/view-details.component';
 
-interface Medicine {
-  id: number;
-  medicine_name: string;
-  manufacturer_name: string;
-  packing_size: string;
-  price: number;
-  available_for_patient: string;
-  description?: string;
-  image?: string;
-}
 
 @Component({
   selector: 'app-search',
@@ -20,6 +14,7 @@ interface Medicine {
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+
   @ViewChild('searchInput') searchInput!: ElementRef;
   @ViewChild('filterDrawer') filterDrawer: any;
 
@@ -33,7 +28,6 @@ export class SearchComponent implements OnInit {
   showSuggestions: boolean = false;
   isLoading: boolean = false;
 
-  // Filters
   categories: string[] = [
     'All Medicines',
     'Prescription Drugs',
@@ -48,54 +42,36 @@ export class SearchComponent implements OnInit {
   selectedCategories: string[] = [];
   priceRange: [number, number] = [0, 10000];
 
+
   filters = {
     inStock: true,
     prescription: false,
     discount: ''
   };
 
-  // Popular medicines
-  mostSearchedMedicines: string[] = [
-    'Dolo 650',
-    'Crocin',
-    'Vitamin D3',
-    'Paracetamol',
-    'B Complex',
-    'Azithromycin'
-  ];
-
-  // Results
-  dataSource: Medicine[] = [];
-  private originalDataSource: Medicine[] = [];
+  mostSearchedMedicines = ['Paracetamol', 'Dolo', 'Beta', 'Zifi', 'Thyrox', 'Ltk'];
+  cartArray: any[] = [];
+  dataSource: any[] = [];
+  dataExistesinCart: boolean = false;
 
   constructor(
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private medicineApi: EvitalApiService,
+    private toster : ToastrService,
+    private sharedDataService: ShareddataService
+
   ) {
-    // Setup search debounce
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(searchTerm => {
-      this.performSearch(searchTerm);
     });
   }
 
   ngOnInit(): void {
-    // Initialize with sample data
-    this.originalDataSource = [
-      {
-        id: 1,
-        medicine_name: 'Dolo 650',
-        manufacturer_name: 'Micro Labs Ltd',
-        packing_size: '15 Tablets',
-        price: 30.90,
-        available_for_patient: 'Yes',
-        description: 'Paracetamol 650mg tablet',
-        image: 'assets/medicines/dolo.jpg'
-      },
-      // Add more sample medicines
-    ];
+
+
   }
 
   ngAfterViewInit(): void {
@@ -110,39 +86,39 @@ export class SearchComponent implements OnInit {
     const searchTerm = event.target.value;
     this.searchQuery = searchTerm;
     this.searchSubject.next(searchTerm);
+    console.log('Search query:', searchTerm);
+
+    if (searchTerm.length > 2) {
+       this.selectedMedicine = searchTerm;
+      this.getMedicinelists(searchTerm);
+    } 
   }
 
-  private performSearch(searchTerm: string): void {
-    this.isLoading = true;
-    const term = searchTerm.toLowerCase().trim();
 
-    if (!term) {
-      this.dataSource = [];
-      this.suggestions = null;
-      this.isLoading = false;
-      return;
-    }
+  getMedicinelists(medicinename:any): void {
+    this.medicineApi.getMedicinelist(medicinename).subscribe({
+  next: (res) => {
+    const data = res.data;
+    const Suggestions = data.did_you_mean_result;
+if(Suggestions.length > 0){
+this.suggestions = Suggestions[0].medicine_name;
+this.dataSource = [];
+}else{
+    this.dataSource = res.data.result;
 
-    // Simulate API call
-    setTimeout(() => {
-      if (term === 'dol') {
-        this.suggestions = 'Dolo';
-        this.dataSource = [];
-      } else {
-        this.dataSource = this.originalDataSource.filter(medicine =>
-          medicine.medicine_name.toLowerCase().includes(term) ||
-          medicine.manufacturer_name.toLowerCase().includes(term)
-        );
-        this.suggestions = null;
-      }
-      this.isLoading = false;
-    }, 500);
+}
+  },
+  error: (err) => {
+  }
+});
+
   }
 
-  buttonSearch(medicine: string): void {
+
+  buttonSearch(medicine: any): void {
     this.searchQuery = medicine;
     this.selectedMedicine = medicine;
-    this.performSearch(medicine);
+    this.getMedicinelists(medicine);
   }
 
   clearSearch(): void {
@@ -155,77 +131,61 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  toggleCategory(event: any): void {
-    if (event.source.selected) {
-      this.selectedCategories = event.source.value;
-    }
-    this.applyFilters();
+
+  openDialog(medicine: any): void {
+    this.dialog.open(ViewDetailsComponent, {
+      width: '90%',
+      maxWidth: '1000px',
+      data: medicine,
+      panelClass: 'custom-dialog-container',
+      autoFocus: false,
+      backdropClass: 'dark-backdrop'
+    });
   }
 
-  onSortChange(): void {
-    this.sortMedicines();
-  }
+  AddtoCart(medicine: any): void {
 
-  private sortMedicines(): void {
-    switch (this.sortOption) {
-      case 'priceAsc':
-        this.dataSource.sort((a, b) => a.price - b.price);
-        break;
-      case 'priceDesc':
-        this.dataSource.sort((a, b) => b.price - a.price);
-        break;
-      case 'name':
-        this.dataSource.sort((a, b) =>
-          a.medicine_name.localeCompare(b.medicine_name));
-        break;
-    }
-  }
+    const medicineIds = [medicine.medicine_id];
+    const id = JSON.stringify(medicineIds);
+    const availableForPatient = medicine.available_for_patient?.toLowerCase() === 'yes';
 
-  resetFilters(): void {
-    this.filters = {
-      inStock: true,
-      prescription: false,
-      discount: ''
-    };
-    this.priceRange = [0, 10000];
-    this.selectedCategories = [];
-    this.applyFilters();
-  }
-
-  applyFilters(): void {
-    let filteredData = [...this.originalDataSource];
-
-    // Apply category filter
-    if (this.selectedCategories.length > 0 &&
-        !this.selectedCategories.includes('All Medicines')) {
-      // Implement category filtering logic
+    const storedCartData = localStorage.getItem('cartCheckoutResponse');
+    if (storedCartData) {
+      this.cartArray = JSON.parse(storedCartData);
     }
 
-    // Apply price range
-    filteredData = filteredData.filter(medicine =>
-      medicine.price >= this.priceRange[0] &&
-      medicine.price <= this.priceRange[1]
-    );
+    this.medicineApi.getMedicineInfo(id).subscribe({
+      next: (res) => {
+if(res.data.length === 0){
 
-    // Apply availability filter
-    if (this.filters.inStock) {
-      filteredData = filteredData.filter(medicine =>
-        medicine.available_for_patient === 'Yes'
-      );
-    }
+  this.toster.error('No data for available');
+return
+}
+        if (Array.isArray(this.cartArray)) {
+           this.dataExistesinCart = this.cartArray.some((item) =>
+            item.data[0]?.id === res.data[0]?.id
+          );
+        } else {
+          this.cartArray = [];
+          }
 
-    this.dataSource = filteredData;
-    this.sortMedicines();
-    this.filterDrawer?.close();
-  }
+        if (!this.dataExistesinCart) {
+          this.cartArray.push({ ...res, quantity: 1 });
+        }
+        if (availableForPatient  && !this.dataExistesinCart) {
+          this.toster.success('Added to cart');
+          this.sharedDataService.updateCartData(this.cartArray);
+        } else if(!availableForPatient){
+          this.cartArray = this.cartArray.filter((item) => item.data[0]?.id !== res.id);
+          this.toster.error('Not available for patient');
+        }else {
+          this.toster.info('Already in cart');
+        }
+      },
+      error: (err) => {
+        this.toster.error('Failed to add to cart. Please try again.');
+      },
+    });
 
-  openDialog(medicine: Medicine): void {
-    // Implement dialog logic to show medicine details
-    console.log('Opening dialog for:', medicine);
-  }
-
-  AddtoCart(medicine: Medicine): void {
-    // Implement add to cart logic
-    console.log('Adding to cart:', medicine);
   }
 }

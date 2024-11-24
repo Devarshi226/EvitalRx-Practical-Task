@@ -1,6 +1,4 @@
-/* cart.component.scss */
 
-// Variables
 $primary-color: #6366f1;
 $secondary-color: #4f46e5;
 $background-dark: #0f172a;
@@ -11,7 +9,6 @@ $glass-border: rgba(255, 255, 255, 0.1);
 $error-color: #ef4444;
 $success-color: #22c55e;
 
-// Mixins
 @mixin glass-effect {
   background: $glass-background;
   backdrop-filter: blur(12px);
@@ -32,11 +29,9 @@ $success-color: #22c55e;
   justify-content: space-between;
 }
 
-// Main Container
 .cart-container {
   min-height: 100vh;
   padding: 2rem;
-  // background: linear-gradient(135deg, $background-dark, darken($background-dark, 5%));
   color: $text-primary;
 
   &::before {
@@ -53,7 +48,6 @@ $success-color: #22c55e;
   }
 }
 
-// Header
 .cart-header {
   max-width: 1400px;
   margin: 0 auto 2rem;
@@ -77,7 +71,6 @@ $success-color: #22c55e;
   }
 }
 
-// Grid Layout
 .cart-grid {
   max-width: 1400px;
   margin: 0 auto;
@@ -90,7 +83,6 @@ $success-color: #22c55e;
   }
 }
 
-// Glass Cards
 .glass-card {
   @include glass-effect;
   border-radius: 1rem;
@@ -98,7 +90,6 @@ $success-color: #22c55e;
   height: fit-content;
 }
 
-// Cart Items Section
 .cart-items {
   .cart-section-header {
     @include flex-between;
@@ -124,7 +115,6 @@ $success-color: #22c55e;
   }
 }
 
-// Cart Item
 .cart-item {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -213,7 +203,6 @@ $success-color: #22c55e;
   }
 }
 
-// Order Summary
 .order-summary {
   h2 {
     font-size: 1.5rem;
@@ -311,7 +300,6 @@ $success-color: #22c55e;
   }
 }
 
-// Animations
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -327,7 +315,6 @@ $success-color: #22c55e;
   animation: fadeIn 0.3s ease forwards;
 }
 
-// Responsive Design
 @media (max-width: 768px) {
   .cart-container {
     padding: 1rem;

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FirebaseAuthService } from '../../../services/authentication/firebase-auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-signup',
@@ -14,7 +16,9 @@ export class SignupComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private auth: FirebaseAuthService,
+    private totster : ToastrService
   ) {
     this.registerForm = this.fb.group({
       username: ['', [
@@ -42,16 +46,14 @@ export class SignupComponent {
     if (this.registerForm.valid) {
       try {
         this.isLoading = true;
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1500));
-        // Add your registration logic here
-        console.log('Form values:', this.registerForm.value);
-        // After successful registration, navigate to login
-        // this.router.navigate(['/login']);
+        await this.auth.register(this.registerForm.value);
+        this.registerForm.reset();
+        this.router.navigate(['/auth/login']);
       } catch (error) {
         console.error('Registration error:', error);
-        // Handle error (show message, etc.)
       } finally {
+        this.totster.success('Registration successful');
         this.isLoading = false;
       }
     } else {

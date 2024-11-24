@@ -1,17 +1,9 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
 
 
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  category?: string;
-  tax?: number;
-}
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -21,24 +13,14 @@ export class CartComponent {
   checkoutForm: FormGroup;
   tax: number = 0.0;
   total: number = 0.0;
-  cartItems: CartItem[] = [
-    {
-      id: 1,
-      name: 'Medicine 1',
-      price: 29.99,
-      quantity: 2,
-      image: 'assets/medicine-1.jpg',
-      category: 'Medicine',
-      tax: 2.99
-    },
-    // Add more items as needed
-  ];
+  cartItems: any[] = [];
+  finaldata: any[] = [];
 
   get subtotal(): number {
     return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder , private sharedData: ShareddataService) {
     this.checkoutForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: [''],
@@ -55,12 +37,31 @@ export class CartComponent {
   }
 
   ngOnInit(): void {
-    // You can load saved user information here if needed
+    this.getCartData();
+  }
+
+
+  getCartData(){
+    this.sharedData.cartData$.subscribe((element) => {
+      console.log(element);
+      this.cartItems = element;
+
+      this.cartItems.forEach((element) => {
+        this.finaldata.push({ id : element.data[0].id ,totalprice: element.data[0].mrp });
+
+      });
+      this.sharedData.updateSubtotal(this.finaldata);
+
+  });
+
+  }
+
+  clearCart(){
+    this.sharedData.clearCartData();
   }
 
   placeOrder(): void {
     if (this.checkoutForm.valid) {
-      // Handle order submission
       console.log('Order details:', {
         formData: this.checkoutForm.value,
         items: this.cartItems,

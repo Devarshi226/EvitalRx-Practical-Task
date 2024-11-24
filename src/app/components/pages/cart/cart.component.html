@@ -1,4 +1,3 @@
-<!-- cart.component.html -->
 <div class="cart-container">
   <div class="cart-header">
     <h1>Shopping Cart</h1>
@@ -8,23 +7,24 @@
   </div>
 
   <div class="cart-grid">
-    <!-- Left side - Cart Items -->
     <div class="cart-items glass-card">
       <div class="cart-section-header">
         <h2>Cart Items ({{cartItems.length}})</h2>
-        <button class="clear-cart">Clear Cart</button>
+        <button class="clear-cart" (click)="clearCart()">Clear Cart</button>
       </div>
 
       <div class="cart-items-list">
         <div class="cart-item" *ngFor="let item of cartItems">
           <div class="item-image">
-            <img [src]="item.image" [alt]="item.name">
+            <img [src]="item.data[0].medicine_image" [alt]="item.name">
           </div>
+
 
           <div class="item-details">
             <div class="item-info">
-              <h3>{{item.name}}</h3>
-              <p class="item-category">{{item.category}}</p>
+              <h3>{{item.data[0].medicine_name}}</h3>
+              <p class="item-category">{{item.data[0].medicine_category
+              }}</p>
             </div>
 
             <div class="item-price-qty">
@@ -33,7 +33,7 @@
                 <span>{{item.quantity}}</span>
                 <button>+</button>
               </div>
-              <p class="item-price">${{item.price * item.quantity | number:'1.2-2'}}</p>
+              <p class="item-price">{{item.data[0].mrp * item.quantity | currency : "INR" : "symbol"  }}</p>
             </div>
           </div>
 
@@ -44,7 +44,6 @@
       </div>
     </div>
 
-    <!-- Right side - Order Summary -->
     <div class="order-summary glass-card">
       <h2>Order Summary</h2>
 
