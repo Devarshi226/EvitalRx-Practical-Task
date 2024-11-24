@@ -1,12 +1,12 @@
-<div class="login-container">
-  <div class="login-header">
+<div class="signup-container">
+  <div class="signup-header">
     <h1>Create Account</h1>
-    <div class="login-breadcrumb">
+    <div class="signup-breadcrumb">
       <span>Home</span> / <span>Register</span>
     </div>
   </div>
 
-  <div class="login-card glass-card">
+  <div class="signup-card glass-card">
     <h2>Sign Up</h2>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline" class="password-field-outline">
@@ -64,7 +64,7 @@
       </div>
 
       <button mat-flat-button color="primary" type="submit"
-              class="login-btn" [disabled]="registerForm.invalid || isLoading">
+              class="signup-btn" [disabled]="registerForm.invalid || isLoading">
         <span *ngIf="!isLoading">Create Account</span>
         <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
       </button>
@@ -73,7 +73,7 @@
         Already have an account? <a routerLink="/auth/login">Sign In</a>
       </div>
 
-      <div class="social-login">
+      <div class="social-signup">
         <p>Or sign up with</p>
         <div class="social-buttons">
           <button mat-mini-fab class="social-btn google">

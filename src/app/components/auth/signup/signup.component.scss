@@ -73,7 +73,7 @@ $success-color: #22c55e;
   }
 }
 
-.login-container {
+.signup-container {
   min-height: 100vh;
   padding: 2rem;
   color: $text-primary;
@@ -118,7 +118,7 @@ $success-color: #22c55e;
 
 
 
-.login-header {
+.signup-header {
   text-align: center;
   margin-bottom: 2rem;
 
@@ -131,7 +131,7 @@ $success-color: #22c55e;
     -webkit-text-fill-color: transparent;
   }
 
-  .login-breadcrumb {
+  .signup-breadcrumb {
     color: $text-secondary;
     font-size: 0.875rem;
 
@@ -141,7 +141,7 @@ $success-color: #22c55e;
   }
 }
 
-.login-card {
+.signup-card {
   @include glass-effect;
   border-radius: 1rem;
   padding: 2rem;
@@ -239,7 +239,7 @@ $success-color: #22c55e;
   }
 }
 
-.login-btn {
+.signup-btn {
   width: 100%;
   padding: 1rem;
   background: linear-gradient(to right, $primary-color, $secondary-color) !important;
@@ -284,7 +284,7 @@ $success-color: #22c55e;
   }
 }
 
-.social-login {
+.social-signup {
   text-align: center;
 
   p {
@@ -381,18 +381,18 @@ $success-color: #22c55e;
   margin-top: 0.25rem;
 }
 
-.login-card {
+.signup-card {
   min-height: 600px;
 }
 
 
 
 @media (max-width: 768px) {
-  .login-container {
+  .signup-container {
     padding: 1rem;
   }
 
-  .login-card {
+  .signup-card {
     padding: 1.5rem;
   }
 }
