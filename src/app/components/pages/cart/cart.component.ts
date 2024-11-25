@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
+import { PatientFormComponent } from '../add-patient-form/add-patient-form.component';
+import { Router } from '@angular/router';
+import { EvitalApiService } from 'src/app/services/evitalrx/evital-api.service';
 
 
 
@@ -10,63 +14,91 @@ import { ShareddataService } from 'src/app/services/shareddata/shareddata.servic
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent {
-  checkoutForm: FormGroup;
   tax: number = 0.0;
   total: number = 0.0;
   cartItems: any[] = [];
   finaldata: any[] = [];
+  productPrice: any[] = [];
+  item: any[] = [];
 
   get subtotal(): number {
-    return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    return this.productPrice.reduce((sum, item) => sum + item.totalprice, 0);
   }
 
-  constructor(private fb: FormBuilder , private sharedData: ShareddataService) {
-    this.checkoutForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: [''],
-      company: [''],
-      address: ['', Validators.required],
-      apartment: [''],
-      city: ['', Validators.required],
-      postalCode: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      email: ['', [Validators.required, Validators.email]],
-      saveInfo: [false],
-      paymentMethod: ['card', Validators.required]
-    });
+  constructor(private fb: FormBuilder, private sharedData: ShareddataService, private dialog: MatDialog, private router: Router, private medicineService: EvitalApiService) {
+
   }
 
   ngOnInit(): void {
     this.getCartData();
   }
 
-
-  getCartData(){
+  getCartData() {
     this.sharedData.cartData$.subscribe((element) => {
-      console.log(element);
       this.cartItems = element;
-
-      this.cartItems.forEach((element) => {
-        this.finaldata.push({ id : element.data[0].id ,totalprice: element.data[0].mrp });
-
-      });
-      this.sharedData.updateSubtotal(this.finaldata);
-
-  });
-
+      this.productPrice = this.cartItems.map((item) => ({
+        id: item.data[0].id,
+        totalprice: item.data[0].mrp * (item.quantity || 1)
+      }));
+      this.updateTotalAndTax();
+    });
   }
 
-  clearCart(){
+  clearCart() {
     this.sharedData.clearCartData();
+    this.productPrice = [];
+    this.updateTotalAndTax();
+  }
+
+  quantityChange(item: any, change: number) {
+    const updatedQuantity = (item.quantity || 1) + change;
+    if (updatedQuantity < 1) return;
+    item.quantity = updatedQuantity;
+
+    const productIndex = this.productPrice.findIndex((product) => product.id === item.data[0].id);
+    if (productIndex !== -1) {
+      this.productPrice[productIndex].totalprice = item.data[0].mrp * updatedQuantity;
+    }
+
+    this.sharedData.updateCartData(this.cartItems);
+    this.sharedData.updateSubtotal(this.productPrice);
+    this.updateTotalAndTax();
+  }
+
+  removeItem(itemId: number) {
+    this.cartItems = this.cartItems.filter((item) => item.data[0].id !== itemId);
+    this.productPrice = this.productPrice.filter((product) => product.id !== itemId);
+    this.updateTotalAndTax();
+  }
+
+  updateTotalAndTax() {
+    this.tax = this.subtotal * 0.18;
+    this.total = this.subtotal + this.tax;
   }
 
   placeOrder(): void {
-    if (this.checkoutForm.valid) {
-      console.log('Order details:', {
-        formData: this.checkoutForm.value,
-        items: this.cartItems,
-        total: this.subtotal
-      });
-    }
+debugger
+
+      this.cartItems.map(ele => {
+        let item = {
+         quantity: ele.quantity,
+         medicine_id: ele.data[0].id
+       }
+       this.item.push(item);
+     })
+
+     let data = {
+       latitude: 12.970612,
+       longitude: 77.6382433,
+       distance: 5,
+       items: JSON.stringify(this.item)
+     }
+
+     this.medicineService.checkout(data).subscribe(res => {
+       const data = res ;
+       this.sharedData.sendCartCheckoutResponse(data);
+       this.router.navigate(['/pages/checkout']);
+   })
+
   }
 }

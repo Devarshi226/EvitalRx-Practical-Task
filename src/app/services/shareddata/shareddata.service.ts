@@ -49,6 +49,8 @@ export class ShareddataService {
     this.cartDataSubject.next(storedCartData);
   }
 
+
+
   // ** Patient ID **
   private patientIdSubject = new BehaviorSubject<any>(this.loadFromLocalStorage(this.CART_CHEKOUT_KEY, null));
   patientId$ = this.patientIdSubject.asObservable();
@@ -107,4 +109,41 @@ export class ShareddataService {
   private removeFromLocalStorage(key: string): void {
     localStorage.removeItem(key);
   }
+
+
+
+
+  private cartCheckoutResponse = new BehaviorSubject<any[]>(this.getStoredCartData());
+  public cartCheckoutResponse$ = this.cartCheckoutResponse.asObservable();
+
+  sendCartCheckoutResponse(response: any[]): void {
+    this.cartCheckoutResponse.next(response);
+    this.saveCartData(response);
+  }
+
+  clearCartCheckoutResponse() {
+    this.cartCheckoutResponse.next([]);
+    this.clearStoredCartData();
+  }
+
+  saveCartData(data: any[]): void {
+    localStorage.setItem('cartCheckoutResponse', JSON.stringify(data));
+  }
+
+  private clearStoredCartData(): void {
+    localStorage.removeItem('cartCheckoutResponse');
+  }
+
+  private getStoredCartData(): any[] {
+    const storedData = localStorage.getItem('cartCheckoutResponse');
+    try {
+      return storedData ? JSON.parse(storedData) : [];
+    } catch (error) {
+      // console.error('Error parsing cartCheckoutResponse from localStorage:', error);
+      localStorage.removeItem('cartCheckoutResponse');
+      return [];
+    }
+  }
+
+
 }

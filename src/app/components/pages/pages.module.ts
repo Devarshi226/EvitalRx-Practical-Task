@@ -9,10 +9,13 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderConfirmationComponent } from './order-confirmation/order-confirmation.component';
 import { RecentOrdersComponent } from './recent-orders/recent-orders.component';
-import { AddPatientFormComponent } from './forms/add-patient-form/add-patient-form.component';
 import { SearchComponent } from './search/search.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { PatientFormComponent } from './add-patient-form/add-patient-form.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MaterialModule } from 'src/app/modules/material/material.module';
 
 
 @NgModule({
@@ -24,15 +27,17 @@ import { MatIconModule } from '@angular/material/icon';
     CheckoutComponent,
     OrderConfirmationComponent,
     RecentOrdersComponent,
-    AddPatientFormComponent,
-    SearchComponent
+    SearchComponent,
+    PatientFormComponent
   ],
   imports: [
     CommonModule,
     PagesRoutingModule,
     ReactiveFormsModule,
+    MaterialModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
+
 
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

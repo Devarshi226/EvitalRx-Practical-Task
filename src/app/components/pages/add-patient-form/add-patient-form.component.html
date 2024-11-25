@@ -1,0 +1,131 @@
+<div class="patient-dialog">
+  <div class="dialog-header">
+    <h2>Add New Patient</h2>
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-section">
+          <h3>Personal Information</h3>
+          <div class="input-group">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="first_name">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="f['first_name'].errors">
+                {{getErrorMessage('first_name')}}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="last_name">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="f['last_name'].errors">
+                {{getErrorMessage('last_name')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="input-group">
+            <mat-form-field appearance="outline">
+              <mat-label>Mobile Number</mat-label>
+              <input matInput formControlName="mobile">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="f['mobile'].errors">
+                {{getErrorMessage('mobile')}}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Zipcode</mat-label>
+              <input matInput formControlName="zipcode">
+              <mat-icon matSuffix>location_on</mat-icon>
+              <mat-error *ngIf="f['zipcode'].errors">
+                {{getErrorMessage('zipcode')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Medical Information</h3>
+          <div class="input-group">
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                formControlName="dob"
+                [max]="maxDate">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="f['dob']?.errors">
+                {{getErrorMessage('dob')}}
+              </mat-error>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline">
+              <mat-label>Blood Group</mat-label>
+              <mat-select formControlName="blood_group">
+                <mat-option *ngFor="let group of bloodGroups" [value]="group">
+                  {{group}}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>bloodtype</mat-icon>
+              <mat-error *ngIf="f['blood_group'].errors">
+                {{getErrorMessage('blood_group')}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="gender-section">
+            <h3 class="gender-label">Gender</h3>
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option [value]="['male']">
+                  <div class="option-content">
+                    <span>Male</span>
+                  </div>
+                </mat-option>
+                <mat-option [value]="['female']">
+                  <div class="option-content">
+                    <span>Female</span>
+                  </div>
+                </mat-option>
+                <mat-option [value]="'other'">
+                  <div class="option-content">
+                    <span>Other</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="f['gender'].errors && f['gender'].touched">
+                Please select a gender
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button class="cancel-btn" (click)="onCancel()" [disabled]="isSubmitting">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button mat-flat-button class="submit-btn" (click)="onSubmit()"
+            [disabled]="patientForm.invalid || isSubmitting">
+      <mat-icon *ngIf="!isSubmitting">person_add</mat-icon>
+      <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+      {{isSubmitting ? 'Adding Patient...' : 'Add Patient'}}
+    </button>
+  </mat-dialog-actions>
+</div>

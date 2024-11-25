@@ -29,6 +29,9 @@ $success-color: #22c55e;
   justify-content: space-between;
 }
 
+
+
+
 .cart-container {
   min-height: 100vh;
   padding: 2rem;
@@ -169,8 +172,8 @@ $success-color: #22c55e;
 
         button {
           @include flex-center;
-          width: 28px;
-          height: 28px;
+          width: 33px;
+    height: 33px;
           border-radius: 50%;
           background: rgba(255, 255, 255, 0.1);
           transition: all 0.3s ease;
@@ -178,6 +181,11 @@ $success-color: #22c55e;
           &:hover {
             background: $primary-color;
           }
+        }
+
+        mat-icon{
+          font-size: 1.0rem;
+          height: 16px;
         }
 
         span {
@@ -214,7 +222,6 @@ $success-color: #22c55e;
     .summary-row {
       @include flex-between;
       padding: 1rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
       &:last-of-type {
         border-bottom: none;
@@ -300,6 +307,9 @@ $success-color: #22c55e;
   }
 }
 
+
+
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -314,6 +324,9 @@ $success-color: #22c55e;
 .cart-item {
   animation: fadeIn 0.3s ease forwards;
 }
+
+
+
 
 @media (max-width: 768px) {
   .cart-container {
