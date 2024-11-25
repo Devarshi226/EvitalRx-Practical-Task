@@ -1,0 +1,70 @@
+<div class="confirmation-dialog">
+  <div mat-dialog-title class="modal-header">
+    <div class="success-icon">
+      <mat-icon>check_circle_outline</mat-icon>
+    </div>
+    <h2>Order Confirmed</h2>
+  </div>
+
+  <div mat-dialog-content>
+    <div class="modal-body">
+      <h4>Thank you, {{data.patientName}}!</h4>
+      <p class="subtitle">{{data.data.thankyou_msg_second}}</p>
+
+      <div class="summary">
+        <div class="section-header">
+          <h5>Order Summary</h5>
+          <span class="pill">Confirmed</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="summary-details">
+          <div class="summary-item">
+            <span class="label">Order ID</span>
+            <span class="value">{{data.data.order_id}}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Order Number</span>
+            <span class="value">{{data.data.order_number}}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Pharmacy Name</span>
+            <span class="value">{{data.data.pharmacy_name}}</span>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="summary-item">
+            <span class="label">Delivery Type</span>
+            <span class="value">{{data.data.delivery_type}}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Delivery Address</span>
+            <span class="value">{{data.data.delivery_address}}</span>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="summary-item">
+            <span class="label">Subtotal</span>
+            <span class="value">₹{{data.data.subtotal | number:'1.2-2'}}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Shipping</span>
+            <span class="value">₹{{data.data.shipping | number:'1.2-2'}}</span>
+          </div>
+          <div class="summary-item total">
+            <span class="label">Total Amount</span>
+            <span class="value">₹{{data.data.total | number:'1.2-2'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="closePopup()">
+      Close
+    </button>
+  </div>
+</div>

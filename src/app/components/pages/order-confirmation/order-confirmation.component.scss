@@ -1,5 +1,5 @@
 .confirmation-dialog {
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
 }
 
@@ -22,7 +22,7 @@
     margin: 0;
     font-size: 1.75rem;
     font-weight: 600;
-    color: #1f2937;
+    color: #7f95b3;
   }
 }
 
@@ -33,7 +33,7 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 500;
-    color: #1f2937;
+    color: #7f95b3;
     text-align: center;
   }
 
@@ -112,7 +112,7 @@
 }
 
 [mat-dialog-actions] {
-  padding: 1.5rem;
+
   margin: 0;
 
   button {

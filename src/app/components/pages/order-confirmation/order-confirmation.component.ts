@@ -24,7 +24,13 @@ export class OrderConfirmationComponent {
   constructor(
     public dialogRef: MatDialogRef<OrderConfirmationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OrderConfirmationData
-  ) {}
+  ) {
+
+
+    dialogRef.addPanelClass('custom-dialog');
+    // dialogRef.disableClose = true;
+    console.log('Data:', data);
+  }
 
   closePopup(): void {
     this.dialogRef.close();

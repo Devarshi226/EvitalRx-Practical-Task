@@ -225,7 +225,8 @@ export class CheckoutComponent implements OnInit {
 
 
   confirmOrderStatusPopUp() {
-    if (this.checkoutForm.valid) {
+    // this.checkoutForm.valid
+    if (true) {
       this.dialog.open(OrderConfirmationComponent, {
         data: {
           patientName: this.checkoutForm.get('patientName')?.value,
@@ -241,7 +242,8 @@ export class CheckoutComponent implements OnInit {
             delivery_type: this.checkoutForm.get('deliveryType')?.value
           }
         },
-        width: '500px',
+        width: '600px',
+        height: 'auto',
         disableClose: true,
         panelClass: 'custom-dialog'
       });

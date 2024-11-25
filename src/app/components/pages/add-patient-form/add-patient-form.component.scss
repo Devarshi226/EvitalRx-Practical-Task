@@ -147,12 +147,15 @@ $success-color: #22c55e;
       }
     }
 
+  ::ng-deep{
     .gender-section {
       margin-top: 1rem;
 
       .gender-label {
         display: block;
-        color: $text-secondary;
+        font-size: 1rem;
+       font-weight: 500;
+        color: #6366f1 !important;
         margin-bottom: 0.75rem;
         font-size: 0.875rem;
       }
@@ -165,18 +168,23 @@ $success-color: #22c55e;
         .mat-mdc-radio-button {
           .mdc-form-field {
             color: $text-primary;
+
+
           }
 
           .mat-mdc-radio-button-content {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: $text-primary !important;
+
           }
 
           .mat-icon {
             font-size: 18px;
             width: 18px;
             height: 18px;
+            color: $text-primary !important;
           }
 
           ::ng-deep {
@@ -203,6 +211,7 @@ $success-color: #22c55e;
         margin-top: 0.5rem;
       }
     }
+  }
   }
 
   mat-dialog-actions {
@@ -289,4 +298,9 @@ $success-color: #22c55e;
       }
     }
   }
+}
+
+
+.mdc-form-field>label {
+  // color: $text-primary;
 }

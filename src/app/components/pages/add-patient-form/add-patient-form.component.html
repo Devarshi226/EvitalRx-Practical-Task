@@ -82,21 +82,34 @@
           </div>
 
           <div class="gender-section">
-            <label class="gender-label">Gender</label>
-            <mat-radio-group formControlName="gender" class="gender-group">
-              <mat-radio-button value="male">
-                <mat-icon>male</mat-icon> Male
-              </mat-radio-button>
-              <mat-radio-button value="female">
-                <mat-icon>female</mat-icon> Female
-              </mat-radio-button>
-              <mat-radio-button value="other">
-                <mat-icon>transgender</mat-icon> Other
-              </mat-radio-button>
-            </mat-radio-group>
-            <mat-error *ngIf="f['gender'].errors && f['gender'].touched" class="gender-error">
-              Please select a gender
-            </mat-error>
+            <h3 class="gender-label">Gender</h3>
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option [value]="['male']">
+                  <div class="option-content">
+                    <mat-icon>male</mat-icon>
+                    <span>Male</span>
+                  </div>
+                </mat-option>
+                <mat-option [value]="['female']">
+                  <div class="option-content">
+                    <mat-icon>female</mat-icon>
+                    <span>Female</span>
+                  </div>
+                </mat-option>
+                <mat-option [value]="'other'">
+                  <div class="option-content">
+                    <mat-icon>transgender</mat-icon>
+                    <span>Other</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="f['gender'].errors && f['gender'].touched">
+                Please select a gender
+              </mat-error>
+            </mat-form-field>
           </div>
         </div>
       </div>
