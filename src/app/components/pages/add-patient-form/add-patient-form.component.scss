@@ -17,6 +17,7 @@ $success-color: #22c55e;
 }
 
 .patient-dialog {
+  margin-top: 5%;
   @include glass-effect;
   color: $text-primary;
   border-radius: 16px;
