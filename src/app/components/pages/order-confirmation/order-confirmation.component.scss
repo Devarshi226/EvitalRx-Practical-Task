@@ -1,0 +1,122 @@
+.confirmation-dialog {
+  max-width: 500px;
+  width: 100%;
+}
+
+.modal-header {
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+
+  .success-icon {
+    margin-bottom: 1rem;
+
+    mat-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      color: #22c55e;
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+}
+
+.modal-body {
+  padding: 0 2rem;
+
+  h4 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #1f2937;
+    text-align: center;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin: 0.5rem 0 2rem;
+  }
+}
+
+.summary {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    h5 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .pill {
+      background: #dcfce7;
+      color: #166534;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+  }
+
+  .summary-details {
+    margin-top: 1rem;
+  }
+
+  mat-divider {
+    margin: 1rem 0;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0.75rem 0;
+
+    .label {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .value {
+      color: #1f2937;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    &.total {
+      margin-top: 1rem;
+
+      .label, .value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1f2937;
+      }
+    }
+  }
+}
+
+[mat-dialog-actions] {
+  padding: 1.5rem;
+  margin: 0;
+
+  button {
+    min-width: 120px;
+    font-weight: 500;
+  }
+}

@@ -67,6 +67,13 @@ $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  padding: 1rem;
+  @include glass-effect;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+  padding: 1rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -112,35 +119,56 @@ $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
   .auto-assign {
     grid-column: 1 / -1;
     margin-top: 1rem;
-    color: $text-primary;
   }
 }
+
+
+
 
 // Material Form Field Overrides
 ::ng-deep {
   .mat-mdc-form-field {
     width: 100%;
 
+
     .mat-mdc-form-field-flex {
-      background: rgba(255, 255, 255, 0.03);
+      @include glass-effect;
     }
 
     .mdc-text-field--outlined {
+      padding-left: 0px;
+    padding-right: 0px;
       --mdc-outlined-text-field-container-color: transparent;
-      --mdc-outlined-text-field-outline-color: #{$glass-border};
-      --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.2);
+      --mdc-outlined-text-field-outline-color: #{$primary};
+      --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.671);
       --mdc-outlined-text-field-focus-outline-color: #{$primary};
     }
 
     .mat-mdc-input-element,
     .mat-mdc-select-value-text {
-      color: $text-primary;
+      padding-left: 20px;
+
+      color: $text-primary !important;
     }
 
+    mat-label {
+      color: $text-primary !important;
+    }
+
+
+
+
+
     .mat-mdc-select-arrow {
+      padding-right: 20px;
       color: $text-secondary;
     }
   }
+}
+
+
+::ng-deep .mat-mdc-checkbox label {
+  color: $text-primary !important;
 }
 
 // Summary Card Styles
@@ -236,3 +264,5 @@ $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
     }
   }
 }
+
+

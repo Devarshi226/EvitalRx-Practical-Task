@@ -102,7 +102,7 @@
               </mat-form-field>
 
               <!-- Auto Assign Checkbox -->
-              <mat-checkbox class="auto-assign" color="primary" formControlName="autoAssign">
+              <mat-checkbox class="auto-assign" color="primary" formControlName="autoAssign" style="color: whitesmoke !important;">
                 Auto-assign to nearest chemist
               </mat-checkbox>
             </form>
@@ -141,7 +141,7 @@
                   Confirm Order
                 </button>
 
-                <a class="return-link" routerLink="/home">
+                <a class="return-link" (click)="backToHome()">
                   <mat-icon>arrow_back</mat-icon>
                   Return to Home
                 </a>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PatientFormComponent } from '../add-patient-form/add-patient-form.component';
 import { Router } from '@angular/router';
+import { OrderConfirmationComponent } from '../order-confirmation/order-confirmation.component';
 
 
 @Component({
@@ -65,8 +66,6 @@ export class CheckoutComponent implements OnInit {
   }
 
   private loadPatients() {
-    // Simulate API call to load patients
-    // In real application, this would be a service call
     this.isLoading = true;
     try {
       this.patients = [
@@ -127,27 +126,28 @@ export class CheckoutComponent implements OnInit {
 
   onAddPatient() {
     const dialogRef = this.dialog.open(PatientFormComponent, {
-      width: '600px',
+      width: '700px',
+      height: '600px',
       disableClose: true,
       data: { mode: 'add' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Simulate adding new patient to the list
+
         const newPatient: any = {
           id: this.patients.length + 1,
           ...result
         };
         this.patients = [...this.patients, newPatient];
 
-        // Select the newly added patient
         this.checkoutForm.patchValue({
           selectedPatient: newPatient.id
         });
       }
     });
   }
+
 
   confirmOrder() {
     if (this.checkoutForm.valid) {
@@ -215,5 +215,36 @@ export class CheckoutComponent implements OnInit {
 
   get showChemistId() {
     return !this.checkoutForm.get('autoAssign')?.value;
+  }
+
+  backToHome(){
+  this.confirmOrderStatusPopUp();
+  }
+
+
+
+
+  confirmOrderStatusPopUp() {
+    if (this.checkoutForm.valid) {
+      this.dialog.open(OrderConfirmationComponent, {
+        data: {
+          patientName: this.checkoutForm.get('patientName')?.value,
+          data: {
+            order_id: 'ORD123456',
+            order_number: 'ON987654',
+            pharmacy_name: 'MedPlus Pharmacy',
+            thankyou_msg_second: 'Your order has been successfully placed and will be processed shortly.',
+            subtotal: this.subtotal,
+            shipping: this.shipping,
+            total: this.total,
+            delivery_address: this.checkoutForm.get('address')?.value,
+            delivery_type: this.checkoutForm.get('deliveryType')?.value
+          }
+        },
+        width: '500px',
+        disableClose: true,
+        panelClass: 'custom-dialog'
+      });
+    }
   }
 }
