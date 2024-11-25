@@ -1,4 +1,3 @@
-// Variables
 $primary: #6366f1;
 $primary-dark: #4f46e5;
 $background: #0f172a;
@@ -8,7 +7,6 @@ $glass-bg: rgba(255, 255, 255, 0.05);
 $glass-border: rgba(255, 255, 255, 0.1);
 $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
 
-// Mixins
 @mixin glass-effect {
   background: $glass-bg;
   backdrop-filter: blur(12px);
@@ -23,7 +21,6 @@ $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
   -webkit-text-fill-color: transparent;
 }
 
-// Main Styles
 .bg-wrapper {
   background-color: $background;
   padding: 2rem;
@@ -125,7 +122,6 @@ $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
 
 
 
-// Material Form Field Overrides
 ::ng-deep {
   .mat-mdc-form-field {
     width: 100%;
@@ -171,7 +167,6 @@ $glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
   color: $text-primary !important;
 }
 
-// Summary Card Styles
 .summary-section {
   position: sticky;
   top: 2rem;

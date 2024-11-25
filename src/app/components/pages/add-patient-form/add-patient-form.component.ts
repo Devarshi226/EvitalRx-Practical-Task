@@ -28,11 +28,16 @@ export class PatientFormComponent implements OnInit {
   ) {
     dialogRef.addPanelClass('custom-dialog-container');
     dialogRef.disableClose = true;
+
+    this.maxDate = new Date();
+    this.maxDate.setFullYear(this.maxDate.getFullYear() - 1);
   }
 
   ngOnInit(): void {
     this.initializeForm();
   }
+
+
 
   private initializeForm(): void {
     this.patientForm = this.fb.group({
@@ -54,13 +59,12 @@ export class PatientFormComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[0-9]{5,6}$')
       ]],
-      dob: [null, [Validators.required]], // Initialize as null for date picker
+      dob: [null, [Validators.required]], 
       gender: ['', [Validators.required]],
       blood_group: ['', [Validators.required]]
     });
   }
 
-  // Getter methods for form controls
   get f() {
     return this.patientForm.controls;
   }
@@ -101,21 +105,20 @@ export class PatientFormComponent implements OnInit {
 
     try {
       this.isSubmitting = true;
-
-      // Format the form data
       const formData = {
         ...this.patientForm.value,
         dob: this.formatDate(this.patientForm.value.dob)
       };
 
-      // Call the service to add patient
       const response = await this.medicineService.addPatient(formData).toPromise();
 
       if (response) {
-        // await this.firestoreService.updatePatientData(response.data.patient_id);
         this.sharedService.updatePatientData(true);
-        this.toastr.success('Patient added successfully');
-        this.dialogRef.close(true);
+        this.medicineService.addPatient(this.patientForm.value).subscribe((response) => {
+          this.firestoreService.addPatientToUserCollection(response.data.patient_id);
+          this.toastr.success('Patient added successfully');
+          this.dialogRef.close(true);
+        });
       }
 
     } catch (error) {
@@ -139,7 +142,6 @@ export class PatientFormComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  // Custom validator to check age is at least 1 year
   private ageValidator(control: any) {
     if (!control.value) return null;
 

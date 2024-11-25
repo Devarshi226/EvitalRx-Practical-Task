@@ -13,7 +13,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       @Inject(MAT_DIALOG_DATA) public data: any
     ) {
       dialogRef.addPanelClass('custom-dialog-container');
-      // dialogRef.disableClose = true;
       console.log('Data:', data);
     }
 

@@ -222,7 +222,6 @@ $success-color: #22c55e;
     .summary-row {
       @include flex-between;
       padding: 1rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
       &:last-of-type {
         border-bottom: none;

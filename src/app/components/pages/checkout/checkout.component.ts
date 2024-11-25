@@ -4,6 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { PatientFormComponent } from '../add-patient-form/add-patient-form.component';
 import { Router } from '@angular/router';
 import { OrderConfirmationComponent } from '../order-confirmation/order-confirmation.component';
+import { FirestoreService } from 'src/app/services/database/firestore.service';
+import { EvitalApiService } from 'src/app/services/evitalrx/evital-api.service';
+import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -14,38 +18,60 @@ import { OrderConfirmationComponent } from '../order-confirmation/order-confirma
 
 export class CheckoutComponent implements OnInit {
   checkoutForm!: FormGroup;
+  checkout: any;
+  item: any[] = [];
   patients: any[] = [];
-  subtotal: number = 2499;
-  shipping: number = 100;
-  total: number = 0;
+  subtotal!: number;
+  shipping!: number ;
+  total: [] = [];
   isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private fireStroreService: FirestoreService,
+    private medicineService: EvitalApiService,
+    private sharedDataService : ShareddataService,
+    private Firestore: FirestoreService,
+    private toast: ToastrService
   ) {
     this.initForm();
-    this.calculateTotal();
+    this.loadPatients();
   }
 
   ngOnInit() {
-    this.loadPatients();
 
-    // Subscribe to form value changes to update patient details
-    this.checkoutForm.get('selectedPatient')?.valueChanges.subscribe(patientId => {
-      if (patientId) {
-        this.loadPatientDetails(patientId);
+    this. getdata()
+    console.log('checkout', this.checkout);
+
+  }
+
+
+
+  getdata() {
+    this.sharedDataService.cartCheckoutResponse$.subscribe((element) => {
+      if (element) {
+        this.checkout = element;
+        this.shipping = this.checkout.data?.shipping_charges;
       } else {
-        this.resetForm();
       }
     });
 
-    // Subscribe to delivery type changes to update shipping
-    this.checkoutForm.get('deliveryType')?.valueChanges.subscribe(type => {
-      this.shipping = type === 'delivery' ? 100 : 0;
-      this.calculateTotal();
+    this.sharedDataService.subtotal$.subscribe((element) => {
+      if (element) {
+
+        this.total = element;
+        const totalPrice = this.total.reduce((sum: number, item: any) => {
+          return sum + (item.totalprice || 0);
+        }, 0);
+
+        this.subtotal = totalPrice;
+      } else {
+      }
+
     });
+
   }
 
   private initForm() {
@@ -61,68 +87,12 @@ export class CheckoutComponent implements OnInit {
       autoAssign: [true],
       chemistId: [''],
       latitude: ['12.970612'],
-      longitude: ['77.6382433']
+      longitude: ['77.6382433'],
+      patientid: ['']
     });
   }
 
-  private loadPatients() {
-    this.isLoading = true;
-    try {
-      this.patients = [
-        {
-          id: 1,
-          name: 'John Doe',
-          mobile: '9876543210',
-          address: '123 Main St',
-          city: 'Mumbai',
-          state: 'Maharashtra',
-          zipcode: '400001'
-        },
-        {
-          id: 2,
-          name: 'Jane Smith',
-          mobile: '9876543211',
-          address: '456 Park Ave',
-          city: 'Bangalore',
-          state: 'Karnataka',
-          zipcode: '560001'
-        }
-      ];
-    } catch (error) {
-      console.error('Error loading patients:', error);
-    } finally {
-      this.isLoading = false;
-    }
-  }
 
-  private loadPatientDetails(patientId: number) {
-    const patient = this.patients.find(p => p.id === patientId);
-    if (patient) {
-      this.checkoutForm.patchValue({
-        patientName: patient.name,
-        mobile: patient.mobile,
-        address: patient.address,
-        city: patient.city,
-        state: patient.state,
-        zipcode: patient.zipcode
-      });
-    }
-  }
-
-  private resetForm() {
-    this.checkoutForm.patchValue({
-      patientName: '',
-      mobile: '',
-      address: '',
-      city: '',
-      state: '',
-      zipcode: ''
-    });
-  }
-
-  private calculateTotal() {
-    this.total = this.subtotal + this.shipping;
-  }
 
   onAddPatient() {
     const dialogRef = this.dialog.open(PatientFormComponent, {
@@ -148,51 +118,74 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  confirmOrder(){
 
-  confirmOrder() {
     if (this.checkoutForm.valid) {
-      this.isLoading = true;
+      this.item = [];
 
-      // Create order payload
-      const orderData = {
-        ...this.checkoutForm.value,
-        orderTotal: this.total,
-        subtotal: this.subtotal,
-        shipping: this.shipping,
-        orderDate: new Date(),
-        status: 'pending'
-      };
+      if (this.checkout?.data?.items?.length) {
 
-      // Simulate API call to submit order
-      try {
-        console.log('Submitting order:', orderData);
-        // Here you would typically make an API call to submit the order
+        this.checkout.data.items.forEach((ele: any) => {
+          if (ele.medicine_id ){
+            const item = {
+              medicine_id: ele.medicine_id,
+              quantity: 1
+            };
 
-        // Simulate successful order submission
-        setTimeout(() => {
-          this.handleOrderSuccess();
-        }, 1500);
-      } catch (error) {
-        console.error('Error submitting order:', error);
-        this.handleOrderError(error);
+            this.item.push(item);
+          }else{
+          }
+
+        });
+
+
+        const data = {
+          items: JSON.stringify(this.item),
+          delivery_type: this.checkoutForm.get('deliveryType')?.value || "delivery",
+          patient_name: this.checkoutForm.get('patientName')?.value,
+          mobile: this.checkoutForm.get('mobile')?.value,
+          address: this.checkoutForm.get('address')?.value,
+          city: this.checkoutForm.get('city')?.value,
+          state: this.checkoutForm.get('state')?.value,
+          zipcode: this.checkoutForm.get('zipcode')?.value,
+          auto_assign: this.checkoutForm.get('autoAssign')?.value || true,
+          chemist_id: this.checkoutForm.get('chemistId')?.value || null,
+          latitude: +this.checkoutForm.get('latitude')?.value || 12.970612,
+          longitude: +this.checkoutForm.get('longitude')?.value || 77.6382433,
+          patient_id: this.checkoutForm.get('patientid')?.value || null
+        };
+
+
+        console.log('data', data);
+
+        this.medicineService.placeOrder(data).subscribe({
+          next: (response) => {
+
+
+            console.log('response', response);
+            this.Firestore.addOrderToUserCollection(response.data?.order_id);
+            this.confirmOrderStatusPopUp(response)
+            this.toast.success('Order placed successfully!');
+            this.checkoutForm.reset({ deliveryType: 'delivery', autoAssign: true });
+            this.item = [];
+
+          },
+          error: (err) => {
+            this.toast.error('Error placing order');}
+        });
+      } else {
       }
     } else {
-      this.markFormGroupTouched(this.checkoutForm);
+      Object.values(this.checkoutForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsTouched();
+        }
+      });
     }
+
   }
 
-  private handleOrderSuccess() {
-    this.isLoading = false;
-    // Here you might want to show a success message
-    // and navigate to an order confirmation page
-    this.router.navigate(['/order-success']);
-  }
 
-  private handleOrderError(error: any) {
-    this.isLoading = false;
-    // Here you might want to show an error message to the user
-    console.error('Order submission failed:', error);
-  }
 
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
@@ -204,43 +197,64 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  // Getter methods for template access
-  get formControls() {
-    return this.checkoutForm.controls;
-  }
-
-  get isDelivery() {
-    return this.checkoutForm.get('deliveryType')?.value === 'delivery';
-  }
-
-  get showChemistId() {
-    return !this.checkoutForm.get('autoAssign')?.value;
-  }
-
   backToHome(){
-  this.confirmOrderStatusPopUp();
+    this.sharedDataService.clearCartData();
+    this.sharedDataService.clearCartCheckoutResponse();
+    this.router.navigate(['/pages/dashboard']);
+
+  }
+
+
+  async loadPatients(): Promise<void> {
+    try {
+      const patientIds = await this.fireStroreService.retrieveUserPatients();
+        const patientPromises = patientIds.map((element: any) =>
+        this.medicineService.viewPatient(element).toPromise()
+      );
+        const patientResponses = await Promise.all(patientPromises);
+
+      this.patients = patientResponses.map((res: any) => ({
+        patient_id: res.data[0].patient_id,
+        patient_name: res.data[0].firstname,
+      }));
+        this.initLoad();
+        console.log("patient", this.patients);
+
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+    }
+  }
+
+
+  onSelectionChange(event: any) {
+    this.sharedDataService.updatePatientId(event.value.patient_id);
+    this.checkoutForm.patchValue({
+      patientid : event.value.patient_id,
+      patientName: event.value.patient_name,
+
+    });
+  }
+
+
+  initLoad(): void {
+    if (this.patients.length > 0) {
+      this.checkoutForm.patchValue({
+        patientName: this.patients[0].patient_name,
+        selectedPatient: this.patients[0],
+        patientid: this.patients[0].patient_id
+      });
+        this.sharedDataService.updatePatientId(this.patients[0].patient_id);
+    }
   }
 
 
 
-
-  confirmOrderStatusPopUp() {
-    // this.checkoutForm.valid
+  confirmOrderStatusPopUp(data:any) {
     if (true) {
       this.dialog.open(OrderConfirmationComponent, {
         data: {
           patientName: this.checkoutForm.get('patientName')?.value,
-          data: {
-            order_id: 'ORD123456',
-            order_number: 'ON987654',
-            pharmacy_name: 'MedPlus Pharmacy',
-            thankyou_msg_second: 'Your order has been successfully placed and will be processed shortly.',
-            subtotal: this.subtotal,
-            shipping: this.shipping,
-            total: this.total,
-            delivery_address: this.checkoutForm.get('address')?.value,
-            delivery_type: this.checkoutForm.get('deliveryType')?.value
-          }
+          data: data
         },
         width: '600px',
         height: 'auto',

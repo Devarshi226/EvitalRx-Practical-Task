@@ -30,6 +30,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.sharedData.cartData$.subscribe((element:any) => {
 
       if (element.length > 0) {
+        console.log('cart items', element.length , element.length.toString());
         this.cartItemsCount = element.length.toString();
       } else if(element.legnth === 0) {
         this.cartItemsCount = '';

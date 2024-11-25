@@ -1,1 +1,91 @@
-<p>recent-orders works!</p>
+<div class="orders-container">
+  <div class="orders-header">
+    <h2>Recent Orders</h2>
+  </div>
+
+  <div class="orders-list">
+    <div class="order-card" *ngFor="let order of recentOrders">
+      <div class="order-header">
+        <div class="order-info">
+          <div class="order-number">
+            <span class="label">Order #{{order.order_number}}</span>
+            <span class="status-pill" [ngStyle]="getStatusStyle(order.status.status)">
+              {{order.status.status | titlecase}}
+            </span>
+          </div>
+          <div class="order-date">
+            Ordered on {{order.order_date | date:'mediumDate'}}
+          </div>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="viewOrderDetails(order.order_id)">
+            <mat-icon>visibility</mat-icon>
+            <span>View Details</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>file_download</mat-icon>
+            <span>Download Invoice</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item *ngIf="order.status.status === 'pending'">
+            <mat-icon color="warn">cancel</mat-icon>
+            <span>Cancel Order</span>
+          </button>
+        </mat-menu>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="order-details">
+        <div class="detail-row">
+          <div class="detail-item">
+            <mat-icon>store</mat-icon>
+            <div class="detail-content">
+              <span class="label">Pharmacy</span>
+              <span class="value">{{order.pharmacy_name}}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <mat-icon>shopping_bag</mat-icon>
+            <div class="detail-content">
+              <span class="label">Items</span>
+              <span class="value">{{order.items}} items</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <mat-icon>payments</mat-icon>
+            <div class="detail-content">
+              <span class="label">Total Amount</span>
+              <span class="value">₹{{order.total_amount | number:'1.2-2'}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="delivery-info">
+          <mat-icon>location_on</mat-icon>
+          <div class="detail-content">
+            <span class="label">Delivery Address</span>
+            <span class="value">{{order.delivery_address}}</span>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="order-actions">
+        <button mat-stroked-button (click)="viewOrderDetails(order.order_id)">
+          View Details
+        </button>
+        <button mat-flat-button color="primary" *ngIf="order.status.status === 'delivered'">
+          Reorder
+        </button>
+        <button mat-flat-button color="warn" *ngIf="order.status.status === 'pending'">
+          Cancel Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

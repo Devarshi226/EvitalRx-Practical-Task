@@ -9,7 +9,6 @@
   <mat-dialog-content class="dialog-content">
     <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
       <div class="form-grid">
-        <!-- Personal Information -->
         <div class="form-section">
           <h3>Personal Information</h3>
           <div class="input-group">
@@ -53,19 +52,23 @@
           </div>
         </div>
 
-        <!-- Medical Information -->
         <div class="form-section">
           <h3>Medical Information</h3>
           <div class="input-group">
             <mat-form-field appearance="outline">
               <mat-label>Date of Birth</mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="dob" [max]="maxDate">
+              <input
+                matInput
+                [matDatepicker]="picker"
+                formControlName="dob"
+                [max]="maxDate">
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
-              <mat-error *ngIf="f['dob'].errors">
+              <mat-error *ngIf="f['dob']?.errors">
                 {{getErrorMessage('dob')}}
               </mat-error>
             </mat-form-field>
+
 
             <mat-form-field appearance="outline">
               <mat-label>Blood Group</mat-label>

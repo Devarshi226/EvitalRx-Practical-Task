@@ -59,18 +59,12 @@
           <span>Subtotal</span>
           <span>{{subtotal | currency : "INR" : "symbol"}}</span>
         </div>
-        <div class="summary-row">
-          <span>Shipping</span>
-          <span>Free</span>
-        </div>
-        <div class="summary-row">
-          <span>Tax (18%)</span>
-          <span>{{tax | currency : "INR" : "symbol"}}</span>
-        </div>
+
+
 
         <div class="summary-total">
           <span>Total</span>
-          <span>{{total | currency : "INR" : "symbol"}}</span>
+          <span>{{subtotal | currency : "INR" : "symbol"}}</span>
         </div>
 
         <button class="checkout-btn" (click)="placeOrder()" [disabled]="!cartItems.length">
