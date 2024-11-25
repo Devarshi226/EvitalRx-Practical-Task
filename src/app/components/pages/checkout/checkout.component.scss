@@ -1,0 +1,263 @@
+$primary: #6366f1;
+$primary-dark: #4f46e5;
+$background: #0f172a;
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$glass-bg: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+
+@mixin glass-effect {
+  background: $glass-bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+  box-shadow: $glass-shadow;
+}
+
+@mixin gradient-text {
+  background: linear-gradient(to right, $primary, $primary-dark);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-wrapper {
+  background-color: $background;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.main-card {
+  @include glass-effect;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.content-wrapper {
+  padding: 2rem;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.billing-section {
+  .title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    @include gradient-text;
+  }
+}
+
+.checkout-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  @include glass-effect;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+  padding: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  .patient-row {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .select-wrapper {
+      flex: 1;
+    }
+
+    .add-patient-btn {
+      height: 56px;
+      background: $primary;
+      color: white;
+
+      &:hover {
+        background: $primary-dark;
+      }
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+  }
+
+  .auto-assign {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+  }
+}
+
+
+
+
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
+
+
+    .mat-mdc-form-field-flex {
+      @include glass-effect;
+    }
+
+    .mdc-text-field--outlined {
+      padding-left: 0px;
+    padding-right: 0px;
+      --mdc-outlined-text-field-container-color: transparent;
+      --mdc-outlined-text-field-outline-color: #{$primary};
+      --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.671);
+      --mdc-outlined-text-field-focus-outline-color: #{$primary};
+    }
+
+    .mat-mdc-input-element,
+    .mat-mdc-select-value-text {
+      padding-left: 20px;
+
+      color: $text-primary !important;
+    }
+
+    mat-label {
+      color: $text-primary !important;
+    }
+
+
+
+
+
+    .mat-mdc-select-arrow {
+      padding-right: 20px;
+      color: $text-secondary;
+    }
+  }
+}
+
+
+::ng-deep .mat-mdc-checkbox label {
+  color: $text-primary !important;
+}
+
+.summary-section {
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-card {
+  @include glass-effect;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  mat-card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid $glass-border;
+
+    mat-card-title {
+      color: $text-primary;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  mat-card-content {
+    padding: 1.5rem;
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: $text-primary;
+      margin: 1rem 0;
+
+      &.total {
+        font-weight: 600;
+      }
+    }
+
+    .divider {
+      height: 1px;
+      background: $glass-border;
+      margin: 1rem 0;
+    }
+  }
+
+  mat-card-actions {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .confirm-btn {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+      background: linear-gradient(to right, $primary, $primary-dark);
+      color: white;
+      transition: all 0.3s ease;
+
+      &:hover:not([disabled]) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba($primary, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
+    .return-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: $text-secondary;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: $primary;
+      }
+
+      mat-icon {
+        font-size: 1.2rem;
+        height: 1.2rem;
+        width: 1.2rem;
+        line-height: 1.2rem;
+      }
+    }
+  }
+}
+
+

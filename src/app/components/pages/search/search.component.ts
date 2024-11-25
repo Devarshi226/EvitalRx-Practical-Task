@@ -91,7 +91,7 @@ export class SearchComponent implements OnInit {
     if (searchTerm.length > 2) {
        this.selectedMedicine = searchTerm;
       this.getMedicinelists(searchTerm);
-    } 
+    }
   }
 
 

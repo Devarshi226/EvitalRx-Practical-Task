@@ -1,3 +1,18 @@
+$glass-bg: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+
+@mixin glass-effect {
+  background: $glass-bg;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid $glass-border;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+}
+
+
+
 .mat-mdc-menu-content {
   margin: 0;
   padding: 8px 0;
@@ -39,9 +54,8 @@
 
 
 .mat-toolbar.mat-primary {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(10px);
-  background-color: rgba(190, 187, 187, 0.295);
+  @include glass-effect;
+
   color: rgb(226, 226, 226);
   position: sticky !important;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);

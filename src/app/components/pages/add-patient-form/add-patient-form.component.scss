@@ -1,0 +1,304 @@
+$primary-color: #6366f1;
+$secondary-color: #4f46e5;
+$background-dark: #0f172a;
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$glass-background: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$error-color: #ef4444;
+$success-color: #22c55e;
+
+@mixin glass-effect {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+}
+
+.patient-dialog {
+  margin-top: 5%;
+  @include glass-effect;
+  color: $text-primary;
+  border-radius: 16px;
+  min-width: 600px;
+
+  .dialog-header {
+    background: rgba(15, 23, 42, 0.95);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $glass-border;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      color: $text-primary;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    button {
+      color: $text-secondary;
+      &:hover {
+        color: $text-primary;
+        background: rgba($primary-color, 0.1);
+      }
+    }
+  }
+
+
+
+  .dialog-content {
+    background: rgba(15, 23, 42, 0.95);
+    padding: 1.5rem !important;
+    margin: 0;
+    max-height: 70vh !important;
+
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .form-section {
+      h3 {
+        color: $primary-color;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid $glass-border;
+      }
+
+      .input-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+
+        input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: $text-primary;
+          &::placeholder {
+            color: $text-primary;
+          }
+        }
+      }
+    }
+
+    ::ng-deep {
+      .mat-mdc-form-field {
+        width: 100%;
+
+        .mat-mdc-form-field-flex {
+          background: rgba($glass-background, 0.3);
+        }
+
+        .mat-mdc-text-field-wrapper {
+          background: transparent;
+        }
+
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: $glass-border !important;
+        }
+
+        .mat-mdc-form-field-label {
+          color: $text-secondary !important;
+        }
+
+        .mat-mdc-input-element,
+        .mat-mdc-select-value-text {
+          color: $text-primary !important;
+        }
+
+        .mat-mdc-select-arrow,
+        .mat-datepicker-toggle {
+          color: $text-secondary;
+        }
+
+        .mat-mdc-form-field-icon-suffix {
+          color: $text-secondary;
+        }
+
+        &.mat-focused {
+          .mdc-notched-outline__leading,
+          .mdc-notched-outline__notch,
+          .mdc-notched-outline__trailing {
+            border-color: $primary-color !important;
+          }
+
+          .mat-mdc-form-field-label {
+            color: $primary-color !important;
+          }
+
+          .mat-mdc-form-field-icon-suffix {
+            color: $primary-color;
+          }
+        }
+      }
+    }
+
+  ::ng-deep{
+    .gender-section {
+      margin-top: 1rem;
+
+      .gender-label {
+        display: block;
+        font-size: 1rem;
+       font-weight: 500;
+        color: #6366f1 !important;
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .gender-group {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+
+        .mat-mdc-radio-button {
+          .mdc-form-field {
+            color: $text-primary;
+
+
+          }
+
+          .mat-mdc-radio-button-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: $text-primary !important;
+
+          }
+
+          .mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            color: $text-primary !important;
+          }
+
+          ::ng-deep {
+            .mdc-radio__outer-circle {
+              border-color: $text-secondary;
+            }
+
+            .mdc-radio__inner-circle {
+              background-color: $primary-color;
+            }
+
+            &.mat-mdc-radio-checked {
+              .mdc-radio__outer-circle {
+                border-color: $primary-color;
+              }
+            }
+          }
+        }
+      }
+
+      .gender-error {
+        color: $error-color;
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+  }
+
+  mat-dialog-actions {
+    background: rgba(15, 23, 42, 0.95);
+    padding: 1rem 1.5rem !important;
+    margin: 0;
+    border-top: 1px solid $glass-border;
+    gap: 1rem;
+
+    .cancel-btn {
+      color: $text-secondary;
+      border: 1px solid $glass-border;
+      padding: 0 1.5rem;
+      height: 36px;
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+
+      &:hover:not(:disabled) {
+        color: $text-primary;
+        background: rgba($primary-color, 0.1);
+        border-color: $primary-color;
+      }
+    }
+
+    .submit-btn {
+      background: linear-gradient(to right, $primary-color, $secondary-color);
+      color: $text-primary;
+      padding: 0 1.5rem;
+      height: 36px;
+      min-width: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+
+      mat-spinner {
+        margin-right: 0.5rem;
+        ::ng-deep circle {
+          stroke: $text-primary;
+        }
+      }
+
+      &:hover:not(:disabled) {
+        box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .patient-dialog {
+    min-width: auto;
+    width: 100%;
+
+    .dialog-content {
+      .form-section {
+        .input-group {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .gender-group {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+
+    mat-dialog-actions {
+      flex-direction: column-reverse;
+      padding: 1rem !important;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+
