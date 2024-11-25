@@ -31,7 +31,7 @@ Experience seamless online medicine ordering with **EvitalRx**, a sophisticated 
 
 ### 1. Authentication
 ![Login](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/login.png)
-![Register]([your-register-image-url](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/createaccount.png))
+![Register](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/createaccount.png)
 ![Forgot Password](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/resetpass.png)
 
 - Email/password authentication
