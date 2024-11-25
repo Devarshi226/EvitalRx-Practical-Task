@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
+import { PatientFormComponent } from '../add-patient-form/add-patient-form.component';
+import { Router } from '@angular/router';
 
 
 
@@ -15,12 +18,13 @@ export class CartComponent {
   total: number = 0.0;
   cartItems: any[] = [];
   finaldata: any[] = [];
+  productPrice: any[] = []; // Holds updated prices for each product
 
   get subtotal(): number {
-    return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    return this.productPrice.reduce((sum, item) => sum + item.totalprice, 0);
   }
 
-  constructor(private fb: FormBuilder , private sharedData: ShareddataService) {
+  constructor(private fb: FormBuilder, private sharedData: ShareddataService, private dialog: MatDialog, private router: Router) {
     this.checkoutForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: [''],
@@ -40,33 +44,63 @@ export class CartComponent {
     this.getCartData();
   }
 
-
-  getCartData(){
+  getCartData() {
     this.sharedData.cartData$.subscribe((element) => {
-      console.log(element);
       this.cartItems = element;
 
-      this.cartItems.forEach((element) => {
-        this.finaldata.push({ id : element.data[0].id ,totalprice: element.data[0].mrp });
-
-      });
-      this.sharedData.updateSubtotal(this.finaldata);
-
-  });
-
+      // Initialize `productPrice` based on cart data
+      this.productPrice = this.cartItems.map((item) => ({
+        id: item.data[0].id,
+        totalprice: item.data[0].mrp * (item.quantity || 1)
+      }));
+      this.updateTotalAndTax();
+    });
   }
 
-  clearCart(){
+  clearCart() {
     this.sharedData.clearCartData();
+    this.productPrice = [];
+    this.updateTotalAndTax();
+  }
+
+  quantityChange(item: any, change: number) {
+    // Update the quantity
+    const updatedQuantity = (item.quantity || 1) + change;
+    if (updatedQuantity < 1) return; // Prevent quantity less than 1
+    item.quantity = updatedQuantity;
+
+    const productIndex = this.productPrice.findIndex((product) => product.id === item.data[0].id);
+    if (productIndex !== -1) {
+      this.productPrice[productIndex].totalprice = item.data[0].mrp * updatedQuantity;
+    }
+
+    this.sharedData.updateCartData(this.cartItems);
+    this.sharedData.updateSubtotal(this.productPrice);
+    this.updateTotalAndTax();
+  }
+
+  removeItem(itemId: number) {
+    this.cartItems = this.cartItems.filter((item) => item.data[0].id !== itemId);
+    this.productPrice = this.productPrice.filter((product) => product.id !== itemId);
+    this.sharedData.updateCartData(this.cartItems);
+    this.updateTotalAndTax();
+  }
+
+  updateTotalAndTax() {
+    this.tax = this.subtotal * 0.18;
+    this.total = this.subtotal + this.tax;
   }
 
   placeOrder(): void {
-    if (this.checkoutForm.valid) {
-      console.log('Order details:', {
-        formData: this.checkoutForm.value,
-        items: this.cartItems,
-        total: this.subtotal
-      });
-    }
+
+    this.router.navigate(['/pages/checkout']);
+
+    // if (this.checkoutForm.valid) {
+    //   console.log('Order details:', {
+    //     formData: this.checkoutForm.value,
+    //     items: this.cartItems,
+    //     total: this.subtotal
+    //   });
+    // }
   }
 }

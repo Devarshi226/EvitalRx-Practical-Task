@@ -29,12 +29,9 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
     this.sharedData.cartData$.subscribe((element:any) => {
 
-      if (Array.isArray(element)) {
-        console.log('element',element);
+      if (element.length > 0) {
         this.cartItemsCount = element.length.toString();
-        console.log('cartItemsCount',this.cartItemsCount);
       } else if(element.legnth === 0) {
-        console.warn('Expected an array from elementSubject$, got:', element);
         this.cartItemsCount = '';
       }
     });
@@ -45,17 +42,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
-  }
-
-  routeThePage(page:string) {
-    if (page === 'home') {
-      this.router.navigate(['/pages/home']);
-    } else if (page === 'past-orders') {
-      this.router.navigate(['/pages/orders']);
-    }
-
-
-
   }
 
   logout(){

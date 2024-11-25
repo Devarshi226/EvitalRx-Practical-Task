@@ -559,6 +559,7 @@ button[mat-flat-button] {
     .mdc-radio {
       .mdc-radio__background {
         border-color: rgba(255, 255, 255, 0.3) !important;
+
       }
     }
   }
@@ -626,11 +627,61 @@ button[mat-flat-button] {
     flex-wrap: wrap;
     gap: 0.75rem;
     justify-content: center;
+
   }
 }
 
+
+mat-chip-option{
+  background: rgba($glass-background, 0.5);
+  border: 1px solid $glass-border;
+  color: $text-primary;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-height: 36px;
+
+  &:hover {
+    background: rgba($primary-color, 0.2);
+    border-color: rgba($primary-color, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+  }
+
+
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+
+
+
 .pill-button {
-  background: rgba($glass-background, 0.3);
+  background: rgba($glass-background, 0.4);
+
   border: 1px solid $glass-border;
   color: $text-primary;
   padding: 0.5rem 1rem;

@@ -48,12 +48,13 @@ import { MatChipsModule } from '@angular/material/chips';
     MatRadioModule,
     MatCheckboxModule,
     MatDividerModule,
-    MatInputModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatTooltipModule,
     MatTabsModule,
-    MatChipsModule
+    MatChipsModule,
+
+
   ],
 })
 export class MaterialModule { }

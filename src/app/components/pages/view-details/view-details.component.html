@@ -9,7 +9,9 @@
   <mat-dialog-content class="dialog-content">
     <div class="medicine-overview">
       <div class="medicine-image">
-        <img [src]="data.medicine_image" [alt]="data.medicine_name">
+        <img [src]="data.thumb_medicine_image || '../../../../assets/medicine data.jpeg'"
+             [alt]="data.medicine_name"
+             (error)="onImageError($event)">
         <div class="rx-badge" *ngIf="data.is_rx_required">
           <mat-icon>assignment</mat-icon>
           Prescription Required
@@ -36,7 +38,7 @@
 
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="details-tabs">
       <mat-tab>
-        <ng-template mat-tab-label>
+        <ng-template mat-tab-label class="table-label">
           <mat-icon class="tab-icon">info</mat-icon>
           Overview
         </ng-template>
@@ -144,11 +146,4 @@
     </mat-tab-group>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-stroked-button (click)="dialogRef.close()">Close</button>
-    <button mat-flat-button color="primary" (click)="addToCart()">
-      <mat-icon>add_shopping_cart</mat-icon>
-      Add to Cart
-    </button>
-  </mat-dialog-actions>
 </div>

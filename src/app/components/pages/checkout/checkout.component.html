@@ -1,0 +1,155 @@
+<div class="min-h-screen bg-wrapper">
+  <div class="container">
+    <!-- Main Card with Glass Effect -->
+    <div class="main-card">
+      <div class="content-wrapper">
+        <div class="grid-layout">
+          <!-- Billing Form Section -->
+          <div class="billing-section">
+            <h2 class="title">Billing Details</h2>
+
+            <form [formGroup]="checkoutForm" class="checkout-form">
+              <!-- Patient Selection Row -->
+              <div class="patient-row">
+                <div class="select-wrapper">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select Patient</mat-label>
+                    <mat-select formControlName="selectedPatient">
+                      <mat-option [value]="''">Select Patient</mat-option>
+                      <mat-option *ngFor="let patient of patients" [value]="patient.id">
+                        {{patient.name}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="checkoutForm.get('selectedPatient')?.hasError('required')">
+                      Please select a patient
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <button mat-raised-button class="add-patient-btn" (click)="onAddPatient()">
+                  <mat-icon>add</mat-icon>
+                  Add Patient
+                </button>
+              </div>
+
+              <!-- Patient Name -->
+              <mat-form-field appearance="outline">
+                <mat-label>Patient Name</mat-label>
+                <input matInput formControlName="patientName" placeholder="Enter patient name">
+                <mat-error *ngIf="checkoutForm.get('patientName')?.hasError('required')">
+                  Patient name is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Mobile -->
+              <mat-form-field appearance="outline">
+                <mat-label>Mobile Number</mat-label>
+                <input matInput formControlName="mobile" placeholder="Enter mobile number">
+                <mat-error *ngIf="checkoutForm.get('mobile')?.hasError('required')">
+                  Mobile number is required
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('mobile')?.hasError('pattern')">
+                  Please enter a valid 10-digit number
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Address -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Address</mat-label>
+                <textarea matInput formControlName="address" rows="2" placeholder="Enter full address"></textarea>
+                <mat-error *ngIf="checkoutForm.get('address')?.hasError('required')">
+                  Address is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- City -->
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" placeholder="Enter city">
+                <mat-error *ngIf="checkoutForm.get('city')?.hasError('required')">
+                  City is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- State -->
+              <mat-form-field appearance="outline">
+                <mat-label>State</mat-label>
+                <input matInput formControlName="state" placeholder="Enter state">
+                <mat-error *ngIf="checkoutForm.get('state')?.hasError('required')">
+                  State is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Zipcode -->
+              <mat-form-field appearance="outline">
+                <mat-label>Zip Code</mat-label>
+                <input matInput formControlName="zipcode" placeholder="Enter zip code">
+                <mat-error *ngIf="checkoutForm.get('zipcode')?.hasError('required')">
+                  Zip code is required
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('zipcode')?.hasError('pattern')">
+                  Please enter a valid 6-digit zip code
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Delivery Type -->
+              <mat-form-field appearance="outline">
+                <mat-label>Delivery Type</mat-label>
+                <mat-select formControlName="deliveryType">
+                  <mat-option value="delivery">Home Delivery</mat-option>
+                  <mat-option value="pickup">Store Pickup</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Auto Assign Checkbox -->
+              <mat-checkbox class="auto-assign" color="primary" formControlName="autoAssign">
+                Auto-assign to nearest chemist
+              </mat-checkbox>
+            </form>
+          </div>
+
+          <!-- Order Summary Card -->
+          <div class="summary-section">
+            <mat-card class="summary-card">
+              <mat-card-header>
+                <mat-card-title>Order Summary</mat-card-title>
+              </mat-card-header>
+
+              <mat-card-content>
+                <div class="summary-item">
+                  <span>Subtotal</span>
+                  <span>₹{{subtotal | number:'1.2-2'}}</span>
+                </div>
+                <div class="divider"></div>
+                <div class="summary-item">
+                  <span>Shipping</span>
+                  <span>₹{{shipping | number:'1.2-2'}}</span>
+                </div>
+                <div class="divider"></div>
+                <div class="summary-item total">
+                  <span>Total</span>
+                  <span>₹{{total | number:'1.2-2'}}</span>
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions>
+                <button
+                  mat-raised-button
+                  class="confirm-btn"
+                  [disabled]="!checkoutForm.valid"
+                  (click)="confirmOrder()">
+                  Confirm Order
+                </button>
+
+                <a class="return-link" routerLink="/home">
+                  <mat-icon>arrow_back</mat-icon>
+                  Return to Home
+                </a>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,7 +13,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       @Inject(MAT_DIALOG_DATA) public data: any
     ) {
       dialogRef.addPanelClass('custom-dialog-container');
-      dialogRef.disableClose = true;
+      // dialogRef.disableClose = true;
+      console.log('Data:', data);
+    }
+
+
+    onImageError(event: any): void {
+      event.target.src = 'assets/images/default-medicine.png';
     }
 
     addToCart(): void {
