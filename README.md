@@ -1,27 +1,215 @@
-# EvitalRxPracticalTask
+# EvitalRx - Modern Medicine Ordering Platform 💊
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.11.
+[EvitalRx Demo](https://evitalexclonedemo.netlify.app/) | [Source Code](https://github.com/yourusername/evitalrx)
 
-## Development server
+Experience seamless online medicine ordering with **EvitalRx**, a sophisticated platform built using Angular and Firebase. Our dual-backend architecture combines a dedicated EvitalRx API for product management with Firebase for robust authentication and data persistence.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🎯 Core Features
 
-## Code scaffolding
+- **Medicine Search**: Smart suggestions, popular medicines showcase
+- **Patient Management**: Add and track multiple patients
+- **Cart System**: Multi-patient orders, quantity management
+- **Secure Checkout**: Address verification, order confirmation
+- **Order History**: View past orders (Static UI - API Integration WIP)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 🏗️ Technical Architecture
 
-## Build
+### Dual Backend System
+1. **EvitalRx API**
+   - Product catalog management
+   - Patient data handling
+   - Order processing
+   - Checkout flow
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+2. **Firebase Backend**
+   - User authentication
+   - Patient ID storage
+   - Order tracking
+   - Real-time data sync
 
-## Running unit tests
+## 💻 Platform Walkthrough
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### 1. Authentication
+![Login](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/login.png)
+![Register]([your-register-image-url](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/createaccount.png))
+![Forgot Password](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/resetpass.png)
 
-## Running end-to-end tests
+- Email/password authentication
+- Password recovery system
+- Route guards for security
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### 2. Dashboard & Search
+![Dashboard](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/dashboard.png)
+![Search Results](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/search1.png)
+![Search Results](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/searchdoyoumean.png)
+![Search Results](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/searchlist.png)
+![Search Results](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/viewmedicinedetails.png)
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Dynamic search suggestions
+- Swiper banners
+- Popular medicines showcase
+- Category filtering
+- Medicine details view
+
+### 3. Patient Management
+![Add Patient](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/addpatient.png)
+
+- Patient history tracking
+- Multiple patients per user
+- Firebase data persistence
+
+### 4. Cart Management
+![Cart](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/cart.png)
+
+- Add/remove medicines
+- Quantity adjustment
+- Patient assignment
+- Price calculations
+
+### 5. Checkout Process
+![Checkout](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/checkout.png)
+![Order Confirmation](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/orderConfirmation.png)
+
+- Address validation
+- Order review
+- Patient verification
+- Confirmation system
+
+### 6. Order History (In Development)
+![Order History](https://github.com/Devarshi226/EvitalRx-Practical-Task/blob/cd29ddae9213d7554cd53b8116bc6a1f01a7e3d5/src/assets/screenShorts/past-order%20concept.png)
+
+- View past orders
+- Track order status
+- Download invoices
+- **Note**: Currently displaying static UI, API integration pending
+
+## 🛠️ Technical Features
+
+### Performance Optimization
+```typescript
+// Lazy Loading Example
+const routes: Routes = [
+  {
+    path: 'pages',
+    loadChildren: () => import('./pages/pages.module')
+      .then(m => m.PagesModule)
+  }
+];
+```
+
+### Data Management
+```typescript
+// Dual Backend Integration
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService {
+  constructor(
+    private evitalApi: EvitalApiService,
+    private firestore: AngularFirestore
+  ) {}
+
+  async getProductDetails(id: string) {
+    const product = await this.evitalApi.getProduct(id);
+    const analytics = await this.firestore
+      .collection('products')
+      .doc(id)
+      .get()
+      .toPromise();
+    
+    return { ...product, ...analytics };
+  }
+}
+```
+
+## 🚀 Getting Started
+
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/Devarshi226/EvitalRx-Practical-Task
+   cd EvitalRx-Practical-Task
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment**
+   ```bash
+   # Create environment.ts
+   export const environment = {
+     production: false,
+     firebaseConfig: {
+       // Your Firebase credentials
+     },
+     evitalApiKey: 'evital_Api'
+   };
+   ```
+
+4. **Run Development Server**
+   ```bash
+   ng serve
+   ```
+
+## ⚙️ Technical Requirements
+
+- Node.js 20+
+- Angular CLI 15+
+- Firebase Account
+- EvitalRx API Access
+
+## ⚠️ Important Notes
+
+- Patient registration required before checkout
+- Firebase setup needed for authentication
+- Internet connection required for real-time features
+- Order tracking API integration pending
+
+## 🔒 Security Features
+
+- Route guards
+- Data encryption
+- Role-based access
+- Secure API endpoints
+
+## 📱 Responsive Design
+
+- Mobile-first approach
+- Material Design components
+- Adaptive layouts
+- Cross-browser compatibility
+
+## 🔄 State Management
+
+- RxJS Observables
+- Firebase Real-time Database
+- Local Storage backup
+- Session management
+
+## 📞 Support
+
+- Create issues on GitHub
+
+## 📄 License
+
+MIT License - See [LICENSE](license-link) file
+
+---
+
+<!-- ### Firebase Collections Structure
+![Firebase Structure](your-firebase-structure-image) -->
+
+```
+users/
+  ├── userId/
+  │   ├── profile
+  │   ├── patients/
+  │   │   └── patientList
+  │   └── orders/
+  │       └── orderHistory
+  └── ...
+```
+
+---
