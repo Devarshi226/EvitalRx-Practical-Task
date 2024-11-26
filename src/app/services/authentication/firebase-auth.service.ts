@@ -58,7 +58,6 @@ export class FirebaseAuthService  {
 
     try {
 
-      console.log("data",userData);
       const userCredential = await this.fireAuth.createUserWithEmailAndPassword(
         userData.email,
         userData.password
