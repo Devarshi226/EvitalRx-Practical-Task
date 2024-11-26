@@ -184,7 +184,7 @@ export class ProductService {
 ## 🔄 State Management
 
 - RxJS Observables
-- Firebase Real-time Database
+- Firebase Database
 - Local Storage backup
 - Session management
 
