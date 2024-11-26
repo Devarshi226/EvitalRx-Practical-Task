@@ -171,7 +171,6 @@ export class ProductService {
 
 - Route guards
 - Data encryption
-- Role-based access
 - Secure API endpoints
 
 ## 📱 Responsive Design
