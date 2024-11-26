@@ -13,7 +13,6 @@ export class OrderConfirmationComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     dialogRef.addPanelClass('custom-dialog');
-console.log('Data:', data);
   }
 
   closePopup(): void {

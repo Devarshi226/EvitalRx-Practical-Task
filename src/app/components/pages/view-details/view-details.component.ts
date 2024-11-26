@@ -13,7 +13,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
       @Inject(MAT_DIALOG_DATA) public data: any
     ) {
       dialogRef.addPanelClass('custom-dialog-container');
-      console.log('Data:', data);
     }
 
 
@@ -22,7 +21,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     }
 
     addToCart(): void {
-      console.log('Adding to cart:', this.data);
       this.dialogRef.close({ action: 'add_to_cart' });
     }
   }

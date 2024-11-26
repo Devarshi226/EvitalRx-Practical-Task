@@ -35,7 +35,6 @@ export class ForgetpassComponent implements OnInit , OnDestroy {
           this.toster.error('Invalid Email');
          }
           );
-        console.log('Reset email sent to:', this.forgotPasswordForm.value.email);
         this.emailSent = true;
       } catch (error) {
         console.error('Password reset error:', error);
@@ -60,10 +59,10 @@ export class ForgetpassComponent implements OnInit , OnDestroy {
     try {
       this.resendLoading = true;
       await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Reset email resent to:', this.forgotPasswordForm.value.email);
+      this.toster.success(`'Reset email resent to:', ${this.forgotPasswordForm.value.email}`);
     } catch (error) {
-      console.error('Resend email error:', error);
-    } finally {
+      this.toster.error('Error resending email');
+     } finally {
       this.resendLoading = false;
     }
   }

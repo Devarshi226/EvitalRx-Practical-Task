@@ -87,7 +87,6 @@ export class SearchComponent implements OnInit {
     const searchTerm = event.target.value;
     this.searchQuery = searchTerm;
     this.searchSubject.next(searchTerm);
-    console.log('Search query:', searchTerm);
 
     if (searchTerm.length > 2) {
        this.selectedMedicine = searchTerm;

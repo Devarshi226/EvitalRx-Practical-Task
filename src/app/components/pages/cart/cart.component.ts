@@ -114,7 +114,7 @@ export class CartComponent implements OnInit , OnDestroy {
 
     this.sharedData.sendCartCheckoutResponse(updatedItems);
     this.updateTotalAndTax();
-    this.sharedData.sendSubtotal(this.productPrice);
+
   }
 
   private updateTotalAndTax(): void {
@@ -123,6 +123,7 @@ export class CartComponent implements OnInit , OnDestroy {
   }
 
   placeOrder(): void {
+    debugger
     if (this.cartItems.length === 0) {
       console.warn('Cart is empty');
       return;
@@ -150,7 +151,7 @@ export class CartComponent implements OnInit , OnDestroy {
     this.medicineService.checkout(checkoutData).subscribe({
       next: (response) => {
         if (response) {
-          this.sharedData.sendCartCheckoutResponse(response);
+          this.sharedData.sendElement(response);
           this.sharedData.sendSubtotal(this.productPrice);
           this.router.navigate(['/pages/checkout']);
         }

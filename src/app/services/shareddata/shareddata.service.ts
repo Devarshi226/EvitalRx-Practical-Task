@@ -49,7 +49,6 @@ export class ShareddataService {
   }
 
   ClearCart(): void {
-    console.log('Clearing cart');
     this.elementSubject.next(null);
     this.clearCartData();
   }
@@ -78,12 +77,11 @@ export class ShareddataService {
 
   // ** Subtotal **
   private subtotalSubject = new BehaviorSubject<any>(this.loadFromLocalStorage(this.SUBTOTAL_KEY, null));
-  subtotal$ = this.patientIdSubject.asObservable();
+  subtotal$ = this.subtotalSubject.asObservable();
 
-  sendSubtotal(subtotal: any): void {
-    console.log('Subtotal: ', subtotal);
-    this.patientIdSubject.next(subtotal);
-    this.saveToLocalStorage(this.SUBTOTAL_KEY, subtotal);
+  sendSubtotal(elementSubtotal: any): void {
+    this.subtotalSubject.next(elementSubtotal);
+    this.saveToLocalStorage(this.SUBTOTAL_KEY, elementSubtotal);
   }
 
   // ** Patient Data **

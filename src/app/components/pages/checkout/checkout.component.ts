@@ -39,10 +39,11 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
   ) {
     this.initForm();
     this.loadPatients();
+    this.setupSubscriptions();
   }
 
   ngOnInit() {
-    this.setupSubscriptions();
+
   }
 
   ngOnDestroy() {
@@ -53,11 +54,14 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
     this.subscriptions.add(
       this.sharedDataService.cartCheckoutResponse$.subscribe((element) => {
         if (element) {
+          ;
           this.checkout = element;
           this.shipping = this.checkout.data?.shipping_charges || 0;
         }
       })
     );
+
+
 
     this.subscriptions.add(
       this.sharedDataService.subtotal$.subscribe((element) => {
@@ -113,8 +117,22 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
     );
   }
 
+
+  loadCheckoutFromLocalStorage() {
+    const cartData = localStorage.getItem('cartCheckoutResponse');
+    if (cartData) {
+      this.checkout = JSON.parse(cartData);
+    } else {
+      this.toast.error('No cart data found in localStorage');
+    }
+  }
+
   confirmOrder() {
     if (this.checkoutForm.valid) {
+      if (!this.checkout?.data?.items?.length) {
+        this.loadCheckoutFromLocalStorage(); // Load data from localStorage if checkout is empty
+      }
+
       if (!this.checkout?.data?.items?.length) {
         this.toast.error('Cart is empty');
         return;
@@ -126,6 +144,11 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
           medicine_id: ele.medicine_id,
           quantity: 1
         }));
+
+      if (this.item.length === 0) {
+        this.toast.error('No valid items in the cart');
+        return;
+      }
 
       const orderData = {
         items: JSON.stringify(this.item),
@@ -144,15 +167,25 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
       };
 
       this.isLoading = true;
+
       this.medicineService.placeOrder(orderData).subscribe({
         next: (response) => {
-          this.fireStoreService.addOrderToUserCollection(response.data?.order_id);
-          this.confirmOrderStatusPopUp(response);
-          this.toast.success('Order placed successfully!');
-          this.checkoutForm.reset({ deliveryType: 'delivery', autoAssign: true });
-          this.item = [];
-          this.isLoading = false;
-          this.backToHome();
+          if (response?.data?.order_id) {
+            this.fireStoreService.addOrderToUserCollection(response.data.order_id);
+            this.confirmOrderStatusPopUp(response);
+            this.toast.success('Order placed successfully!');
+
+            this.checkoutForm.reset({ deliveryType: 'delivery', autoAssign: true });
+            this.item = [];
+
+            this.sharedDataService.clearCartCheckoutResponse();
+            this.isLoading = false;
+
+            this.backToHome();
+          } else {
+            this.toast.error('Invalid order response');
+            this.isLoading = false;
+          }
         },
         error: (err) => {
           this.isLoading = false;
@@ -165,6 +198,8 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
       this.toast.error('Please fill all required fields');
     }
   }
+
+
 
   backToHome() {
     this.sharedDataService.clearCartCheckoutResponse();
@@ -192,7 +227,7 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
   }
 
   onSelectionChange(event: any) {
-    this.sharedDataService.sendPatientId(event.value.patient_id); 
+    this.sharedDataService.sendPatientId(event.value.patient_id);
     this.checkoutForm.patchValue({
       patientid: event.value.patient_id,
       patientName: event.value.patient_name,
@@ -214,7 +249,8 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
     this.dialog.open(OrderConfirmationComponent, {
       data: {
         patientName: this.checkoutForm.get('patientName')?.value,
-        data: data
+        data: data ,
+        total : this.subtotal + this.shipping
       },
       width: '600px',
       height: 'auto',
