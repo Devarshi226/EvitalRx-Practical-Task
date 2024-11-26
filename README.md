@@ -1,6 +1,6 @@
 # EvitalRx - Modern Medicine Ordering Platform 💊
 
-[EvitalRx Demo]() | [Source Code](https://github.com/Devarshi226/EvitalRx-Practical-Task)
+[EvitalRx Demo](https://evital-demo-devarshi226.netlify.app/) | [Source Code](https://github.com/Devarshi226/EvitalRx-Practical-Task)
 
 Experience seamless online medicine ordering with **EvitalRx**, a sophisticated platform built using Angular and Firebase. Our dual-backend architecture combines a dedicated EvitalRx API for product management with Firebase for robust authentication and data persistence.
 
