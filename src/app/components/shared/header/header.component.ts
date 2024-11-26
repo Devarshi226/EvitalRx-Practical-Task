@@ -20,6 +20,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   cartItemsCount:string = '';
 
   cartItems : boolean = false;
+  subscription: any;
 
   constructor(private router:Router, private toastr: ToastrService , private sharedData : ShareddataService) {
 
@@ -27,19 +28,20 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.LoggedInStatus = status;
     });
 
-    this.sharedData.cartData$.subscribe((element:any) => {
 
-      if (element.length > 0) {
-        console.log('cart items', element.length , element.length.toString());
-        this.cartItemsCount = element.length.toString();
-      } else if(element.legnth === 0) {
-        this.cartItemsCount = '';
-      }
-    });
+
+
+      this.sharedData.cartCheckoutResponse$.subscribe((element: any[]) => {
+        this.cartItemsCount = element?.length > 0 ? element.length.toString() : '';
+      })
+
+
+
 
    }
 
   ngOnInit(): void {
+
   }
 
   ngAfterViewInit(): void {
