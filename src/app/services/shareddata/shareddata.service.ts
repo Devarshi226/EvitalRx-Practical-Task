@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class ShareddataService {
-  private readonly TOKEN_KEY = 'token';
+  private readonly TOKEN_KEY = 'auth_token';
   private readonly CART_CHECKOUT_KEY = 'cartCheckoutResponse';
   private readonly PATIENT_ID_KEY = 'patientId';
   private readonly SUBTOTAL_KEY = 'saveSubtotal';
@@ -49,6 +49,7 @@ export class ShareddataService {
   }
 
   ClearCart(): void {
+    console.log('Clearing cart');
     this.elementSubject.next(null);
     this.clearCartData();
   }
@@ -77,10 +78,11 @@ export class ShareddataService {
 
   // ** Subtotal **
   private subtotalSubject = new BehaviorSubject<any>(this.loadFromLocalStorage(this.SUBTOTAL_KEY, null));
-  subtotal$ = this.patientIdSubject.asObservable(); // Fixed to match original behavior
+  subtotal$ = this.patientIdSubject.asObservable();
 
   sendSubtotal(subtotal: any): void {
-    this.patientIdSubject.next(subtotal); // Fixed to match original behavior
+    console.log('Subtotal: ', subtotal);
+    this.patientIdSubject.next(subtotal);
     this.saveToLocalStorage(this.SUBTOTAL_KEY, subtotal);
   }
 
