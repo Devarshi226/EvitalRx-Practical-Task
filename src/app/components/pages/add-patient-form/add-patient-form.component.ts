@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { catchError, finalize, tap, throwError } from 'rxjs';
 import { FirestoreService } from 'src/app/services/database/firestore.service';
 import { EvitalApiService } from 'src/app/services/evitalrx/evital-api.service';
 import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
@@ -13,7 +14,7 @@ import { ShareddataService } from 'src/app/services/shareddata/shareddata.servic
 })
 export class PatientFormComponent implements OnInit {
   patientForm!: FormGroup;
-  maxDate: Date = new Date();
+  maxDate: Date;
   isSubmitting: boolean = false;
   bloodGroups: string[] = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
@@ -37,8 +38,6 @@ export class PatientFormComponent implements OnInit {
     this.initializeForm();
   }
 
-
-
   private initializeForm(): void {
     this.patientForm = this.fb.group({
       first_name: ['', [
@@ -59,7 +58,7 @@ export class PatientFormComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[0-9]{5,6}$')
       ]],
-      dob: [null, [Validators.required]], 
+      dob: [null, [Validators.required]],
       gender: ['', [Validators.required]],
       blood_group: ['', [Validators.required]]
     });
@@ -71,62 +70,86 @@ export class PatientFormComponent implements OnInit {
 
   getErrorMessage(controlName: string): string {
     const control = this.f[controlName];
+    if (!control) return '';
 
     if (control.hasError('required')) {
-      return `${controlName.replace('_', ' ').toUpperCase()} is required`;
+      return `${this.formatControlName(controlName)} is required`;
     }
 
     if (control.hasError('minlength')) {
-      return `${controlName.replace('_', ' ').toUpperCase()} must be at least ${control.errors?.['minlength'].requiredLength} characters`;
+      return `${this.formatControlName(controlName)} must be at least ${control.errors?.['minlength'].requiredLength} characters`;
     }
 
     if (control.hasError('pattern')) {
-      switch(controlName) {
-        case 'mobile':
-          return 'Please enter a valid 10-digit mobile number';
-        case 'zipcode':
-          return 'Please enter a valid zipcode';
-        case 'first_name':
-        case 'last_name':
-          return 'Only alphabets are allowed';
-        default:
-          return 'Invalid input';
-      }
+      return this.getPatternErrorMessage(controlName);
     }
 
     return '';
   }
 
-  async onSubmit(): Promise<void> {
+  private formatControlName(name: string): string {
+    return name.split('_').map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    ).join(' ');
+  }
+
+  private getPatternErrorMessage(controlName: string): string {
+    const errorMessages: { [key: string]: string } = {
+      mobile: 'Please enter a valid 10-digit mobile number',
+      zipcode: 'Please enter a valid zipcode',
+      first_name: 'Only alphabets are allowed',
+      last_name: 'Only alphabets are allowed'
+    };
+    return errorMessages[controlName] || 'Invalid input';
+  }
+
+  onSubmit(): void {
     if (this.patientForm.invalid) {
+      this.markFormGroupTouched(this.patientForm);
       this.toastr.error('Please fill all required fields correctly');
       return;
     }
 
-    try {
-      this.isSubmitting = true;
-      const formData = {
-        ...this.patientForm.value,
-        dob: this.formatDate(this.patientForm.value.dob)
-      };
+    this.isSubmitting = true;
+    const formData = this.prepareFormData();
 
-      const response = await this.medicineService.addPatient(formData).toPromise();
-
-      if (response) {
-        this.sharedService.updatePatientData(true);
-        this.medicineService.addPatient(this.patientForm.value).subscribe((response) => {
+    this.medicineService.addPatient(formData).pipe(
+      tap(response => {
+        if (response?.data?.patient_id) {
+          this.sharedService.sendPatient(response.data);
           this.firestoreService.addPatientToUserCollection(response.data.patient_id);
           this.toastr.success('Patient added successfully');
-          this.dialogRef.close(true);
-        });
-      }
+          this.dialogRef.close(response.data);
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      }),
+      catchError(error => {
+        console.error('Error adding patient:', error);
+        this.toastr.error(error.error?.message || 'Failed to add patient. Please try again.');
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.isSubmitting = false;
+      })
+    ).subscribe();
+  }
 
-    } catch (error) {
-      console.error('Error adding patient:', error);
-      this.toastr.error('Failed to add patient. Please try again.');
-    } finally {
-      this.isSubmitting = false;
-    }
+  private prepareFormData(): any {
+    const formValue = this.patientForm.value;
+    return {
+      ...formValue,
+      dob: this.formatDate(formValue.dob)
+    };
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   onCancel(): void {
@@ -135,24 +158,16 @@ export class PatientFormComponent implements OnInit {
 
   private formatDate(date: Date): string {
     if (!date) return '';
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = ('0' + (d.getMonth() + 1)).slice(-2);
-    const day = ('0' + d.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
 
-  private ageValidator(control: any) {
-    if (!control.value) return null;
-
-    const today = new Date();
-    const birthDate = new Date(control.value);
-    const age = today.getFullYear() - birthDate.getFullYear();
-
-    if (age < 1) {
-      return { 'underage': true };
+    try {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return '';
     }
-
-    return null;
   }
 }
