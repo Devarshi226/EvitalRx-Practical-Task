@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree ,CanActivateFn} from '@angular/router';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { FirebaseAuthService } from '../services/authentication/firebase-auth.service';
+import { ShareddataService } from '../services/shareddata/shareddata.service';
 
 
 @Injectable({
@@ -18,11 +19,18 @@ export class AuthGuard implements CanActivate {
 
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const loginService = inject(FirebaseAuthService);
-  const router = inject(Router);
-  if (!loginService.isAuthenticated){
-    return router.createUrlTree(['/auth/login']);
-  }else {
-    return true;
-  }
+ const sharedData = inject(ShareddataService);
+ const router = inject(Router);
+
+  return sharedData.isLoggedIn$.pipe(
+    map((status: boolean) => {
+      if (!status) {
+        return router.createUrlTree(['/auth/login']);
+      } else {
+        return true;
+      }
+    })
+  );
+
+
 };
