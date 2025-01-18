@@ -13,10 +13,14 @@ import { SearchComponent } from './search/search.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { PatientFormComponent } from './add-patient-form/add-patient-form.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MaterialModule } from 'src/app/modules/material/material.module';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { IncomeExpenseComponent } from './income-expense/income-expense.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,8 @@ import { MaterialModule } from 'src/app/modules/material/material.module';
     OrderConfirmationComponent,
     RecentOrdersComponent,
     SearchComponent,
-    PatientFormComponent
+    PatientFormComponent,
+    IncomeExpenseComponent
   ],
   imports: [
     CommonModule,
@@ -37,6 +42,11 @@ import { MaterialModule } from 'src/app/modules/material/material.module';
     MaterialModule,
     FormsModule,
     MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatDividerModule
 
 
   ],

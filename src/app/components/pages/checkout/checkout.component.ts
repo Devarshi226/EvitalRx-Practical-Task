@@ -44,6 +44,10 @@ export class CheckoutComponent implements OnInit ,OnDestroy{
 
   ngOnInit() {
 
+    setInterval(() => {
+      this.loadPatients();
+  }, 5000)
+
   }
 
   ngOnDestroy() {

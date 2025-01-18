@@ -1,0 +1,159 @@
+<div class="ie-container">
+  <!-- Header Section -->
+  <div class="ie-header">
+    <h1 class="ie-title">
+      <span class="text-gradient">Manage Income & Expense</span>
+    </h1>
+
+    <div class="button-group">
+      <button mat-raised-button class="action-btn income-btn" (click)="openIncomeDialog()">
+        <mat-icon>add_circle</mat-icon>
+        Income
+      </button>
+
+      <button mat-raised-button class="action-btn expense-btn" (click)="openExpenseDialog()">
+        <mat-icon>remove_circle</mat-icon>
+        Expense
+      </button>
+
+      <button mat-raised-button class="action-btn download-btn" (click)="downloadReport()">
+        <mat-icon>download</mat-icon>
+        Download
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-card">
+      <div class="filter-left">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-select [formControl]="dateFilter" (selectionChange)="onDateFilterChange()">
+            <mat-select-trigger>
+              {{getDisplayDate()}}
+            </mat-select-trigger>
+            <mat-option *ngFor="let option of dateOptions" [value]="option.value">
+              {{option.label}}
+            </mat-option>
+          </mat-select>
+          <!-- Hidden date range picker that opens when custom is selected -->
+          <mat-date-range-picker #picker (closed)="onDateRangeSelected($event)">
+          </mat-date-range-picker>
+        </mat-form-field>
+
+         <!-- New category filter -->
+    <mat-form-field appearance="outline" class="category-field">
+      <mat-select [formControl]="categoryFilter" placeholder="Select Category">
+        <mat-option *ngFor="let category of categories" [value]="category.value">
+          {{category.label}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+      <button mat-button class="filter-btn" (click)="openFilters()">
+        <mat-icon>filter_list</mat-icon>
+        More Filters
+      </button>
+    </div>
+
+    <div class="summary-cards">
+      <div class="summary-card income">
+        <div class="card-icon">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <div class="card-content">
+          <h3>Total Income</h3>
+          <p class="amount">₹45,000</p>
+        </div>
+      </div>
+
+      <div class="summary-card expense">
+        <div class="card-icon">
+          <mat-icon>trending_down</mat-icon>
+        </div>
+        <div class="card-content">
+          <h3>Total Expense</h3>
+          <p class="amount">₹32,000</p>
+        </div>
+      </div>
+
+      <div class="summary-card balance">
+        <div class="card-icon">
+          <mat-icon>account_balance_wallet</mat-icon>
+        </div>
+        <div class="card-content">
+          <h3>Balance</h3>
+          <p class="amount">₹13,000</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- Transaction Table -->
+<div class="table-container">
+  <table mat-table [dataSource]="transactions" class="transaction-table">
+    <!-- Entry Date Column -->
+    <ng-container matColumnDef="entryDate">
+      <th mat-header-cell *matHeaderCellDef>Entry Date</th>
+      <td mat-cell *matCellDef="let element">{{element.entryDate}}</td>
+    </ng-container>
+
+    <!-- Category Column -->
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef>Category</th>
+      <td mat-cell *matCellDef="let element">{{element.category}}</td>
+    </ng-container>
+
+    <!-- Transaction Type Column -->
+    <ng-container matColumnDef="transactionType">
+      <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
+      <td mat-cell *matCellDef="let element">{{element.transactionType}}</td>
+    </ng-container>
+
+    <!-- Entry By Column -->
+    <ng-container matColumnDef="entryBy">
+      <th mat-header-cell *matHeaderCellDef>Entry By</th>
+      <td mat-cell *matCellDef="let element">{{element.entryBy}}</td>
+    </ng-container>
+
+    <!-- Payment Mode Column -->
+    <ng-container matColumnDef="paymentMode">
+      <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
+      <td mat-cell *matCellDef="let element">{{element.paymentMode}}</td>
+    </ng-container>
+
+    <!-- Reference Number Column -->
+    <ng-container matColumnDef="refNo">
+      <th mat-header-cell *matHeaderCellDef>Ref. No.</th>
+      <td mat-cell *matCellDef="let element">{{element.refNo}}</td>
+    </ng-container>
+
+    <!-- Amount Column -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Amount</th>
+      <td mat-cell *matCellDef="let element">₹{{element.amount}}</td>
+    </ng-container>
+
+    <!-- GST Column -->
+    <ng-container matColumnDef="gst">
+      <th mat-header-cell *matHeaderCellDef>GST(%)</th>
+      <td mat-cell *matCellDef="let element">{{element.gst}}%</td>
+    </ng-container>
+
+    <!-- Total Column -->
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef>Total</th>
+      <td mat-cell *matCellDef="let element">₹{{element.total}}</td>
+    </ng-container>
+
+    <!-- Remark Column -->
+    <ng-container matColumnDef="remark">
+      <th mat-header-cell *matHeaderCellDef>Remark</th>
+      <td mat-cell *matCellDef="let element">{{element.remark}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+</div>

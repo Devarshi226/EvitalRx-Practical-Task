@@ -1,0 +1,359 @@
+$primary-color: #6366f1;
+$secondary-color: #4f46e5;
+$success-color: #22c55e;
+$danger-color: #ef4444;
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$glass-background: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+
+@mixin glass-effect {
+  background: $glass-background;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+}
+
+.ie-container {
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+// Header Styles
+.ie-header {
+  @include glass-effect;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.ie-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+
+  .text-gradient {
+    background: linear-gradient(to right, $primary-color, $secondary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .income-btn {
+    background: linear-gradient(135deg, $success-color, darken($success-color, 10%));
+    color: white;
+  }
+
+  .expense-btn {
+    background: linear-gradient(135deg, $danger-color, darken($danger-color, 10%));
+    color: white;
+  }
+
+  .download-btn {
+    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    color: white;
+  }
+}
+
+// Filter Section Styles
+.filter-section {
+  margin-bottom: 2rem;
+}
+
+.filter-card {
+  @include glass-effect;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.filter-left {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  .mat-form-field {
+    width: 250px;
+  }
+}
+
+.filter-btn {
+  @include glass-effect;
+  color: $text-primary;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Summary Cards Styles
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+
+  .summary-card {
+    @include glass-effect;
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      margin-right: 1rem;
+
+      mat-icon {
+        font-size: 24px;
+      }
+    }
+
+    .card-content {
+      h3 {
+        margin: 0;
+        font-size: 0.875rem;
+        color: $text-secondary;
+      }
+
+      .amount {
+        margin: 0.25rem 0 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $text-primary;
+      }
+    }
+
+    &.income .card-icon {
+      background: rgba($success-color, 0.1);
+      color: $success-color;
+    }
+
+    &.expense .card-icon {
+      background: rgba($danger-color, 0.1);
+      color: $danger-color;
+    }
+
+    &.balance .card-icon {
+      background: rgba($primary-color, 0.1);
+      color: $primary-color;
+    }
+  }
+}
+
+// Material Overrides
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-form-field-flex {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .mdc-text-field--outlined {
+      --mdc-outlined-text-field-container-color: transparent;
+    }
+
+    .mat-mdc-select-value,
+    .mat-mdc-select-arrow,
+    input {
+      color: $text-primary;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $glass-border !important;
+    }
+
+    &:hover .mdc-notched-outline__leading,
+    &:hover .mdc-notched-outline__notch,
+    &:hover .mdc-notched-outline__trailing {
+      border-color: rgba($primary-color, 0.5) !important;
+    }
+  }
+}
+
+// Responsive Styles
+@media (max-width: 768px) {
+  .ie-header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-card {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filter-left {
+    flex-direction: column;
+    width: 100%;
+
+    .mat-form-field {
+      width: 100%;
+    }
+  }
+}
+.filter-left {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  .date-field,
+  .category-field {
+    width: 250px;
+  }
+}
+
+.filter-card {
+  @include glass-effect;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+
+  .date-field,
+  .category-field {
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  .summary-info {
+    display: flex;
+    gap: 2rem;
+    margin: 0 auto;
+
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .label {
+        color: $text-secondary;
+        font-size: 0.875rem;
+      }
+
+      .amount {
+        color: $text-primary;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .filter-btn {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  .filter-card {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+
+    .summary-info {
+      width: 100%;
+      justify-content: center;
+      order: 1;
+    }
+  }
+}
+
+.mat-mdc-header-cell{
+  color: white !important;
+}
+
+.mat-mdc-cell{
+  color: white !important;
+}
+
+.table-container {
+  @include glass-effect;
+  border-radius: 1rem;
+  overflow: auto;
+  margin-top: 2rem;
+
+  .transaction-table {
+    width: 100%;
+    background: transparent;
+
+    th.mat-header-cell {
+      background: rgba(255, 255, 255, 0.1);
+      color: white !important;  // Changed to white
+      font-weight: 600;
+      padding: 1rem;
+      white-space: nowrap;
+    }
+
+    td.mat-cell {
+      color: white !important;  // Changed to white
+      padding: 1rem;
+    }
+
+    tr.mat-row {
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    tr.mat-row, tr.mat-header-row {
+      &:not(:last-child) {
+        td, th {
+          border-bottom: 1px solid $glass-border;
+        }
+      }
+    }
+  }
+}
