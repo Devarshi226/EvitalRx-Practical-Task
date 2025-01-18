@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatDateRangePicker } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -28,11 +29,21 @@ interface Transaction {
   styleUrls: ['./income-expense.component.scss']
 })
 export class IncomeExpenseComponent implements OnInit {
+  @ViewChild('incomeSheet') incomeSheet!: TemplateRef<any>;
+  @ViewChild('expenseSheet') expenseSheet!: TemplateRef<any>;
+
+  private bottomSheetRef: MatBottomSheetRef | null = null;
+
   @ViewChild('picker') picker!: MatDateRangePicker<Date>;
 
   dateFilter = new FormControl('today');
   selectedStartDate: Date | null = null;
   selectedEndDate: Date | null = null;
+
+  incomeForm = new FormGroup({
+    category: new FormControl('', Validators.required),
+    incomeDate: new FormControl(new Date(), Validators.required)
+  });
 
   dateRange = new FormGroup({
     start: new FormControl<Date | null>(null),
@@ -147,7 +158,7 @@ export class IncomeExpenseComponent implements OnInit {
     }
   ];
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private bottomSheet: MatBottomSheet) {
     // Subscribe to date range changes
     this.dateRange.valueChanges.subscribe(range => {
       if (range.start && range.end) {
@@ -202,14 +213,24 @@ export class IncomeExpenseComponent implements OnInit {
     }).replace(/\//g, '-');
   }
 
+
   openIncomeDialog() {
-    // Implement income dialog
-    console.log('Opening income dialog...');
+    this.bottomSheetRef = this.bottomSheet.open(this.incomeSheet, {
+      panelClass: 'custom-bottom-sheet'
+    });
   }
 
   openExpenseDialog() {
-    // Implement expense dialog
-    console.log('Opening expense dialog...');
+    this.bottomSheetRef = this.bottomSheet.open(this.expenseSheet, {
+      panelClass: 'custom-bottom-sheet'
+    });
+  }
+
+  closeSheet() {
+    if (this.bottomSheetRef) {
+      this.bottomSheetRef.dismiss();
+      this.bottomSheetRef = null;
+    }
   }
 
   downloadReport() {

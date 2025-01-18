@@ -357,3 +357,138 @@ $glass-border: rgba(255, 255, 255, 0.1);
     }
   }
 }
+
+
+// for popup
+.bottom-sheet-container {
+  .sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1e293b;
+
+    .sheet-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: white;
+    }
+
+    .sheet-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+
+      .submit-btn {
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+      }
+    }
+  }
+}
+
+.sheet-content {
+  padding: 2rem;
+  background: #1e293b;
+
+  .income-form {
+    .form-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 3rem;
+
+      .form-group {
+        flex: 1;
+      }
+
+      .section-title {
+        color: white;
+        font-size: 1rem;
+        margin: 0 0 1rem 0;
+        font-weight: 500;
+      }
+
+      .category-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .mat-radio-button {
+          ::ng-deep {
+            .mat-radio-label {
+              color: white !important;
+            }
+
+            .mat-radio-outer-circle {
+              border-color: rgba(255, 255, 255, 0.6);
+            }
+
+         .mdc-form-field {
+              color: #f7f2f2;
+
+
+          }
+
+
+
+
+            .mat-radio-inner-circle {
+              background-color: $primary-color;
+            }
+
+            .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+              border-color: $primary-color !important;
+            }
+
+
+
+          }
+        }
+      }
+
+      ::ng-deep {
+        .mdc-form-field{
+          color: #f7f2f2 !important;
+        }
+
+      }
+
+      .date-field {
+        width: 100%;
+
+        ::ng-deep {
+          .mat-mdc-text-field-wrapper {
+            background-color: rgba(255, 255, 255, 0.05);
+          }
+
+          .mat-mdc-form-field-flex {
+            padding: 0.5rem 0.75rem;
+          }
+
+          .mdc-notched-outline__leading,
+          .mdc-notched-outline__notch,
+          .mdc-notched-outline__trailing {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+          }
+
+          input {
+            color: white;
+          }
+
+          .mat-datepicker-toggle {
+            color: rgba(255, 255, 255, 0.7);
+          }
+        }
+      }
+      .form-divider {
+        width: 1px;
+        align-self: stretch;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 2rem 0;
+      }
+    }
+  }
+}
+
+

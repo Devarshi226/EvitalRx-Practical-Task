@@ -157,3 +157,70 @@
   </table>
 </div>
 </div>
+
+
+
+<!-- Income Bottom Sheet Template -->
+<ng-template #incomeSheet>
+  <div class="bottom-sheet-container">
+    <div class="sheet-header">
+      <h2 class="sheet-title">Add Income/Deposit</h2>
+      <div class="sheet-actions">
+        <button mat-raised-button color="primary" class="submit-btn">Submit</button>
+        <button mat-icon-button (click)="closeSheet()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <!-- Inside your income sheet template -->
+<div class="sheet-content">
+  <form [formGroup]="incomeForm" class="income-form">
+    <div class="form-row">
+      <!-- Left Side - Category with Radio Buttons -->
+      <div class="form-group">
+        <h3 class="section-title">Category</h3>
+        <mat-radio-group formControlName="category" class="category-options">
+          <mat-radio-button value="extra-cash">Extra Cash</mat-radio-button>
+          <mat-radio-button value="advertisement">Advertisement</mat-radio-button>
+          <mat-radio-button value="scrap">Scrap Material</mat-radio-button>
+          <mat-radio-button value="rental">Any Rental Income</mat-radio-button>
+          <mat-radio-button value="interest">Interest Income</mat-radio-button>
+          <mat-radio-button value="others">Others</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Divider -->
+      <div class="form-divider"></div>
+
+      <!-- Right Side - Date Picker -->
+      <div class="form-group">
+        <h3 class="section-title">Income Date</h3>
+        <mat-form-field appearance="outline" class="date-field">
+          <input matInput [matDatepicker]="picker" formControlName="incomeDate">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>
+  </div>
+</ng-template>
+
+<!-- Expense Bottom Sheet Template -->
+<ng-template #expenseSheet>
+  <div class="bottom-sheet-container">
+    <div class="sheet-header">
+      <h2 class="sheet-title">Add Expense/Withdraw</h2>
+      <div class="sheet-actions">
+        <button mat-raised-button color="primary" class="submit-btn">Submit</button>
+        <button mat-icon-button (click)="closeSheet()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="sheet-content">
+      <!-- Form will be added here -->
+    </div>
+  </div>
+</ng-template>
