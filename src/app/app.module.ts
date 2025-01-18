@@ -13,10 +13,12 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AuthApi } from './Api/firebase';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,6 +27,8 @@ import { AuthApi } from './Api/firebase';
     MaterialModule,
     SharedModule,
     RouterModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(AuthApi.firebaseConfig),
     AngularFireAuthModule,
@@ -35,6 +39,7 @@ import { AuthApi } from './Api/firebase';
       positionClass: 'toast-top-center',
       preventDuplicates: true,
     }),
+
   ],
   providers: [],
   bootstrap: [AppComponent],
