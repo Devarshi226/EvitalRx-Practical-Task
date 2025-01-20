@@ -17,6 +17,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { MatRadioModule } from '@angular/material/radio';
     HttpClientModule,
     MatBottomSheetModule,
     MatRadioModule,
+    MatTooltipModule,
     AngularFirestoreModule,
     ToastrModule.forRoot( {
       timeOut: 1000,
