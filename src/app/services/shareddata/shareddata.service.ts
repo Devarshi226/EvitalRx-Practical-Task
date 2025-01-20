@@ -39,7 +39,6 @@ export class ShareddataService {
     return this.IsLoggedIn;
   }
 
-  // ** Cart Data and Element Subject (matching original service structure) **
   private elementSubject = new BehaviorSubject<any>(null);
   elementSubject$ = this.elementSubject.asObservable();
 

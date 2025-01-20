@@ -4,7 +4,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatDateRangePicker } from '@angular/material/datepicker';
 
-// Interfaces
 interface Category {
   id: number;
   value: string;
@@ -51,11 +50,9 @@ export class IncomeExpenseComponent implements OnInit {
   @ViewChild('moreFiltersSheet') moreFiltersSheet!: TemplateRef<any>;
   @ViewChild('picker') picker!: MatDateRangePicker<Date>;
 
-  // Component properties
   private bottomSheetRef: MatBottomSheetRef | null = null;
 
   data: any;
-  // Data arrays
   allTransactions: Transaction[] = [];
   transactions: Transaction[] = [];
   expenseCategories: Category[] = [];
@@ -195,6 +192,7 @@ export class IncomeExpenseComponent implements OnInit {
       value: 'today',
       getDateRange: () => {
         const today = new Date();
+        this.loadCustomeData(1, today, today);
         return { startDate: today, endDate: today };
       }
     },
@@ -205,6 +203,7 @@ export class IncomeExpenseComponent implements OnInit {
         const end = new Date();
         const start = new Date();
         start.setDate(end.getDate() - 6);
+        this.loadCustomeData(1, start, end);
         return { startDate: start, endDate: end };
       }
     },
@@ -222,6 +221,7 @@ export class IncomeExpenseComponent implements OnInit {
           fiscalYearStart = new Date(today.getFullYear() - 1, 3, 1);
         }
 
+        this.loadCustomeData(1, fiscalYearStart, today);
         return { startDate: fiscalYearStart, endDate: today };
       }
     },
@@ -232,6 +232,7 @@ export class IncomeExpenseComponent implements OnInit {
         const today = new Date();
         const fiscalYearStart = new Date(today.getFullYear() - 1, 3, 1);
         const fiscalYearEnd = new Date(today.getFullYear(), 2, 31);
+        this.loadCustomeData(1, fiscalYearStart, fiscalYearEnd);
         return { startDate: fiscalYearStart, endDate: fiscalYearEnd };
       }
     },
@@ -281,6 +282,20 @@ export class IncomeExpenseComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching data:', err);
+      }
+    });
+  }
+
+
+
+
+  private loadCustomeData(page: number, startDate?: Date, endDate?: Date): void {
+   this.incomeExpenseService.getData(1, startDate, endDate).subscribe({
+      next: (response) => {
+        this.data = response;
+      },
+      error: () => {
+
       }
     });
   }
@@ -402,11 +417,12 @@ export class IncomeExpenseComponent implements OnInit {
         this.selectedStartDate = startDate;
         this.selectedEndDate = endDate;
 
-        // Update date range form controls
         this.dateRange.patchValue({
           start: startDate,
           end: endDate
         });
+
+        this.loadCustomeData(1, startDate, endDate);
 
 
 
@@ -424,7 +440,7 @@ export class IncomeExpenseComponent implements OnInit {
 
   getPaymentMethodValue(id: number | null): string {
     const method = this.paymentMethods.find((method:any) => method.id === id);
-    return method ? method.value : '';
+    return method ? method.method_name : '';
   }
 
   onDateRangeSelected(event: any) {
@@ -543,7 +559,7 @@ export class IncomeExpenseComponent implements OnInit {
         transaction_type: 'income'
       };
 
-      this.incomeExpenseService.saveTransaction(transactionData).subscribe({
+      this.incomeExpenseService.addData(transactionData).subscribe({
         next: (response) => {
           // Refresh data after successful submission
           this.loadInitialData();
@@ -591,7 +607,7 @@ export class IncomeExpenseComponent implements OnInit {
       };
 
       // Call service method to save expense
-      this.incomeExpenseService.saveTransaction(transactionData).subscribe({
+      this.incomeExpenseService.addData(transactionData).subscribe({
         next: (response) => {
           // Refresh data after successful submission
           this.loadInitialData();
@@ -618,14 +634,7 @@ export class IncomeExpenseComponent implements OnInit {
 
   // Helper method to upload transaction file
   private uploadTransactionFile(file: File) {
-    this.incomeExpenseService.uploadTransactionFile(file).subscribe({
-      next: (response) => {
-        console.log('File uploaded successfully', response);
-      },
-      error: (err) => {
-        console.error('Error uploading file:', err);
-      }
-    });
+
   }
 
   // Table Action Methods
@@ -643,20 +652,7 @@ export class IncomeExpenseComponent implements OnInit {
   }
 
   downloadTransaction(transaction: Transaction) {
-    this.incomeExpenseService.downloadTransaction(transaction.id).subscribe({
-      next: (blob) => {
-        // Create a link to download the file
-        const downloadLink = document.createElement('a');
-        const url = window.URL.createObjectURL(blob);
-        downloadLink.href = url;
-        downloadLink.download = `transaction_${transaction.id}.pdf`;
-        downloadLink.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('Error downloading transaction:', err);
-      }
-    });
+
   }
 
   // Utility Methods
