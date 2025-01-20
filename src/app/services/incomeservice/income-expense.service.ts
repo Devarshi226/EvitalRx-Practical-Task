@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +58,7 @@ export class IncomeExpenseService {
     return this.http.post(this.expenseUrladd, formData);
   }
 
-  deleteData(id: number): Observable<any> {
+  deleteTransaction(id: number): Observable<any> {
     debugger;
     const requestBody = {
       accesstoken: this.accesstoken,
@@ -75,4 +75,37 @@ export class IncomeExpenseService {
       { headers }
     );
   }
+
+
+
+  saveTransaction(transactionData: any): Observable<any> {
+    return this.http.post('https://staging.evitalrx.in:3000/v3/expenses/list', transactionData);
+  }
+
+  // Upload transaction file
+  uploadTransactionFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    return this.http.post('https://staging.evitalrx.in:3000/v3/expenses/list', formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
+
+
+
+  downloadTransaction(transactionId: number): Observable<Blob> {
+    return this.http.get('https://staging.evitalrx.in:3000/v3/expenses/list', {
+      responseType: 'blob'
+    });
+  }
+
+
+
+
 }
+
+
+

@@ -16,7 +16,7 @@
         Expense
       </button>
 
-      <button mat-raised-button class="action-btn download-btn" (click)="downloadReport()">
+      <button mat-raised-button class="action-btn download-btn">
         <mat-icon>download</mat-icon>
         Download
       </button>
@@ -54,8 +54,8 @@
          <!-- New category filter -->
     <mat-form-field appearance="outline" class="category-field">
       <mat-select [formControl]="categoryFilter" placeholder="Select Category">
-        <mat-option *ngFor="let category of categories" [value]="category.value">
-          {{category.label}}
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{category.value}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -73,7 +73,7 @@
         </div>
         <div class="card-content">
           <h3>Total Income</h3>
-          <p class="amount">₹45,000</p>
+          <p class="amount">₹{{ data?.data?.total_income || 0 | number:'1.0-0' }}</p>
         </div>
       </div>
 
@@ -83,7 +83,7 @@
         </div>
         <div class="card-content">
           <h3>Total Expense</h3>
-          <p class="amount">₹32,000</p>
+          <p class="amount">₹{{ data?.data?.total_expense || 0 | number:'1.0-0' }}</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@
         </div>
         <div class="card-content">
           <h3>Balance</h3>
-          <p class="amount">₹13,000</p>
+          <p class="amount">₹{{ data?.data?.total_amount || 0 | number:'1.0-0' }}</p>
         </div>
       </div>
     </div>
@@ -111,13 +111,13 @@
     <!-- Category Column -->
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef>Category</th>
-      <td mat-cell *matCellDef="let element">{{element.category}}</td>
+      <td mat-cell *matCellDef="let element">{{ getCategoryValue(element.category_id) }}</td>
     </ng-container>
 
     <!-- Transaction Type Column -->
     <ng-container matColumnDef="transactionType">
       <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
-      <td mat-cell *matCellDef="let element">{{element.transactionType}}</td>
+      <td mat-cell *matCellDef="let element">{{ element.transaction_type }}</td>
     </ng-container>
 
     <!-- Entry By Column -->
@@ -129,7 +129,7 @@
     <!-- Payment Mode Column -->
     <ng-container matColumnDef="paymentMode">
       <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
-      <td mat-cell *matCellDef="let element">{{element.paymentMode}}</td>
+      <td mat-cell *matCellDef="let element">{{getPaymentMethodValue(element.payment_status) }}</td>
     </ng-container>
 
     <!-- Reference Number Column -->
@@ -141,13 +141,13 @@
     <!-- Amount Column -->
     <ng-container matColumnDef="amount">
       <th mat-header-cell *matHeaderCellDef>Amount</th>
-      <td mat-cell *matCellDef="let element">₹{{element.amount}}</td>
+      <td mat-cell *matCellDef="let element">₹{{ element.amount }}</td>
     </ng-container>
 
     <!-- GST Column -->
     <ng-container matColumnDef="gst">
       <th mat-header-cell *matHeaderCellDef>GST(%)</th>
-      <td mat-cell *matCellDef="let element">{{element.gst}}%</td>
+      <td mat-cell *matCellDef="let element">{{ element.gst_percentage }}%</td>
     </ng-container>
 
     <!-- Total Column -->
