@@ -16,7 +16,7 @@
         Expense
       </button>
 
-      <button mat-raised-button class="action-btn download-btn" (click)="downloadReport()">
+      <button mat-raised-button class="action-btn download-btn">
         <mat-icon>download</mat-icon>
         Download
       </button>
@@ -40,12 +40,22 @@
           <mat-date-range-picker #picker (closed)="onDateRangeSelected($event)">
           </mat-date-range-picker>
         </mat-form-field>
+        <!-- Custom Date Range Picker -->
+        <mat-form-field *ngIf="dateFilter.value === 'custom'" appearance="outline" class="date-range-field">
+          <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
 
          <!-- New category filter -->
     <mat-form-field appearance="outline" class="category-field">
       <mat-select [formControl]="categoryFilter" placeholder="Select Category">
-        <mat-option *ngFor="let category of categories" [value]="category.value">
-          {{category.label}}
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{category.value}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -63,7 +73,7 @@
         </div>
         <div class="card-content">
           <h3>Total Income</h3>
-          <p class="amount">₹45,000</p>
+          <p class="amount">₹{{ data?.data?.total_income || 0 | number:'1.0-0' }}</p>
         </div>
       </div>
 
@@ -73,7 +83,7 @@
         </div>
         <div class="card-content">
           <h3>Total Expense</h3>
-          <p class="amount">₹32,000</p>
+          <p class="amount">₹{{ data?.data?.total_expense || 0 | number:'1.0-0' }}</p>
         </div>
       </div>
 
@@ -83,7 +93,7 @@
         </div>
         <div class="card-content">
           <h3>Balance</h3>
-          <p class="amount">₹13,000</p>
+          <p class="amount">₹{{ data?.data?.total_amount || 0 | number:'1.0-0' }}</p>
         </div>
       </div>
     </div>
@@ -95,19 +105,19 @@
     <!-- Entry Date Column -->
     <ng-container matColumnDef="entryDate">
       <th mat-header-cell *matHeaderCellDef>Entry Date</th>
-      <td mat-cell *matCellDef="let element">{{element.entryDate}}</td>
+      <td mat-cell *matCellDef="let element">{{element.expense_date | date}}</td>
     </ng-container>
 
     <!-- Category Column -->
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef>Category</th>
-      <td mat-cell *matCellDef="let element">{{element.category}}</td>
+      <td mat-cell *matCellDef="let element">{{ getCategoryValue(element.category_id) }}</td>
     </ng-container>
 
     <!-- Transaction Type Column -->
     <ng-container matColumnDef="transactionType">
       <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
-      <td mat-cell *matCellDef="let element">{{element.transactionType}}</td>
+      <td mat-cell *matCellDef="let element">{{ element.transaction_type }}</td>
     </ng-container>
 
     <!-- Entry By Column -->
@@ -119,7 +129,7 @@
     <!-- Payment Mode Column -->
     <ng-container matColumnDef="paymentMode">
       <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
-      <td mat-cell *matCellDef="let element">{{element.paymentMode}}</td>
+      <td mat-cell *matCellDef="let element">{{getPaymentMethodValue(element.payment_status) }}</td>
     </ng-container>
 
     <!-- Reference Number Column -->
@@ -131,13 +141,13 @@
     <!-- Amount Column -->
     <ng-container matColumnDef="amount">
       <th mat-header-cell *matHeaderCellDef>Amount</th>
-      <td mat-cell *matCellDef="let element">₹{{element.amount}}</td>
+      <td mat-cell *matCellDef="let element">₹{{ element.amount }}</td>
     </ng-container>
 
     <!-- GST Column -->
     <ng-container matColumnDef="gst">
       <th mat-header-cell *matHeaderCellDef>GST(%)</th>
-      <td mat-cell *matCellDef="let element">{{element.gst}}%</td>
+      <td mat-cell *matCellDef="let element">{{ element.gst_percentage }}%</td>
     </ng-container>
 
     <!-- Total Column -->
@@ -147,13 +157,421 @@
     </ng-container>
 
     <!-- Remark Column -->
-    <ng-container matColumnDef="remark">
+    <!-- <ng-container matColumnDef="remark">
       <th mat-header-cell *matHeaderCellDef>Remark</th>
       <td mat-cell *matCellDef="let element">{{element.remark}}</td>
+    </ng-container> -->
+
+    <ng-container matColumnDef="remark">
+      <th mat-header-cell *matHeaderCellDef>Remark</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon *ngIf="element.remark"
+                  [matTooltip]="element.remark"
+                  matTooltipPosition="above"
+                  class="remark-icon">
+          comment
+        </mat-icon>
+      </td>
     </ng-container>
+
+    <!-- Add new Action Column -->
+<ng-container matColumnDef="actions">
+  <th mat-header-cell *matHeaderCellDef>Actions</th>
+  <td mat-cell *matCellDef="let element">
+    <button mat-icon-button [matTooltip]="'Delete'" (click)="deleteTransaction(element)">
+      <mat-icon class="action-icon">delete</mat-icon>
+    </button>
+    <button mat-icon-button [matTooltip]="'Download'" (click)="downloadTransaction(element)">
+      <mat-icon class="action-icon">download</mat-icon>
+    </button>
+  </td>
+</ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
 </div>
+
+
+
+<!-- Income Bottom Sheet Template -->
+<ng-template #incomeSheet>
+  <div class="bottom-sheet-container">
+    <div class="sheet-header"style="background-color: #e8e8ee;">
+      <h1 class="sheet-title" style="color: black; text-decoration: underline;">Add Income/Deposit</h1>
+      <div class="sheet-actions">
+        <button mat-raised-button color="primary" class="submit-btn" (click)="submitIncomeForm()">Submit</button>
+        <button mat-icon-button (click)="closeSheet()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <!-- Inside your income sheet template -->
+<div class="sheet-content">
+  <form [formGroup]="incomeForm" class="income-form">
+    <div class="form-row">
+      <!-- Left Side - Category with Radio Buttons -->
+      <div class="form-group">
+        <h3 class="section-title">Category</h3>
+        <mat-radio-group formControlName="category" class="category-options">
+          <mat-radio-button value="extra-cash">Extra Cash</mat-radio-button>
+          <mat-radio-button value="advertisement">Advertisement</mat-radio-button>
+          <mat-radio-button value="scrap">Scrap Material</mat-radio-button>
+          <mat-radio-button value="rental">Any Rental Income</mat-radio-button>
+          <mat-radio-button value="interest">Interest Income</mat-radio-button>
+          <mat-radio-button value="others">Others</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Divider -->
+      <div class="form-divider"></div>
+
+      <!-- Right Side - Date Picker -->
+      <div class="form-group">
+        <h3 class="section-title">Income Date</h3>
+        <mat-form-field appearance="outline" class="date-field">
+          <input matInput [matDatepicker]="picker" formControlName="incomeDate">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="gst-section">
+          <mat-radio-group formControlName="gstType" class="gst-options">
+            <mat-radio-button value="with_gst">With GST</mat-radio-button>
+            <mat-radio-button value="without_gst">Without GST</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="form-grid">
+          <!-- First Row - Only visible when "With GST" is selected -->
+          <div class="form-row three-columns" *ngIf="incomeForm.get('gstType')?.value === 'with_gst'">
+            <mat-form-field appearance="outline">
+              <mat-label>GST(%)</mat-label>
+              <input matInput type="number" formControlName="gstPercentage" placeholder="eg. 0, 5, 12, 18, 28">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>GST Number</mat-label>
+              <input matInput formControlName="gstNumber" maxlength="15" placeholder="eg. 12ABCD1234E1Z5">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Party Name</mat-label>
+              <input matInput formControlName="partyName">
+            </mat-form-field>
+          </div>
+
+          <!-- Second Row -->
+          <div class="form-row" [ngClass]="{'three-columns': incomeForm.get('gstType')?.value === 'with_gst', 'two-columns': incomeForm.get('gstType')?.value === 'without_gst'}">
+            <mat-form-field appearance="outline">
+              <mat-label>Amount (Excluding GST)</mat-label>
+              <input matInput type="number" formControlName="amount" placeholder="eg. 1000, 5000">
+              <span matPrefix>₹&nbsp;</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Total</mat-label>
+              <input matInput type="number" formControlName="total" readonly>
+              <span matPrefix>₹&nbsp;</span>
+            </mat-form-field>
+
+            <!-- HSN/SAC Code - Only visible when "With GST" is selected -->
+            <mat-form-field appearance="outline" *ngIf="incomeForm.get('gstType')?.value === 'with_gst'">
+              <mat-label>HSN/SAC Code</mat-label>
+              <input matInput formControlName="hsnCode" placeholder="eg. 1234, 5678">
+            </mat-form-field>
+          </div>
+
+          <!-- Third Row -->
+          <div class="form-row three-columns">
+            <mat-form-field appearance="outline">
+              <mat-label>Payment Mode</mat-label>
+              <mat-select formControlName="paymentMode">
+                <mat-option value="cash">Cash</mat-option>
+                <mat-option value="upi">UPI</mat-option>
+                <mat-option value="cheque">Cheque</mat-option>
+                <mat-option value="paytm">Paytm</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Reference No.</mat-label>
+              <input matInput formControlName="referenceNo" placeholder="eg. 11, 21">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Remark</mat-label>
+              <input matInput formControlName="remark" placeholder="eg. Rental, Interest">
+            </mat-form-field>
+          </div>
+        </div>
+
+      <!-- Add this after your last form row -->
+<div class="upload-section">
+  <h3 class="section-title">Upload Image</h3>
+  <div class="file-upload-container">
+    <input type="file"
+           #fileInput
+           hidden
+           accept="image/*"
+           (change)="onFileSelected($event)">
+
+    <div class="upload-box" (click)="fileInput.click()">
+      <div *ngIf="!selectedFile" class="upload-placeholder">
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Click to upload image</span>
+      </div>
+      <div *ngIf="selectedFile" class="selected-file">
+        <img [src]="previewUrl" class="image-preview">
+        <div class="file-info">
+          <span>{{ selectedFile.name }}</span>
+          <button mat-icon-button color="warn" (click)="removeFile($event)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+  </form>
+</div>
+  </div>
+</ng-template>
+
+<!-- Expense Bottom Sheet Template -->
+<!-- <ng-template #expenseSheet>
+  <div class="bottom-sheet-container">
+    <div class="sheet-header">
+      <h2 class="sheet-title">Add Expense/Withdraw</h2>
+      <div class="sheet-actions">
+        <button mat-raised-button color="primary" class="submit-btn">Submit</button>
+        <button mat-icon-button (click)="closeSheet()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="sheet-content">
+    </div>
+  </div>
+</ng-template> -->
+
+<!-- Expense Bottom Sheet Template -->
+<ng-template #expenseSheet>
+  <div class="bottom-sheet-container">
+    <div class="sheet-header" style="background-color: #e8e8ee;">
+      <h1 class="sheet-title" style="color: black; text-decoration: underline;" >Add Expense/Withdraw</h1>
+      <div class="sheet-actions">
+        <button mat-raised-button color="primary" class="submit-btn" (click)="submitExpenseForm()">Submit</button>
+        <button mat-icon-button (click)="closeSheet()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="sheet-content">
+      <form [formGroup]="expenseForm" class="income-form">
+        <div class="form-row">
+          <!-- Left Side - Category -->
+          <div class="form-group" style="width: 40%;">
+            <h3 class="section-title">Category</h3>
+            <mat-radio-group formControlName="category" class="category-options">
+              <mat-radio-button value="bank-fee">Bank Fee and Charges</mat-radio-button>
+              <mat-radio-button value="employee">Employee Salaries & Advances</mat-radio-button>
+              <mat-radio-button value="printing">Printing and Stationery</mat-radio-button>
+              <mat-radio-button value="raw-material">Raw Material</mat-radio-button>
+              <mat-radio-button value="rent">Rent or Mortgage Payments</mat-radio-button>
+              <mat-radio-button value="repair">Repair & Maintenance</mat-radio-button>
+              <mat-radio-button value="utility">Utilities & Phone</mat-radio-button>
+              <mat-radio-button value="texes">Taxes/Licenses/Fees</mat-radio-button>
+              <mat-radio-button value="food">Food & Beverage</mat-radio-button>
+              <mat-radio-button value="cash">Missing Cash (Cash Loss)</mat-radio-button>
+              <mat-radio-button value="other">Others</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <!-- Divider -->
+          <div class="form-divider"></div>
+
+          <!-- Right Side - All other content -->
+          <div class="form-group" style="width: 60%;">
+            <!-- Two dates in row -->
+            <h3 class="section-title">Expense Date & Payment Date</h3>
+            <div class="dates-container">
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Expense Date</mat-label>
+                <input matInput [matDatepicker]="expensePicker" formControlName="expenseDate">
+                <mat-datepicker-toggle matIconSuffix [for]="expensePicker"></mat-datepicker-toggle>
+                <mat-datepicker #expensePicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Payment Date</mat-label>
+                <input matInput [matDatepicker]="paymentPicker" formControlName="paymentDate">
+                <mat-datepicker-toggle matIconSuffix [for]="paymentPicker"></mat-datepicker-toggle>
+                <mat-datepicker #paymentPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- GST Options -->
+            <div class="gst-section">
+              <mat-radio-group formControlName="gstType" class="gst-options">
+                <mat-radio-button value="with_gst">With GST</mat-radio-button>
+                <mat-radio-button value="without_gst">Without GST</mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <!-- Rest of the form fields -->
+            <div class="form-grid">
+              <!-- GST Related Fields -->
+              <div class="form-row three-columns" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
+                <mat-form-field appearance="outline">
+                  <mat-label>GST(%)</mat-label>
+                  <input matInput type="number" formControlName="gstPercentage">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>GST Number</mat-label>
+                  <input matInput formControlName="gstNumber" maxlength="15">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Party Name</mat-label>
+                  <input matInput formControlName="partyName">
+                </mat-form-field>
+              </div>
+
+              <!-- Amount Fields -->
+              <div class="form-row" [ngClass]="{'three-columns': expenseForm.get('gstType')?.value === 'with_gst', 'two-columns': expenseForm.get('gstType')?.value === 'without_gst'}">
+                <mat-form-field appearance="outline">
+                  <mat-label>Amount (Excluding GST)</mat-label>
+                  <input matInput type="number" formControlName="amount">
+                  <span matPrefix>₹&nbsp;</span>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Total</mat-label>
+                  <input matInput type="number" formControlName="total" readonly>
+                  <span matPrefix>₹&nbsp;</span>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
+                  <mat-label>HSN/SAC Code</mat-label>
+                  <input matInput formControlName="hsnCode">
+                </mat-form-field>
+              </div>
+
+              <!-- Payment Details -->
+              <div class="form-row three-columns">
+                <mat-form-field appearance="outline">
+                  <mat-label>Payment Mode</mat-label>
+                  <mat-select formControlName="paymentMode">
+                    <mat-option value="cash">Cash</mat-option>
+                    <mat-option value="upi">UPI</mat-option>
+                    <mat-option value="cheque">Cheque</mat-option>
+                    <mat-option value="paytm">Paytm</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Reference No.</mat-label>
+                  <input matInput formControlName="referenceNo">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Remark</mat-label>
+                  <input matInput formControlName="remark">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+              <h3 class="section-title">Upload Image</h3>
+              <div class="file-upload-container">
+                <input type="file" #expenseFileInput hidden accept="image/*" (change)="onExpenseFileSelected($event)">
+
+                <div class="upload-box" (click)="expenseFileInput.click()">
+                  <div *ngIf="!expenseSelectedFile" class="upload-placeholder">
+                    <mat-icon>cloud_upload</mat-icon>
+                    <span>Click to upload image</span>
+                  </div>
+                  <div *ngIf="expenseSelectedFile" class="selected-file">
+                    <img [src]="expensePreviewUrl" class="image-preview">
+                    <div class="file-info">
+                      <span>{{ expenseSelectedFile.name }}</span>
+                      <button mat-icon-button color="warn" (click)="removeExpenseFile($event)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+
+<!-- More Filters Bottom Sheet Template -->
+<ng-template #moreFiltersSheet>
+  <div class="bottom-sheet-container">
+    <div class="sheet-header" style="background-color: #e8e8ee;">
+      <h1 class="sheet-title" style="color: black; text-decoration: underline;">More Filters</h1>
+      <div class="sheet-actions">
+        <button mat-icon-button (click)="closeSheet()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="sheet-content">
+      <form [formGroup]="moreFiltersForm" class="more-filters-form">
+        <div class="form-grid">
+          <!-- Staff Selection -->
+          <mat-form-field appearance="outline">
+            <mat-label>Select Staff</mat-label>
+            <mat-select formControlName="staff">
+              <mat-option *ngFor="let option of staffOptions" [value]="option.value">
+                {{option.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Transaction Type Selection -->
+          <mat-form-field appearance="outline">
+            <mat-label>Select Transaction Type</mat-label>
+            <mat-select formControlName="transactionType">
+              <mat-option *ngFor="let option of transactionTypeOptions" [value]="option.value">
+                {{option.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Payment Mode Selection -->
+          <mat-form-field appearance="outline">
+            <mat-label>Select Payment Mode</mat-label>
+            <mat-select formControlName="paymentMode">
+              <mat-option *ngFor="let option of paymentModeOptions" [value]="option.value">
+                {{option.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="filter-actions">
+          <button mat-raised-button color="primary" (click)="resetMoreFilters()" class="reset-btn">
+            Reset
+          </button>
+          <button mat-raised-button color="accent" (click)="applyMoreFilters()" class="apply-btn">
+            Apply
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

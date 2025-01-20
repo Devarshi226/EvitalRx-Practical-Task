@@ -15,6 +15,9 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AuthApi } from './Api/firebase';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -33,6 +36,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     AngularFireModule.initializeApp(AuthApi.firebaseConfig),
     AngularFireAuthModule,
     HttpClientModule,
+    MatBottomSheetModule,
+    MatRadioModule,
+    MatTooltipModule,
     AngularFirestoreModule,
     ToastrModule.forRoot( {
       timeOut: 1000,
