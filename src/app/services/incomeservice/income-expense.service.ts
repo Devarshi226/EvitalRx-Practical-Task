@@ -62,7 +62,11 @@ export class IncomeExpenseService {
     formData.append('chemist_id', this.chemist_id.toString());
     formData.append('device_id', this.deviceId);
     formData.append('login_parent_id', this.login_parent_id.toString());
-
+    if (data.gstn_number) {
+      formData.append('gstn_number', data.gstn_number);
+      formData.append('gst_percentage', data.gst_percentage);
+      formData.append('hsn_sac_code', data.hsn_sac_code);
+    }
     return this.http.post(this.expenseUrladd, formData);
   }
 

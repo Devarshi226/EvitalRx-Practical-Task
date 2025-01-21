@@ -584,9 +584,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         amount: formValues.amount,
         total: formValues.total,
         gst_percentage: formValues.gstType === 'with_gst' ? formValues.gstPercentage : 0,
-        gst: formValues.gstType === 'with_gst'
-          ? (Number(formValues.amount) * Number(formValues.gstPercentage) / 100)
-          : 0,
+        gstn_number : formValues.gstNumber,
+        hsn_sac_code : formValues.hsnCode,
         payment_mode: formValues.paymentMode,
         reference_no: formValues.referenceNo,
         remark: formValues.remark,
