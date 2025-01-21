@@ -48,6 +48,7 @@ export class IncomeExpenseComponent implements OnInit {
 
   private bottomSheetRef: MatBottomSheetRef | null = null;
 
+  selectedRow: any = null;
   data: any;
   allTransactions: Transaction[] = [];
   transactions: Transaction[] = [];
@@ -261,6 +262,9 @@ export class IncomeExpenseComponent implements OnInit {
     this.loadInitialData();
     this.setupFormListeners();
   }
+
+
+
 
   private loadInitialData() {
     this.incomeExpenseService.getData(1).subscribe({
