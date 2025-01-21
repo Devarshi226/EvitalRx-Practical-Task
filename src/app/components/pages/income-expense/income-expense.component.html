@@ -1,5 +1,4 @@
 <div class="ie-container">
-  <!-- Header Section -->
   <div class="ie-header">
     <h1 class="ie-title">
       <span class="text-gradient">Manage Income & Expense</span>
@@ -23,7 +22,6 @@
     </div>
   </div>
 
-  <!-- Filter Section -->
   <div class="filter-section">
     <div class="filter-card">
       <div class="filter-left">
@@ -36,11 +34,9 @@
               {{option.label}}
             </mat-option>
           </mat-select>
-          <!-- Hidden date range picker that opens when custom is selected -->
           <mat-date-range-picker #picker (closed)="onDateRangeSelected($event)">
           </mat-date-range-picker>
         </mat-form-field>
-        <!-- Custom Date Range Picker -->
         <mat-form-field *ngIf="dateFilter.value === 'custom'" appearance="outline" class="date-range-field">
           <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
             <input matStartDate placeholder="Start date" formControlName="start">
@@ -51,7 +47,6 @@
         </mat-form-field>
 
 
-         <!-- New category filter -->
     <mat-form-field appearance="outline" class="category-field">
       <mat-select [formControl]="categoryFilter" placeholder="Select Category">
         <mat-option *ngFor="let category of categories" [value]="category.id">
@@ -99,74 +94,60 @@
     </div>
 
   </div>
-  <!-- Transaction Table -->
 <div class="table-container">
   <table mat-table [dataSource]="transactions" class="transaction-table">
-    <!-- Entry Date Column -->
     <ng-container matColumnDef="entryDate">
       <th mat-header-cell *matHeaderCellDef>Entry Date</th>
       <td mat-cell *matCellDef="let element">{{element.expense_date | date}}</td>
     </ng-container>
 
-    <!-- Category Column -->
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef>Category</th>
       <td mat-cell *matCellDef="let element">{{ getCategoryValue(element.category_id) }}</td>
     </ng-container>
 
-    <!-- Transaction Type Column -->
     <ng-container matColumnDef="transactionType">
       <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
       <td mat-cell *matCellDef="let element">{{ element.transaction_type }}</td>
     </ng-container>
 
-    <!-- Entry By Column -->
     <ng-container matColumnDef="entryBy">
       <th mat-header-cell *matHeaderCellDef>Entry By</th>
-      <td mat-cell *matCellDef="let element">{{element.entryBy}}</td>
+      <td mat-cell *matCellDef="let element">{{element.expense_by_name}}</td>
     </ng-container>
 
-    <!-- Payment Mode Column -->
     <ng-container matColumnDef="paymentMode">
       <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
       <td mat-cell *matCellDef="let element">{{getPaymentMethodValue(element.payment_status) }}</td>
     </ng-container>
 
-    <!-- Reference Number Column -->
     <ng-container matColumnDef="refNo">
       <th mat-header-cell *matHeaderCellDef>Ref. No.</th>
-      <td mat-cell *matCellDef="let element">{{element.refNo}}</td>
+      <td mat-cell *matCellDef="let element">{{element.reference_no}}</td>
     </ng-container>
 
-    <!-- Amount Column -->
     <ng-container matColumnDef="amount">
       <th mat-header-cell *matHeaderCellDef>Amount</th>
       <td mat-cell *matCellDef="let element">₹{{ element.amount }}</td>
     </ng-container>
 
-    <!-- GST Column -->
     <ng-container matColumnDef="gst">
       <th mat-header-cell *matHeaderCellDef>GST(%)</th>
       <td mat-cell *matCellDef="let element">{{ element.gst_percentage }}%</td>
     </ng-container>
 
-    <!-- Total Column -->
     <ng-container matColumnDef="total">
       <th mat-header-cell *matHeaderCellDef>Total</th>
       <td mat-cell *matCellDef="let element">₹{{element.total}}</td>
     </ng-container>
 
-    <!-- Remark Column -->
-    <!-- <ng-container matColumnDef="remark">
-      <th mat-header-cell *matHeaderCellDef>Remark</th>
-      <td mat-cell *matCellDef="let element">{{element.remark}}</td>
-    </ng-container> -->
+
 
     <ng-container matColumnDef="remark">
       <th mat-header-cell *matHeaderCellDef>Remark</th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon *ngIf="element.remark"
-                  [matTooltip]="element.remark"
+        <mat-icon *ngIf="element.description"
+                  [matTooltip]="element.description"
                   matTooltipPosition="above"
                   class="remark-icon">
           comment
@@ -174,7 +155,6 @@
       </td>
     </ng-container>
 
-    <!-- Add new Action Column -->
 <ng-container matColumnDef="actions">
   <th mat-header-cell *matHeaderCellDef>Actions</th>
   <td mat-cell *matCellDef="let element">
@@ -195,7 +175,6 @@
 
 
 
-<!-- Income Bottom Sheet Template -->
 <ng-template #incomeSheet>
   <div class="bottom-sheet-container">
     <div class="sheet-header"style="background-color: #e8e8ee;">
@@ -207,11 +186,9 @@
         </button>
       </div>
     </div>
-    <!-- Inside your income sheet template -->
 <div class="sheet-content">
   <form [formGroup]="incomeForm" class="income-form">
     <div class="form-row">
-      <!-- Left Side - Category with Radio Buttons -->
       <div class="form-group">
         <h3 class="section-title">Category</h3>
         <mat-radio-group formControlName="category" class="category-options">
@@ -224,10 +201,8 @@
         </mat-radio-group>
       </div>
 
-      <!-- Divider -->
       <div class="form-divider"></div>
 
-      <!-- Right Side - Date Picker -->
       <div class="form-group">
         <h3 class="section-title">Income Date</h3>
         <mat-form-field appearance="outline" class="date-field">
@@ -244,7 +219,6 @@
         </div>
 
         <div class="form-grid">
-          <!-- First Row - Only visible when "With GST" is selected -->
           <div class="form-row three-columns" *ngIf="incomeForm.get('gstType')?.value === 'with_gst'">
             <mat-form-field appearance="outline">
               <mat-label>GST(%)</mat-label>
@@ -262,7 +236,6 @@
             </mat-form-field>
           </div>
 
-          <!-- Second Row -->
           <div class="form-row" [ngClass]="{'three-columns': incomeForm.get('gstType')?.value === 'with_gst', 'two-columns': incomeForm.get('gstType')?.value === 'without_gst'}">
             <mat-form-field appearance="outline">
               <mat-label>Amount (Excluding GST)</mat-label>
@@ -276,14 +249,12 @@
               <span matPrefix>₹&nbsp;</span>
             </mat-form-field>
 
-            <!-- HSN/SAC Code - Only visible when "With GST" is selected -->
             <mat-form-field appearance="outline" *ngIf="incomeForm.get('gstType')?.value === 'with_gst'">
               <mat-label>HSN/SAC Code</mat-label>
               <input matInput formControlName="hsnCode" placeholder="eg. 1234, 5678">
             </mat-form-field>
           </div>
 
-          <!-- Third Row -->
           <div class="form-row three-columns">
             <mat-form-field appearance="outline">
               <mat-label>Payment Mode</mat-label>
@@ -307,7 +278,6 @@
           </div>
         </div>
 
-      <!-- Add this after your last form row -->
 <div class="upload-section">
   <h3 class="section-title">Upload Image</h3>
   <div class="file-upload-container">
@@ -358,7 +328,6 @@
   </div>
 </ng-template> -->
 
-<!-- Expense Bottom Sheet Template -->
 <ng-template #expenseSheet>
   <div class="bottom-sheet-container">
     <div class="sheet-header" style="background-color: #e8e8ee;">
@@ -373,7 +342,6 @@
     <div class="sheet-content">
       <form [formGroup]="expenseForm" class="income-form">
         <div class="form-row">
-          <!-- Left Side - Category -->
           <div class="form-group" style="width: 40%;">
             <h3 class="section-title">Category</h3>
             <mat-radio-group formControlName="category" class="category-options">
@@ -391,12 +359,9 @@
             </mat-radio-group>
           </div>
 
-          <!-- Divider -->
           <div class="form-divider"></div>
 
-          <!-- Right Side - All other content -->
           <div class="form-group" style="width: 60%;">
-            <!-- Two dates in row -->
             <h3 class="section-title">Expense Date & Payment Date</h3>
             <div class="dates-container">
               <mat-form-field appearance="outline" class="date-field">
@@ -414,7 +379,6 @@
               </mat-form-field>
             </div>
 
-            <!-- GST Options -->
             <div class="gst-section">
               <mat-radio-group formControlName="gstType" class="gst-options">
                 <mat-radio-button value="with_gst">With GST</mat-radio-button>
@@ -422,9 +386,7 @@
               </mat-radio-group>
             </div>
 
-            <!-- Rest of the form fields -->
             <div class="form-grid">
-              <!-- GST Related Fields -->
               <div class="form-row three-columns" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
                 <mat-form-field appearance="outline">
                   <mat-label>GST(%)</mat-label>
@@ -442,7 +404,6 @@
                 </mat-form-field>
               </div>
 
-              <!-- Amount Fields -->
               <div class="form-row" [ngClass]="{'three-columns': expenseForm.get('gstType')?.value === 'with_gst', 'two-columns': expenseForm.get('gstType')?.value === 'without_gst'}">
                 <mat-form-field appearance="outline">
                   <mat-label>Amount (Excluding GST)</mat-label>
@@ -462,7 +423,6 @@
                 </mat-form-field>
               </div>
 
-              <!-- Payment Details -->
               <div class="form-row three-columns">
                 <mat-form-field appearance="outline">
                   <mat-label>Payment Mode</mat-label>
@@ -486,7 +446,6 @@
               </div>
             </div>
 
-            <!-- Upload Section -->
             <div class="upload-section">
               <h3 class="section-title">Upload Image</h3>
               <div class="file-upload-container">
@@ -517,7 +476,6 @@
 </ng-template>
 
 
-<!-- More Filters Bottom Sheet Template -->
 <ng-template #moreFiltersSheet>
   <div class="bottom-sheet-container">
     <div class="sheet-header" style="background-color: #e8e8ee;">
@@ -531,7 +489,6 @@
     <div class="sheet-content">
       <form [formGroup]="moreFiltersForm" class="more-filters-form">
         <div class="form-grid">
-          <!-- Staff Selection -->
           <mat-form-field appearance="outline">
             <mat-label>Select Staff</mat-label>
             <mat-select formControlName="staff">
@@ -541,7 +498,6 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- Transaction Type Selection -->
           <mat-form-field appearance="outline">
             <mat-label>Select Transaction Type</mat-label>
             <mat-select formControlName="transactionType">
@@ -551,7 +507,6 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- Payment Mode Selection -->
           <mat-form-field appearance="outline">
             <mat-label>Select Payment Mode</mat-label>
             <mat-select formControlName="paymentMode">
@@ -562,7 +517,6 @@
           </mat-form-field>
         </div>
 
-        <!-- Action Buttons -->
         <div class="filter-actions">
           <button mat-raised-button color="primary" (click)="resetMoreFilters()" class="reset-btn">
             Reset

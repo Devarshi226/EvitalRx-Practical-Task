@@ -272,6 +272,14 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
+.mdc-data-table__cell{
+  text-align: center !important;
+}
+
+.mdc-data-table__header-cell{
+  text-align: center !important;
+}
+
 .filter-card {
   @include glass-effect;
   display: flex;
