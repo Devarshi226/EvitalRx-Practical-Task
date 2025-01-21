@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, take } from 'rxjs';
 import { EvitalApiService } from 'src/app/services/evitalrx/evital-api.service';
 import { ShareddataService } from 'src/app/services/shareddata/shareddata.service';
 import { ViewDetailsComponent } from '../view-details/view-details.component';
@@ -50,9 +50,10 @@ export class SearchComponent implements OnInit {
   };
 
   mostSearchedMedicines = ['Paracetamol', 'Dolo', 'Beta', 'Zifi', 'Thyrox', 'Ltk'];
-  cartArray: any[] = [];
   dataSource: any[] = [];
   dataExistesinCart: boolean = false;
+  cartData: any[] = [];
+  cardDataIds: any[] = [];
 
   constructor(
     private router: Router,
@@ -86,7 +87,6 @@ export class SearchComponent implements OnInit {
     const searchTerm = event.target.value;
     this.searchQuery = searchTerm;
     this.searchSubject.next(searchTerm);
-    console.log('Search query:', searchTerm);
 
     if (searchTerm.length > 2) {
        this.selectedMedicine = searchTerm;
@@ -143,49 +143,59 @@ this.dataSource = [];
     });
   }
 
-  AddtoCart(medicine: any): void {
-
-    const medicineIds = [medicine.medicine_id];
-    const id = JSON.stringify(medicineIds);
-    const availableForPatient = medicine.available_for_patient?.toLowerCase() === 'yes';
-
-    const storedCartData = localStorage.getItem('cartCheckoutResponse');
-    if (storedCartData) {
-      this.cartArray = JSON.parse(storedCartData);
+  AddtoCart(element: any): void {
+    if (!element?.medicine_id) {
+      this.toster.error('Invalid medicine data');
+      return;
     }
 
-    this.medicineApi.getMedicineInfo(id).subscribe({
-      next: (res) => {
-if(res.data.length === 0){
+    this.cardDataIds = [element.medicine_id];
+    const id = JSON.stringify(this.cardDataIds);
+    const availableForPatient = element.available_for_patient?.toLowerCase() === 'yes';
 
-  this.toster.error('No data for available');
-return
-}
-        if (Array.isArray(this.cartArray)) {
-           this.dataExistesinCart = this.cartArray.some((item) =>
-            item.data[0]?.id === res.data[0]?.id
-          );
-        } else {
-          this.cartArray = [];
-          }
+    this.sharedDataService.cartCheckoutResponse$.pipe(take(1)).subscribe({
+      next: (currentCart) => {
+        this.cartData = Array.isArray(currentCart) ? currentCart : [];
 
-        if (!this.dataExistesinCart) {
-          this.cartArray.push({ ...res, quantity: 1 });
-        }
-        if (availableForPatient  && !this.dataExistesinCart) {
-          this.toster.success('Added to cart');
-          this.sharedDataService.updateCartData(this.cartArray);
-        } else if(!availableForPatient){
-          this.cartArray = this.cartArray.filter((item) => item.data[0]?.id !== res.id);
-          this.toster.error('Not available for patient');
-        }else {
-          this.toster.info('Already in cart');
-        }
+        this.medicineApi.getMedicineInfo(id).subscribe({
+          next: (res) => {
+            if (!res?.data || res.data.length === 0) {
+              this.toster.error('No data available');
+              return;
+            }
+
+            const isAlreadyInCart = this.cartData.some(
+              (item) => item.data?.[0]?.id === res.data?.[0]?.id
+            );
+
+            if (!isAlreadyInCart && availableForPatient) {
+              const updatedCart = [...this.cartData, { ...res, quantity: 1 }];
+              this.sharedDataService.sendCartCheckoutResponse(updatedCart);
+              this.toster.success('Added to cart');
+            } else if (!availableForPatient) {
+              const updatedCart = this.cartData.filter(
+                (item) => item.data?.[0]?.id !== res.data?.[0]?.id
+              );
+              this.sharedDataService.sendCartCheckoutResponse(updatedCart);
+              this.toster.error('Not available for patient');
+            } else {
+              this.toster.info('Already in cart');
+            }
+          },
+          error: (err) => {
+            console.error('Error fetching medicine info:', err);
+            this.toster.error('Failed to add to cart. Please try again.');
+          },
+        });
       },
       error: (err) => {
-        this.toster.error('Failed to add to cart. Please try again.');
-      },
+        console.error('Error accessing cart data:', err);
+        this.toster.error('Failed to access cart. Please try again.');
+      }
     });
-
   }
+
+
+
+
 }

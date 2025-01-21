@@ -5,90 +5,90 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class ShareddataService {
-
   private readonly TOKEN_KEY = 'auth_token';
-  private readonly CART_CHEKOUT_KEY = 'CART_CHEKOUT_DATA';
-  private readonly PATIENT_ID_KEY = 'PATIENT_ID';
-  private readonly SUBTOTAL_KEY = 'subtotal';
+  private readonly CART_CHECKOUT_KEY = 'cartCheckoutResponse';
+  private readonly PATIENT_ID_KEY = 'patientId';
+  private readonly SUBTOTAL_KEY = 'saveSubtotal';
+  cartData$: any;
 
   constructor() {
-    this.initializeCartData();
+    const storedCartData = this.loadFromLocalStorage(this.CART_CHECKOUT_KEY, []);
+    this.cartDataSubject.next(storedCartData);
+    this.elementSubject.next(storedCartData);
+
   }
 
-
   // ** Authentication Status **
-  private loginStatus = new BehaviorSubject<boolean>(this.getLoginStatus());
-  isLoggedIn$ = this.loginStatus.asObservable();
+  private loginStatusSubject = new BehaviorSubject<boolean>(this.getLoginStatus());
+  isLoggedIn$ = this.loginStatusSubject.asObservable();
 
   setLoginStatus(status: boolean): void {
-    this.loginStatus.next(status);
+    this.loginStatusSubject.next(status);
+  }
+
+  get IsLoggedIn(): boolean {
+    try {
+      const token = localStorage.getItem(this.TOKEN_KEY);
+      return !!token;
+    } catch (error) {
+      return false;
+    }
   }
 
   private getLoginStatus(): boolean {
-    const TOKEN_KEY = localStorage.getItem(this.TOKEN_KEY);
-    return !!TOKEN_KEY;
+    return this.IsLoggedIn;
   }
 
-  // ** Cart Checkout Data **
-  private cartDataSubject = new BehaviorSubject<any[]>(this.loadFromLocalStorage(this.CART_CHEKOUT_KEY, []));
-  cartData$ = this.cartDataSubject.asObservable();
+  private elementSubject = new BehaviorSubject<any>(null);
+  elementSubject$ = this.elementSubject.asObservable();
 
-  updateCartData(cartData: any[]): void {
-    this.cartDataSubject.next(cartData);
-    this.saveToLocalStorage(this.CART_CHEKOUT_KEY, cartData);
+  sendElement(element: any): void {
+    this.elementSubject.next(element);
+    this.saveToLocalStorage(this.CART_CHECKOUT_KEY, element);
   }
 
-  clearCartData(): void {
+  ClearCart(): void {
+    this.elementSubject.next(null);
+    this.clearCartData();
+  }
+
+  private cartDataSubject = new BehaviorSubject<any[]>(this.loadFromLocalStorage(this.CART_CHECKOUT_KEY, []));
+  cartCheckoutResponse$ = this.cartDataSubject.asObservable();
+
+  sendCartCheckoutResponse(response: any[]): void {
+    this.cartDataSubject.next(response);
+    this.saveToLocalStorage(this.CART_CHECKOUT_KEY, response);
+  }
+
+  clearCartCheckoutResponse(): void {
     this.cartDataSubject.next([]);
-    this.removeFromLocalStorage(this.CART_CHEKOUT_KEY);
+    this.removeFromLocalStorage(this.CART_CHECKOUT_KEY);
   }
-
-  private initializeCartData(): void {
-    const storedCartData = this.loadFromLocalStorage(this.CART_CHEKOUT_KEY, []);
-    console.log('Stored cart data:', storedCartData);
-    this.cartDataSubject.next(storedCartData);
-  }
-
-
 
   // ** Patient ID **
-  private patientIdSubject = new BehaviorSubject<any>(this.loadFromLocalStorage(this.CART_CHEKOUT_KEY, null));
+  private patientIdSubject = new BehaviorSubject<any>(this.loadFromLocalStorage(this.PATIENT_ID_KEY, null));
   patientId$ = this.patientIdSubject.asObservable();
 
-  updatePatientId(patientId: any): void {
+  sendPatientId(patientId: any): void {
     this.patientIdSubject.next(patientId);
-    this.saveToLocalStorage(this.CART_CHEKOUT_KEY, patientId);
-  }
-
-  clearPatientId(): void {
-    this.patientIdSubject.next(null);
-    this.removeFromLocalStorage(this.CART_CHEKOUT_KEY);
+    this.saveToLocalStorage(this.PATIENT_ID_KEY, patientId);
   }
 
   // ** Subtotal **
   private subtotalSubject = new BehaviorSubject<any>(this.loadFromLocalStorage(this.SUBTOTAL_KEY, null));
   subtotal$ = this.subtotalSubject.asObservable();
 
-  updateSubtotal(subtotal: any): void {
-    this.subtotalSubject.next(subtotal);
-    this.saveToLocalStorage(this.SUBTOTAL_KEY, subtotal);
-  }
-
-  clearSubtotal(): void {
-    this.subtotalSubject.next(null);
-    this.removeFromLocalStorage(this.SUBTOTAL_KEY);
+  sendSubtotal(elementSubtotal: any): void {
+    this.subtotalSubject.next(elementSubtotal);
+    this.saveToLocalStorage(this.SUBTOTAL_KEY, elementSubtotal);
   }
 
   // ** Patient Data **
   private patientSubject = new BehaviorSubject<any>(null);
   patient$ = this.patientSubject.asObservable();
 
-  updatePatientData(patientData: any): void {
+  sendPatient(patientData: any): void {
     this.patientSubject.next(patientData);
-  }
-
-  clearPatientData(): void {
-    this.patientSubject.next(null);
   }
 
   // ** Local Storage Helpers **
@@ -110,40 +110,7 @@ export class ShareddataService {
     localStorage.removeItem(key);
   }
 
-
-
-
-  private cartCheckoutResponse = new BehaviorSubject<any[]>(this.getStoredCartData());
-  public cartCheckoutResponse$ = this.cartCheckoutResponse.asObservable();
-
-  sendCartCheckoutResponse(response: any[]): void {
-    this.cartCheckoutResponse.next(response);
-    this.saveCartData(response);
+  private clearCartData(): void {
+    this.removeFromLocalStorage(this.CART_CHECKOUT_KEY);
   }
-
-  clearCartCheckoutResponse() {
-    this.cartCheckoutResponse.next([]);
-    this.clearStoredCartData();
-  }
-
-  saveCartData(data: any[]): void {
-    localStorage.setItem('cartCheckoutResponse', JSON.stringify(data));
-  }
-
-  private clearStoredCartData(): void {
-    localStorage.removeItem('cartCheckoutResponse');
-  }
-
-  private getStoredCartData(): any[] {
-    const storedData = localStorage.getItem('cartCheckoutResponse');
-    try {
-      return storedData ? JSON.parse(storedData) : [];
-    } catch (error) {
-      // console.error('Error parsing cartCheckoutResponse from localStorage:', error);
-      localStorage.removeItem('cartCheckoutResponse');
-      return [];
-    }
-  }
-
-
 }

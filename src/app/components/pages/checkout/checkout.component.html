@@ -12,7 +12,7 @@
                   <mat-form-field appearance="outline">
                     <mat-label>Select Patient</mat-label>
                     <mat-select formControlName="selectedPatient" (selectionChange)="onSelectionChange($event)">
-                      <mat-option [value]="''">Select Patient</mat-option>
+                      <mat-option>Select Patient</mat-option>
                       <mat-option *ngFor="let item of patients" [value]="item">
                         {{ item.patient_name }}
                       </mat-option>

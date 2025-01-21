@@ -34,6 +34,7 @@ $glass-border: rgba(255, 255, 255, 0.1);
   min-height: 100vh;
   color: $text-primary;
   background: $background-dark;
+  overflow-x: hidden;
 
 
   &::before {

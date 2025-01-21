@@ -61,6 +61,5 @@ export class RecentOrdersComponent implements OnInit {
   }
 
   viewOrderDetails(orderId: string) {
-    console.log('View order details for:', orderId);
-  }
+    console.log('View order details for order ID:', orderId);}
 }
