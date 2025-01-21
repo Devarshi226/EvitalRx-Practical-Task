@@ -43,17 +43,19 @@
             <input matEndDate placeholder="End date" formControlName="end">
           </mat-date-range-input>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
+          <mat-date-range-picker #picker (closed)="onDateRangeSelected($event)"></mat-date-range-picker>
         </mat-form-field>
 
 
-    <mat-form-field appearance="outline" class="category-field">
-      <mat-select [formControl]="categoryFilter" placeholder="Select Category">
-        <mat-option *ngFor="let category of categories" [value]="category.id">
-          {{category.value}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="outline" class="category-field">
+          <mat-label>Select Category</mat-label>
+          <mat-select [formControl]="categoryFilter">
+            <mat-option [value]="'all'">All Categories</mat-option>
+            <mat-option *ngFor="let category of categories" [value]="category.id">
+              {{category.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
   </div>
       <button mat-button class="filter-btn" (click)="openFilters()">
         <mat-icon>filter_list</mat-icon>
@@ -94,83 +96,81 @@
     </div>
 
   </div>
-<div class="table-container">
-  <table mat-table [dataSource]="transactions" class="transaction-table">
-    <ng-container matColumnDef="entryDate">
-      <th mat-header-cell *matHeaderCellDef>Entry Date</th>
-      <td mat-cell *matCellDef="let element">{{element.expense_date | date}}</td>
-    </ng-container>
+  <div class="table-container">
+    <table mat-table [dataSource]="transactions" class="transaction-table">
+      <ng-container matColumnDef="entryDate">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Entry Date</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{element.expense_date | date}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="category">
-      <th mat-header-cell *matHeaderCellDef>Category</th>
-      <td mat-cell *matCellDef="let element">{{ getCategoryValue(element.category_id) }}</td>
-    </ng-container>
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Category</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{ getCategoryValue(element.category_id) }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="transactionType">
-      <th mat-header-cell *matHeaderCellDef>Transaction Type</th>
-      <td mat-cell *matCellDef="let element">{{ element.transaction_type }}</td>
-    </ng-container>
+      <ng-container matColumnDef="transactionType">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Transaction Type</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{ element.transaction_type }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="entryBy">
-      <th mat-header-cell *matHeaderCellDef>Entry By</th>
-      <td mat-cell *matCellDef="let element">{{element.expense_by_name}}</td>
-    </ng-container>
+      <ng-container matColumnDef="entryBy">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Entry By</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{element.expense_by_name}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="paymentMode">
-      <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
-      <td mat-cell *matCellDef="let element">{{getPaymentMethodValue(element.payment_status) }}</td>
-    </ng-container>
+      <ng-container matColumnDef="paymentMode">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Payment Mode</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{getPaymentMethodValue(element.payment_status) }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="refNo">
-      <th mat-header-cell *matHeaderCellDef>Ref. No.</th>
-      <td mat-cell *matCellDef="let element">{{element.reference_no}}</td>
-    </ng-container>
+      <ng-container matColumnDef="refNo">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Ref. No.</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{element.reference_no}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="amount">
-      <th mat-header-cell *matHeaderCellDef>Amount</th>
-      <td mat-cell *matCellDef="let element">₹{{ element.amount }}</td>
-    </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Amount</th>
+        <td mat-cell *matCellDef="let element" class="text-left">₹{{ element.amount }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="gst">
-      <th mat-header-cell *matHeaderCellDef>GST(%)</th>
-      <td mat-cell *matCellDef="let element">{{ element.gst_percentage }}%</td>
-    </ng-container>
+      <ng-container matColumnDef="gst">
+        <th mat-header-cell *matHeaderCellDef class="text-left">GST(%)</th>
+        <td mat-cell *matCellDef="let element" class="text-left">{{ element.gst_percentage }}%</td>
+      </ng-container>
 
-    <ng-container matColumnDef="total">
-      <th mat-header-cell *matHeaderCellDef>Total</th>
-      <td mat-cell *matCellDef="let element">₹{{element.total}}</td>
-    </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Total</th>
+        <td mat-cell *matCellDef="let element" class="text-left">₹{{element.total}}</td>
+      </ng-container>
 
+      <ng-container matColumnDef="remark">
+        <th mat-header-cell *matHeaderCellDef class="text-left">Remark</th>
+        <td mat-cell *matCellDef="let element" class="text-left">
+          <mat-icon *ngIf="element.description"
+                    [matTooltip]="element.description"
+                    matTooltipPosition="above"
+                    class="remark-icon">
+            comment
+          </mat-icon>
+        </td>
+      </ng-container>
 
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-left"></th>
+        <td mat-cell *matCellDef="let element" class="text-left">
+          <button mat-icon-button [matTooltip]="'Delete'" (click)="deleteTransaction(element)">
+            <mat-icon class="action-icon">delete</mat-icon>
+          </button>
+          <button mat-icon-button *ngIf="element.invoice_photo" [matTooltip]="'Download'" (click)="downloadTransaction(element)">
+            <mat-icon class="action-icon">download</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="remark">
-      <th mat-header-cell *matHeaderCellDef>Remark</th>
-      <td mat-cell *matCellDef="let element">
-        <mat-icon *ngIf="element.description"
-                  [matTooltip]="element.description"
-                  matTooltipPosition="above"
-                  class="remark-icon">
-          comment
-        </mat-icon>
-      </td>
-    </ng-container>
-
-<ng-container matColumnDef="actions">
-  <th mat-header-cell *matHeaderCellDef>Actions</th>
-  <td mat-cell *matCellDef="let element">
-    <button mat-icon-button [matTooltip]="'Delete'" (click)="deleteTransaction(element)">
-      <mat-icon class="action-icon">delete</mat-icon>
-    </button>
-    <button mat-icon-button [matTooltip]="'Download'" (click)="downloadTransaction(element)">
-      <mat-icon class="action-icon">download</mat-icon>
-    </button>
-  </td>
-</ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-</div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
 </div>
 
 
@@ -192,12 +192,7 @@
       <div class="form-group">
         <h3 class="section-title">Category</h3>
         <mat-radio-group formControlName="category" class="category-options">
-          <mat-radio-button value="extra-cash">Extra Cash</mat-radio-button>
-          <mat-radio-button value="advertisement">Advertisement</mat-radio-button>
-          <mat-radio-button value="scrap">Scrap Material</mat-radio-button>
-          <mat-radio-button value="rental">Any Rental Income</mat-radio-button>
-          <mat-radio-button value="interest">Interest Income</mat-radio-button>
-          <mat-radio-button value="others">Others</mat-radio-button>
+          <mat-radio-button *ngFor="let category of incomeCategories" [value]="category.id">{{category.category}}</mat-radio-button>
         </mat-radio-group>
       </div>
 
@@ -259,10 +254,9 @@
             <mat-form-field appearance="outline">
               <mat-label>Payment Mode</mat-label>
               <mat-select formControlName="paymentMode">
-                <mat-option value="cash">Cash</mat-option>
-                <mat-option value="upi">UPI</mat-option>
-                <mat-option value="cheque">Cheque</mat-option>
-                <mat-option value="paytm">Paytm</mat-option>
+
+                <mat-option *ngFor="let payment of paymentMethods" [value]="payment.id">{{payment.method_name }}</mat-option>
+
               </mat-select>
             </mat-form-field>
 
@@ -345,18 +339,11 @@
           <div class="form-group" style="width: 40%;">
             <h3 class="section-title">Category</h3>
             <mat-radio-group formControlName="category" class="category-options">
-              <mat-radio-button value="bank-fee">Bank Fee and Charges</mat-radio-button>
-              <mat-radio-button value="employee">Employee Salaries & Advances</mat-radio-button>
-              <mat-radio-button value="printing">Printing and Stationery</mat-radio-button>
-              <mat-radio-button value="raw-material">Raw Material</mat-radio-button>
-              <mat-radio-button value="rent">Rent or Mortgage Payments</mat-radio-button>
-              <mat-radio-button value="repair">Repair & Maintenance</mat-radio-button>
-              <mat-radio-button value="utility">Utilities & Phone</mat-radio-button>
-              <mat-radio-button value="texes">Taxes/Licenses/Fees</mat-radio-button>
-              <mat-radio-button value="food">Food & Beverage</mat-radio-button>
-              <mat-radio-button value="cash">Missing Cash (Cash Loss)</mat-radio-button>
-              <mat-radio-button value="other">Others</mat-radio-button>
+              <mat-radio-button *ngFor="let category of expenseCategories" [value]="category.id">
+              <mat-label> {{ category.category }}</mat-label>
+              </mat-radio-button>
             </mat-radio-group>
+
           </div>
 
           <div class="form-divider"></div>
@@ -427,10 +414,7 @@
                 <mat-form-field appearance="outline">
                   <mat-label>Payment Mode</mat-label>
                   <mat-select formControlName="paymentMode">
-                    <mat-option value="cash">Cash</mat-option>
-                    <mat-option value="upi">UPI</mat-option>
-                    <mat-option value="cheque">Cheque</mat-option>
-                    <mat-option value="paytm">Paytm</mat-option>
+                    <mat-option *ngFor="let payment of paymentMethods" [value]="payment.id">{{payment.method_name }}</mat-option>
                   </mat-select>
                 </mat-form-field>
 
@@ -493,7 +477,7 @@
             <mat-label>Select Staff</mat-label>
             <mat-select formControlName="staff">
               <mat-option *ngFor="let option of staffOptions" [value]="option.value">
-                {{option.label}}
+                {{option.value}}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -510,8 +494,11 @@
           <mat-form-field appearance="outline">
             <mat-label>Select Payment Mode</mat-label>
             <mat-select formControlName="paymentMode">
-              <mat-option *ngFor="let option of paymentModeOptions" [value]="option.value">
-                {{option.label}}
+              <mat-option [value]="'all'">
+                All
+              </mat-option>
+              <mat-option *ngFor="let option of paymentMethods" [value]="option.id">
+                {{option.method_name}}
               </mat-option>
             </mat-select>
           </mat-form-field>

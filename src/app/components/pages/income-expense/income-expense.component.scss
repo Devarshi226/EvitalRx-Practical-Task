@@ -800,3 +800,23 @@ $glass-border: rgba(255, 255, 255, 0.1);
 
 
 
+.text-left {
+  text-align: left !important;
+}
+
+/* Apply left alignment to both header and cell content */
+.transaction-table .mat-header-cell,
+.transaction-table .mat-cell {
+  text-align: left !important;
+  padding: 12px 16px;
+}
+
+/* Remove any default Angular Material text alignment */
+::ng-deep .mat-sort-header-container {
+  justify-content: flex-start !important;
+}
+
+/* For the actions column, keep some space for the buttons */
+.transaction-table .mat-column-actions {
+  padding-right: 24px;
+}
