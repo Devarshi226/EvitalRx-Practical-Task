@@ -5,6 +5,8 @@ import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-shee
 import { MatDateRangePicker } from '@angular/material/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 
 
@@ -99,6 +101,9 @@ export class IncomeExpenseComponent implements OnInit {
   totalIncome = 0;
   totalExpense = 0;
   balance = 0;
+
+  //page
+  currentPage = 1;
 
   // Form groups
   incomeForm = new FormGroup({
@@ -285,8 +290,9 @@ export class IncomeExpenseComponent implements OnInit {
 
 
   private loadCustomeData(page: number, startDate?: Date, endDate?: Date): void {
-    this.incomeExpenseService.getData(1, startDate, endDate).subscribe({
+    this.incomeExpenseService.getData(page, startDate, endDate).subscribe({
       next: (response) => {
+
           this.data = response;
           if (this.data?.data?.results) {
               this.transactions = [...this.data.data.results];
@@ -319,15 +325,11 @@ export class IncomeExpenseComponent implements OnInit {
       }
   });
 
-
-
-    // Income Form GST Type Listener
     this.incomeForm.get('gstType')?.valueChanges.subscribe(value => {
       this.toggleGstFields(this.incomeForm, value!);
       this.calculateTotal(this.incomeForm);
     });
 
-    // Income Form Amount and GST Percentage Listeners
     this.incomeForm.get('amount')?.valueChanges.subscribe(() => {
       this.calculateTotal(this.incomeForm);
     });
@@ -336,13 +338,11 @@ export class IncomeExpenseComponent implements OnInit {
       this.calculateTotal(this.incomeForm);
     });
 
-    // Expense Form GST Type Listener
     this.expenseForm.get('gstType')?.valueChanges.subscribe(value => {
       this.toggleGstFields(this.expenseForm, value!);
       this.calculateTotal(this.expenseForm);
     });
 
-    // Expense Form Amount and GST Percentage Listeners
     this.expenseForm.get('amount')?.valueChanges.subscribe(() => {
       this.calculateTotal(this.expenseForm);
     });
@@ -351,12 +351,10 @@ export class IncomeExpenseComponent implements OnInit {
       this.calculateTotal(this.expenseForm);
     });
 
-    // Category filter change listener
     this.categoryFilter.valueChanges.subscribe(() => {
       this.applyFilters();
     });
 
-    // More filters form change listener
     this.moreFiltersForm.valueChanges.subscribe(() => {
       this.applyFilters();
     });
@@ -374,7 +372,6 @@ export class IncomeExpenseComponent implements OnInit {
       form.get('partyName')?.disable();
       form.get('hsnCode')?.disable();
 
-      // Reset GST-related values
       form.patchValue({
         gstPercentage: '',
         gstNumber: '',
@@ -399,36 +396,6 @@ export class IncomeExpenseComponent implements OnInit {
     form.get('total')?.setValue(total.toFixed(2));
   }
 
-
-  // Date Filter Methods
-  // onDateFilterChange() {
-  //   const selectedOption = this.dateOptions.find(
-  //     option => option.value === this.dateFilter.value
-  //   );
-
-  //   if (selectedOption) {
-  //     if (selectedOption.value === 'custom') {
-  //       // Open date picker for custom range
-  //       this.picker?.open();
-  //     } else if (selectedOption.getDateRange) {
-  //       const { startDate, endDate } = selectedOption.getDateRange();
-  //       this.selectedStartDate = startDate;
-  //       this.selectedEndDate = endDate;
-
-  //       this.dateRange.patchValue({
-  //         start: startDate,
-  //         end: endDate
-  //       });
-
-  //       this.loadCustomeData(1, startDate, endDate);
-
-
-
-  //       // Apply filters
-  //       this.applyFilters();
-  //     }
-  //   }
-  // }
   onDateFilterChange() {
     const selectedOption = this.dateOptions.find(
         option => option.value === this.dateFilter.value
@@ -442,7 +409,6 @@ export class IncomeExpenseComponent implements OnInit {
             this.selectedStartDate = startDate;
             this.selectedEndDate = endDate;
 
-            // Load data with date range
             this.loadCustomeData(1, startDate, endDate);
         }
     }
@@ -459,16 +425,6 @@ export class IncomeExpenseComponent implements OnInit {
     return method ? method.method_name : '';
   }
 
-  // onDateRangeSelected(event: any) {
-  //   if (event.value) {
-  //     const { start, end } = event.value;
-  //     if (start && end) {
-  //       this.selectedStartDate = start;
-  //       this.selectedEndDate = end;
-  //       this.applyFilters();
-  //     }
-  //   }
-  // }
   onDateRangeSelected(event: any) {
     if (event.value) {
         const { start, end } = event.value;
@@ -480,7 +436,6 @@ export class IncomeExpenseComponent implements OnInit {
     }
 }
 
-  // Bottom Sheet and Dialog Methods
   openIncomeDialog() {
     this.bottomSheetRef = this.bottomSheet.open(this.incomeSheet, {
       panelClass: 'custom-bottom-sheet'
@@ -506,23 +461,11 @@ export class IncomeExpenseComponent implements OnInit {
     hasBackdrop: true,
     disableClose: false
 });
-
-// Add subscription to handle sheet closing
 this.bottomSheetRef.afterDismissed().subscribe(() => {
     this.bottomSheetRef = null;
 });
   }
 
-
-  // More Filters Methods
-  // resetMoreFilters() {
-  //   this.moreFiltersForm.reset({
-  //     staff: 'all',
-  //     transactionType: 'all',
-  //     paymentMode: 'all'
-  //   });
-  //   this.applyFilters();
-  // }
 
   applyMoreFilters() {
     this.applyFilters();
@@ -577,7 +520,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
     if (this.incomeForm.valid) {
       const formValues = this.incomeForm.getRawValue();
 
-      // Prepare transaction data
       const transactionData = {
         category_id: formValues.category,
         expense_date: formValues.incomeDate,
@@ -607,12 +549,10 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         }
       });
 
-      // Handle file upload if exists
       if (this.selectedFile) {
         this.uploadTransactionFile(this.selectedFile);
       }
     } else {
-      // Mark form as touched to show validation errors
       Object.keys(this.incomeForm.controls).forEach(key => {
         const control = this.incomeForm.get(key);
         control?.markAsTouched();
@@ -656,16 +596,13 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         error: (err) => {
           this.toster.error('Error saving expense',err);
           console.error('Error saving expense:', err);
-          // Handle error (show toast/alert)
         }
       });
 
-      // Handle file upload if exists
       if (this.expenseSelectedFile) {
         this.uploadTransactionFile(this.expenseSelectedFile);
       }
     } else {
-      // Mark form as touched to show validation errors
       Object.keys(this.expenseForm.controls).forEach(key => {
         const control = this.expenseForm.get(key);
         control?.markAsTouched();
@@ -718,7 +655,100 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
     }
   }
 
-  // Utility Methods
+
+
+
+  downloadTransactionsPdf() {
+    if (!this.transactions || !Array.isArray(this.transactions)) {
+      console.error('No transaction data available');
+      return;
+    }
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(18);
+    doc.text('Transaction Report', pageWidth / 2, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 25);
+
+    const formatCurrency = (amount: number) => {
+      return `₹${amount.toLocaleString('en-IN', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
+      })}`;
+    };
+
+    const tableData = this.transactions.map((item: any) => [
+      item.expense_date,
+      this.getCategoryValue(item.category_id),
+      item.transaction_type,
+      item.expense_by_name,
+      this.getPaymentMethodValue(item.payment_status),
+      item.reference_no,
+      item.amount ,
+      `${item.gst_percentage}%`,
+      item.total,
+      item.description || ''
+    ]);
+
+    const totals = this.transactions.reduce((acc: any, item: any) => {
+      acc.amount = this.data.data.total_income || 0;
+      acc.total = this.data.data.total_amount || 0;
+      return acc;
+    }, { amount: 0, total: 0 });
+
+    // Add total row
+    tableData.push([
+      '', '', '', '', '', 'Total:',
+      formatCurrency(totals.amount),
+      '',
+      formatCurrency(totals.total),
+      ''
+    ]);
+
+    // Configure and add the table
+    autoTable(doc, {
+      head: [['Entry Date', 'Category', 'Transaction Type', 'Entry By', 'Payment Mode', 'Ref. No', 'Amount', 'GST (%)', 'Total', 'Remarks']],
+      body: tableData,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+      },
+      headStyles: {
+        fillColor: [71, 71, 71],
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: 'bold',
+      },
+      columnStyles: {
+        6: { halign: 'right' },
+        8: { halign: 'right' },
+      },
+      didDrawPage: (data) => {
+        const pageCount = this.currentPage;
+        doc.setFontSize(8);
+        doc.text(
+          `Page ${data.pageNumber} of ${pageCount}`,
+          pageWidth / 2,
+          doc.internal.pageSize.getHeight() - 10,
+          { align: 'center' }
+        );
+      },
+      margin: { top: 30 },
+    });
+
+    const timestamp = new Date().toLocaleString();
+    doc.setFontSize(8);
+    doc.text(`Generated: ${timestamp}`, 14, doc.internal.pageSize.getHeight() - 10);
+
+    const fileName = `transactions_${new Date().toISOString().slice(0,10)}.pdf`;
+    doc.save(fileName);
+  }
+
+
+
   getDisplayDate(): string {
     if (!this.selectedStartDate || !this.selectedEndDate) return '';
 
@@ -747,68 +777,11 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
     return method ? method.value : 'Unknown';
   }
 
-  // Filtering methods
-  // private applyFilters() {
-
-  //   // Start with all transactions
-  //   let filteredTransactions = [...this.allTransactions];
-
-  //   // Date Range Filter
-  //   if (this.selectedStartDate && this.selectedEndDate) {
-  //     filteredTransactions = filteredTransactions.filter(t => {
-  //       const transactionDate = new Date(t.expense_date);
-  //       return transactionDate >= this.selectedStartDate! &&
-  //              transactionDate <= this.selectedEndDate!;
-  //     });
-  //   }
-
-  //   // Category Filter
-  //   const selectedCategory = this.categoryFilter?.value;
-  //   if (selectedCategory && selectedCategory !== 'all') {
-  //     filteredTransactions = filteredTransactions.filter(t =>
-  //       t.category_id === Number(selectedCategory)
-  //     );
-  //   }
-
-  //   // More Filters
-  //   const moreFilterValues = this.moreFiltersForm.value;
-
-  //   // Staff Filter
-  //   if (moreFilterValues.staff !== 'all') {
-  //     filteredTransactions = filteredTransactions.filter(t =>
-  //       t.expense_by_name === moreFilterValues.staff
-  //     );
-  //   }
-
-  //   // Transaction Type Filter
-  //   if (moreFilterValues.transactionType !== 'all') {
-  //     filteredTransactions = filteredTransactions.filter(t =>
-  //       t.transaction_type === moreFilterValues.transactionType
-  //     );
-  //   }
-
-  //   // Payment Mode Filter
-  //   if (moreFilterValues.paymentMode !== 'all') {
-  //     filteredTransactions = filteredTransactions.filter(t =>
-  //       this.paymentMethods.some((method:any) =>
-  //         method.value.toLowerCase() === (moreFilterValues.paymentMode?.toLowerCase() ?? 'all')
-  //       )
-  //     );
-  //   }
-
-  //   // Update transactions and summary
-  //   this.transactions = filteredTransactions;
-
-  // }
-
-  // Update applyFilters method
   private applyFilters() {
     if (!this.allTransactions) return;
 
-    // Start with all transactions
     let filteredTransactions = [...this.allTransactions];
 
-    // Date Range Filter
     if (this.selectedStartDate && this.selectedEndDate) {
         filteredTransactions = filteredTransactions.filter(t => {
             const transactionDate = new Date(t.expense_date);
@@ -820,7 +793,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         });
     }
 
-    // Category Filter
     const selectedCategory = this.categoryFilter.value;
     if (selectedCategory && selectedCategory !== 'all') {
         filteredTransactions = filteredTransactions.filter(t =>
@@ -828,40 +800,33 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         );
     }
 
-    // More Filters
     const moreFilterValues = this.moreFiltersForm.value;
 
-    // Staff Filter
     if (moreFilterValues.staff && moreFilterValues.staff !== 'all') {
         filteredTransactions = filteredTransactions.filter(t =>
             t.expense_by_name === moreFilterValues.staff
         );
     }
 
-    // Transaction Type Filter
     if (moreFilterValues.transactionType && moreFilterValues.transactionType !== 'all') {
         filteredTransactions = filteredTransactions.filter(t =>
             t.transaction_type === moreFilterValues.transactionType
         );
     }
 
-    // Payment Mode Filter
     if (moreFilterValues.paymentMode && moreFilterValues.paymentMode !== 'all') {
       filteredTransactions = filteredTransactions.filter(t => {
           const method = this.paymentMethods.find((m: { id: number | null; value: string }) =>
               m.id === t.payment_status
           );
           return method && moreFilterValues.paymentMode ?
-              method.id === +moreFilterValues.paymentMode : // Ensure paymentMode is a number and matches the id
+              method.id === +moreFilterValues.paymentMode :
               false;
       });
   }
-
-    // Update transactions
     this.transactions = filteredTransactions;
 }
 
-// Update resetMoreFilters method
 resetMoreFilters(): void {
   this.moreFiltersForm.reset({
       staff: 'all',
@@ -874,21 +839,10 @@ resetMoreFilters(): void {
   }
 }
 
-private maintainFilterState(): void {
-  const currentFilters = {
-      category: this.categoryFilter.value,
-      moreFilters: this.moreFiltersForm.value
-  };
-
-  if (currentFilters.category && currentFilters.category !== 'all') {
-      this.applyFilters();
-  }
-
-  if (currentFilters.moreFilters.staff !== 'all' ||
-      currentFilters.moreFilters.transactionType !== 'all' ||
-      currentFilters.moreFilters.paymentMode !== 'all') {
-      this.applyFilters();
-  }
+changePage(page: number) {
+  this.currentPage = page;
+  this.loadCustomeData(page, this.selectedStartDate ?? undefined, this.selectedEndDate ?? undefined);
 }
+
 }
 

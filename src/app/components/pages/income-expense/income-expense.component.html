@@ -15,7 +15,7 @@
         Expense
       </button>
 
-      <button mat-raised-button class="action-btn download-btn">
+      <button mat-raised-button class="action-btn download-btn" (click)="downloadTransactionsPdf()">
         <mat-icon>download</mat-icon>
         Download
       </button>
@@ -170,6 +170,16 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    <div class="pagination-controls">
+      <button mat-button [disabled]="currentPage === 0" (click)="changePage(currentPage-1)">
+        <mat-icon>chevron_left</mat-icon> Previous
+      </button>
+      <span>Page {{currentPage }}</span>
+      <button mat-button [disabled]="currentPage === currentPage - 1" (click)="changePage(currentPage + 1)">
+        Next <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -305,22 +315,6 @@
   </div>
 </ng-template>
 
-<!-- Expense Bottom Sheet Template -->
-<!-- <ng-template #expenseSheet>
-  <div class="bottom-sheet-container">
-    <div class="sheet-header">
-      <h2 class="sheet-title">Add Expense/Withdraw</h2>
-      <div class="sheet-actions">
-        <button mat-raised-button color="primary" class="submit-btn">Submit</button>
-        <button mat-icon-button (click)="closeSheet()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-    </div>
-    <div class="sheet-content">
-    </div>
-  </div>
-</ng-template> -->
 
 <ng-template #expenseSheet>
   <div class="bottom-sheet-container">

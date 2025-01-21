@@ -22,12 +22,15 @@
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
     "@grpc/grpc-js": "^1.12.2",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "ngx-toastr": "^15.2.2",
     "process": "^0.11.10",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.15.10",
     "swiper": "^11.1.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
