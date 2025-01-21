@@ -371,12 +371,12 @@
               <div class="form-row three-columns" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
                 <mat-form-field appearance="outline">
                   <mat-label>GST(%)</mat-label>
-                  <input matInput type="number" formControlName="gstPercentage">
+                  <input matInput type="number" formControlName="gstPercentage" placeholder="eg. 0, 5, 12, 18, 28">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>GST Number</mat-label>
-                  <input matInput formControlName="gstNumber" maxlength="15">
+                  <input matInput formControlName="gstNumber" maxlength="15" placeholder="eg. 12ABCD1234E1Z5">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
@@ -388,7 +388,7 @@
               <div class="form-row" [ngClass]="{'three-columns': expenseForm.get('gstType')?.value === 'with_gst', 'two-columns': expenseForm.get('gstType')?.value === 'without_gst'}">
                 <mat-form-field appearance="outline">
                   <mat-label>Amount (Excluding GST)</mat-label>
-                  <input matInput type="number" formControlName="amount">
+                  <input matInput type="number" formControlName="amount" placeholder="eg. 1000, 5000">
                   <span matPrefix>₹&nbsp;</span>
                 </mat-form-field>
 
@@ -400,7 +400,7 @@
 
                 <mat-form-field appearance="outline" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
                   <mat-label>HSN/SAC Code</mat-label>
-                  <input matInput formControlName="hsnCode">
+                  <input matInput formControlName="hsnCode" placeholder="eg. 1234, 5678">
                 </mat-form-field>
               </div>
 
@@ -414,12 +414,12 @@
 
                 <mat-form-field appearance="outline">
                   <mat-label>Reference No.</mat-label>
-                  <input matInput formControlName="referenceNo">
+                  <input matInput formControlName="referenceNo" placeholder="eg. 11, 21">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
                   <mat-label>Remark</mat-label>
-                  <input matInput formControlName="remark">
+                  <input matInput formControlName="remark" placeholder="eg. Rental, Interest">
                 </mat-form-field>
               </div>
             </div>

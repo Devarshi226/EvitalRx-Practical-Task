@@ -514,99 +514,202 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
   }
 
   // Form Submission Methods
+
+
   submitIncomeForm() {
-    this.calculateTotal(this.incomeForm);
+    if (!this.incomeForm.valid) {
+      // Check each required field and show specific error messages
+      const controls = this.incomeForm.controls;
 
-    if (this.incomeForm.valid) {
-      const formValues = this.incomeForm.getRawValue();
-
-      const transactionData = {
-        category_id: formValues.category,
-        expense_date: formValues.incomeDate,
-        amount: formValues.amount,
-        total: formValues.total,
-        gst_percentage: formValues.gstType === 'with_gst' ? formValues.gstPercentage : 0,
-        gstn_number : formValues.gstNumber,
-        hsn_sac_code : formValues.hsnCode,
-        payment_mode: formValues.paymentMode,
-        reference_no: formValues.referenceNo,
-        remark: formValues.remark,
-        transaction_type: 'income'
-      };
-
-      this.incomeExpenseService.addData(transactionData).subscribe({
-        next: (response) => {
-          if(response.status_code === "1"){
-            this.toster.success('Income saved successfully');
-          }else{
-            this.toster.error('Error saving expense',response.message);
-          }
-          this.loadInitialData();
-          this.closeSheet();
-        },
-        error: (err) => {
-          console.error('Error saving income:', err);
-        }
-      });
-
-      if (this.selectedFile) {
-        this.uploadTransactionFile(this.selectedFile);
+      if (!controls.category.valid) {
+        this.toster.error('Please select a category');
+        return;
       }
-    } else {
-      Object.keys(this.incomeForm.controls).forEach(key => {
-        const control = this.incomeForm.get(key);
-        control?.markAsTouched();
-      });
+
+      if (!controls.incomeDate.valid) {
+        this.toster.error('Please select income date');
+        return;
+      }
+
+      if (!controls.amount.valid) {
+        if (controls.amount.errors?.['required']) {
+          this.toster.error('Please enter amount');
+        } else if (controls.amount.errors?.['min']) {
+          this.toster.error('Amount must be greater than 0');
+        }
+        return;
+      }
+
+      if (!controls.paymentMode.valid) {
+        this.toster.error('Please select payment mode');
+        return;
+      }
+
+      // GST related validations when GST type is 'with_gst'
+      if (controls.gstType.value === 'with_gst') {
+        if (controls.gstPercentage.enabled && !controls.gstPercentage.valid) {
+          if (controls.gstPercentage.errors?.['min'] || controls.gstPercentage.errors?.['max']) {
+            this.toster.error('GST percentage must be between 0 and 100');
+          }
+          return;
+        }
+
+        if (controls.gstNumber.enabled && !controls.gstNumber.valid) {
+          this.toster.error('Please enter valid GST number');
+          return;
+        }
+
+        if (controls.hsnCode.value === '') {
+          this.toster.error('Please enter HSN/SAC code');
+          return;
+        }
+      }
+
+      return;
+    }
+
+    // If form is valid, proceed with form submission
+    this.calculateTotal(this.incomeForm);
+    const formValues = this.incomeForm.getRawValue();
+
+    const transactionData = {
+      category_id: formValues.category,
+      expense_date: formValues.incomeDate,
+      amount: formValues.amount,
+      total: formValues.total,
+      gst_percentage: formValues.gstType === 'with_gst' ? formValues.gstPercentage : 0,
+      gstn_number: formValues.gstNumber,
+      hsn_sac_code: formValues.hsnCode,
+      payment_mode: formValues.paymentMode,
+      reference_no: formValues.referenceNo,
+      remark: formValues.remark,
+      transaction_type: 'income'
+    };
+
+    this.incomeExpenseService.addData(transactionData).subscribe({
+      next: (response) => {
+        if (response.status_code === "1") {
+          this.toster.success('Income saved successfully');
+          this.loadInitialData();
+          this.incomeForm.reset()
+          this.closeSheet();
+        } else {
+          this.toster.error('Error saving expense', response.message);
+        }
+      },
+      error: (err) => {
+        console.error('Error saving income:', err);
+        this.toster.error('Error saving income. Please try again.');
+      }
+    });
+
+    if (this.selectedFile) {
+      this.uploadTransactionFile(this.selectedFile);
     }
   }
 
+
   submitExpenseForm() {
+    if (!this.expenseForm.valid) {
+      // Check each required field and show specific error messages
+      const controls = this.expenseForm.controls;
+
+      if (!controls.category.valid) {
+        this.toster.error('Please select an expense category');
+        return;
+      }
+
+      if (!controls.expenseDate.valid) {
+        this.toster.error('Please select expense date');
+        return;
+      }
+
+      if (!controls.paymentDate.valid) {
+        this.toster.error('Please select payment date');
+        return;
+      }
+
+      if (!controls.amount.valid) {
+        if (controls.amount.errors?.['required']) {
+          this.toster.error('Please enter amount');
+        } else if (controls.amount.errors?.['min']) {
+          this.toster.error('Amount must be greater than 0');
+        }
+        return;
+      }
+
+      if (!controls.paymentMode.valid) {
+        this.toster.error('Please select payment mode');
+        return;
+      }
+
+      // GST related validations when GST type is 'with_gst'
+      if (controls.gstType.value === 'with_gst') {
+        if (controls.gstPercentage.enabled && !controls.gstPercentage.valid) {
+          if (controls.gstPercentage.errors?.['min'] || controls.gstPercentage.errors?.['max']) {
+            this.toster.error('GST percentage must be between 0 and 100');
+          }
+          return;
+        }
+
+        if (controls.gstNumber.enabled && !controls.gstNumber.valid) {
+          this.toster.error('Please enter valid GST number');
+          return;
+        }
+
+        if (controls.hsnCode.value === '') {
+          this.toster.error('Please enter HSN/SAC code');
+          return;
+        }
+      }
+
+      return;
+    }
+
+    // Calculate total before submission
     this.calculateTotal(this.expenseForm);
 
-    if (this.expenseForm.valid) {
-      const formValues = this.expenseForm.getRawValue();
+    // If form is valid, proceed with form submission
+    const formValues = this.expenseForm.getRawValue();
 
-      const transactionData = {
-        category_id: formValues.category,
-        payment_date: formValues.paymentDate,
-        expense_date: formValues.expenseDate,
-        amount: formValues.amount,
-        total: formValues.total,
-        gst_percentage: formValues.gstType === 'with_gst' ? formValues.gstPercentage : 0,
-        gst: formValues.gstType === 'with_gst'
-          ? (Number(formValues.amount) * Number(formValues.gstPercentage) / 100)
-          : 0,
-        payment_mode: formValues.paymentMode,
-        reference_no: formValues.referenceNo,
-        remark: formValues.remark,
-        transaction_type: 'expense'
-      };
+    const transactionData = {
+      category_id: formValues.category,
+      payment_date: formValues.paymentDate,
+      expense_date: formValues.expenseDate,
+      amount: formValues.amount,
+      total: formValues.total,
+      gst_percentage: formValues.gstType === 'with_gst' ? formValues.gstPercentage : 0,
+      gst: formValues.gstType === 'with_gst'
+        ? (Number(formValues.amount) * Number(formValues.gstPercentage) / 100)
+        : 0,
+      gstn_number: formValues.gstNumber,
+      hsn_sac_code: formValues.hsnCode,
+      party_name: formValues.partyName,
+      payment_mode: formValues.paymentMode,
+      reference_no: formValues.referenceNo,
+      remark: formValues.remark,
+      transaction_type: 'expense'
+    };
 
-      this.incomeExpenseService.addData(transactionData).subscribe({
-        next: (response) => {
-
-          if(response.status_code === "1"){
-            this.toster.success('Expense saved successfully');
-          }else{
-            this.toster.error('Error saving expense',response.message);
-          }
+    this.incomeExpenseService.addData(transactionData).subscribe({
+      next: (response) => {
+        if (response.status_code === "1") {
+          this.toster.success('Expense saved successfully');
           this.loadInitialData();
+          this.expenseForm.reset()
           this.closeSheet();
-        },
-        error: (err) => {
-          this.toster.error('Error saving expense',err);
-          console.error('Error saving expense:', err);
+        } else {
+          this.toster.error('Error saving expense', response.message);
         }
-      });
-
-      if (this.expenseSelectedFile) {
-        this.uploadTransactionFile(this.expenseSelectedFile);
+      },
+      error: (err) => {
+        console.error('Error saving expense:', err);
+        this.toster.error('Error saving expense. Please try again.');
       }
-    } else {
-      Object.keys(this.expenseForm.controls).forEach(key => {
-        const control = this.expenseForm.get(key);
-        control?.markAsTouched();
-      });
+    });
+
+    if (this.expenseSelectedFile) {
+      this.uploadTransactionFile(this.expenseSelectedFile);
     }
   }
 
@@ -623,7 +726,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       text: 'This transaction will be deleted permanently',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#ca3f42',
+      confirmButtonColor: '#1597c1',
       cancelButtonColor: '#232a49',
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
