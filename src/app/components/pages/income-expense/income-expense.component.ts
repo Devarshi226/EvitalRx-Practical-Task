@@ -587,8 +587,13 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       payment_mode: formValues.paymentMode,
       reference_no: formValues.referenceNo,
       remark: formValues.remark,
-      transaction_type: 'income'
+      transaction_type: 'income',
+      document: this.selectedFile
     };
+
+
+
+
 
     this.incomeExpenseService.addData(transactionData).subscribe({
       next: (response) => {
@@ -692,7 +697,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       payment_mode: formValues.paymentMode,
       reference_no: formValues.referenceNo,
       remark: formValues.remark,
-      transaction_type: 'expense'
+      transaction_type: 'expense',
+      document: this.selectedFile
     };
 
     this.incomeExpenseService.addData(transactionData).subscribe({
