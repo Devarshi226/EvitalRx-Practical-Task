@@ -651,8 +651,16 @@ export class IncomeExpenseComponent implements OnInit {
     });
   }
 
-  downloadTransaction(transaction: Transaction) {
-
+  downloadTransaction(data: Transaction) {
+if (data.invoice_photo) {
+      const link = document.createElement('a');
+      link.href = data.invoice_photo;
+      link.target = '_blank';
+      link.download = `invoice-${data.id}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   }
 
   // Utility Methods

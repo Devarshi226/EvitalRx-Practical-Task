@@ -161,7 +161,7 @@
     <button mat-icon-button [matTooltip]="'Delete'" (click)="deleteTransaction(element)">
       <mat-icon class="action-icon">delete</mat-icon>
     </button>
-    <button mat-icon-button [matTooltip]="'Download'" (click)="downloadTransaction(element)">
+    <button mat-icon-button *ngIf="element.invoice_photo" [matTooltip]="'Download Invoice'" (click)="downloadTransaction(element)">
       <mat-icon class="action-icon">download</mat-icon>
     </button>
   </td>
