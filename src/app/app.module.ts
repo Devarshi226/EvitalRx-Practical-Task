@@ -18,10 +18,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormateIndianCurrencyPipe } from './pipe/formate-indian-currency.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
+    FormateIndianCurrencyPipe,
   ],
   imports: [
     BrowserModule,

@@ -8,9 +8,9 @@ import { Observable, of } from 'rxjs';
 export class IncomeExpenseService {
   constructor(private http: HttpClient) { }
 
-  private expenseUrladd = "https://staging.evitalrx.in:3000/v3/expenses/add";
+  private readonly baseUrl = 'https://staging.evitalrx.in:3000/v3/expenses';
 
-  private accesstoken = '9f3zwuwwfkzofjoq';
+  private accesstoken = 'bm54csldu20av8jt';
   private deviceId = 'bdc16a3d-2c55-4cd8-94a9-c1af1c3bc167'
   private chemist_id = 1186;
   private login_parent_id = 1186;
@@ -19,8 +19,8 @@ export class IncomeExpenseService {
 
   getData(page: number, startDate?: Date, endDate?: Date): Observable<any> {
     const today = new Date();
-    const defaultStartDate = startDate ? startDate.toISOString().split('T')[0] : today.toISOString().split('T')[0];
-    const defaultEndDate = endDate ? endDate.toISOString().split('T')[0] : today.toISOString().split('T')[0];
+    const defaultStartDate = startDate ? this.timeConverter(startDate) : this.timeConverter(today);
+    const defaultEndDate = endDate ? this.timeConverter(endDate) :this.timeConverter(today);
 
     const listData: any = {
       "page": page,
@@ -32,34 +32,52 @@ export class IncomeExpenseService {
       "login_parent_id": this.login_parent_id
     }
     const headers = { 'Content-Type': 'application/json' };
-    return this.http.post('https://staging.evitalrx.in:3000/v3/expenses/list', listData, { headers });
+    return this.http.post(`${this.baseUrl}/list`, listData, { headers });
   }
 
 
 
   addData(data: any): Observable<any> {
+    debugger
+    console.log(data);
+
+    const PaymentDate = data.paymentDate
+      ? this.timeConverter(data.paymentDate)
+      : this.timeConverter(data.expense_date);
+
+
     const formData = new FormData();
     formData.append('accesstoken', this.accesstoken);
+    formData.append('invoice_photo', data.document);
     formData.append('category_id', data.category_id);
-    formData.append('expense_date', data.expense_date);
-    formData.append('payment_method_id', data.payment_method_id);
+    formData.append('expense_date', this.timeConverter(data.expense_date));
+    formData.append('payment_method_id', data.payment_mode);
     formData.append('amount', data.amount);
     formData.append('remark', data.remark);
     formData.append('account_id', data.account_id);
     formData.append('cheque_date', data.cheque_date);
     formData.append('reference_no', data.reference_no);
-    formData.append('payment_date', data.payment_date);
+    formData.append('payment_date', PaymentDate);
     formData.append('transaction_type', data.transaction_type);
     formData.append('party_name', data.party_name);
-    formData.append('chemist_id', data.chemist_id);
+    formData.append('chemist_id', this.chemist_id.toString());
     formData.append('device_id', this.deviceId);
-    formData.append('login_parent_id', data.chemist_id);
+    formData.append('login_parent_id', this.login_parent_id.toString());
+    if (data.gstn_number) {
+      formData.append('gstn_number', data.gstn_number);
+      formData.append('gst_percentage', data.gst_percentage);
+if(data.hsn_sac_code){
+  formData.append('hsn_sac_code', data.hsn_sac_code);
+}else{
+  formData.append('hsn_sac_code', '00000');
+}
 
-    return this.http.post(this.expenseUrladd, formData);
+    }
+
+    return this.http.post(`${this.baseUrl}/add`, formData);
   }
 
   deleteTransaction(id: number): Observable<any> {
-    debugger;
     const requestBody = {
       accesstoken: this.accesstoken,
       device_id: this.deviceId,
@@ -70,11 +88,17 @@ export class IncomeExpenseService {
     const headers = { 'Content-Type': 'application/json' };
 
     return this.http.post(
-      'https://staging.evitalrx.in:3000/v3/expenses/delete',
+      `${this.baseUrl}/delete`,
       requestBody,
       { headers }
     );
   }
+
+  timeConverter(data:any){
+    return data.toISOString().split('T')[0]
+  }
+
+
 
 
 
