@@ -48,6 +48,7 @@ export class IncomeExpenseService {
 
     const formData = new FormData();
     formData.append('accesstoken', this.accesstoken);
+    formData.append('invoice_photo', data.document);
     formData.append('category_id', data.category_id);
     formData.append('expense_date', this.timeConverter(data.expense_date));
     formData.append('payment_method_id', data.payment_mode);
