@@ -52,7 +52,7 @@
           <mat-select [formControl]="categoryFilter">
             <mat-option [value]="'all'">All Categories</mat-option>
             <mat-option *ngFor="let category of categories" [value]="category.id">
-              {{category.value}}
+              {{category.category}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -63,37 +63,40 @@
       </button>
     </div>
 
+
+
     <div class="summary-cards">
       <div class="summary-card income">
-        <div class="card-icon">
-          <mat-icon>trending_up</mat-icon>
-        </div>
-        <div class="card-content">
-          <h3>Total Income</h3>
-          <p class="amount">₹{{ data?.data?.total_income || 0 | number:'1.0-0' }}</p>
-        </div>
+          <div class="card-icon">
+              <mat-icon>trending_up</mat-icon>
+          </div>
+          <div class="card-content">
+              <h3>Total Income</h3>
+              <p class="amount">₹{{ data?.data?.total_income | number:'1.2-2' }}</p>
+          </div>
       </div>
 
       <div class="summary-card expense">
-        <div class="card-icon">
-          <mat-icon>trending_down</mat-icon>
-        </div>
-        <div class="card-content">
-          <h3>Total Expense</h3>
-          <p class="amount">₹{{ data?.data?.total_expense || 0 | number:'1.0-0' }}</p>
-        </div>
+          <div class="card-icon">
+              <mat-icon>trending_down</mat-icon>
+          </div>
+          <div class="card-content">
+              <h3>Total Expense</h3>
+              <p class="amount">₹{{ data?.data?.total_expense | number:'1.2-2' }}</p>
+          </div>
       </div>
 
       <div class="summary-card balance">
-        <div class="card-icon">
-          <mat-icon>account_balance_wallet</mat-icon>
-        </div>
-        <div class="card-content">
-          <h3>Balance</h3>
-          <p class="amount">₹{{ data?.data?.total_amount || 0 | number:'1.0-0' }}</p>
-        </div>
+          <div class="card-icon">
+              <mat-icon>account_balance_wallet</mat-icon>
+          </div>
+          <div class="card-content">
+              <h3>Balance</h3>
+              <p class="amount">₹{{ data?.data?.total_amount | number:'1.2-2' }}</p>
+          </div>
       </div>
-    </div>
+  </div>
+
 
   </div>
   <div class="table-container">
@@ -244,6 +247,7 @@
                      maxlength="15"
                      oninput="this.value = this.value.toUpperCase()"
                      placeholder="eg. 12ABCD1234E1Z5">
+
             </mat-form-field>
 
             <mat-form-field appearance="outline">

@@ -66,13 +66,18 @@ export class IncomeExpenseService {
     if (data.gstn_number) {
       formData.append('gstn_number', data.gstn_number);
       formData.append('gst_percentage', data.gst_percentage);
-      formData.append('hsn_sac_code', data.hsn_sac_code);
+if(data.hsn_sac_code){
+  formData.append('hsn_sac_code', data.hsn_sac_code);
+}else{
+  formData.append('hsn_sac_code', '00000');
+}
+
     }
+
     return this.http.post(`${this.baseUrl}/add`, formData);
   }
 
   deleteTransaction(id: number): Observable<any> {
-    debugger;
     const requestBody = {
       accesstoken: this.accesstoken,
       device_id: this.deviceId,
