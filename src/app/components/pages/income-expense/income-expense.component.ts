@@ -114,13 +114,23 @@ export class IncomeExpenseComponent implements OnInit {
     gstPercentage: new FormControl({
       value: '',
       disabled: true
-    }, [Validators.min(0), Validators.max(100)]),
+    }, [
+      Validators.pattern('^[0-9]{1,2}$'),  // This ensures only 1-2 digits
+      Validators.max(99)
+    ]),
     gstNumber: new FormControl({
       value: '',
       disabled: true
-    }, [Validators.pattern('^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')]),
+    }, [
+      // This pattern ensures only numbers and CAPITAL letters
+      Validators.pattern('^[0-9A-Z]{15}$')
+    ]),
     partyName: new FormControl(''),
-    amount: new FormControl('', [Validators.required, Validators.min(0)]),
+    amount: new FormControl('', [
+      Validators.required,
+      Validators.min(0),
+      Validators.pattern('^[0-9]*$')  // Only positive numbers
+    ]),
     total: new FormControl({ value: '', disabled: true }),
     hsnCode: new FormControl(''),
     paymentMode: new FormControl('', Validators.required),
@@ -133,14 +143,28 @@ export class IncomeExpenseComponent implements OnInit {
     expenseDate: new FormControl(new Date(), Validators.required),
     paymentDate: new FormControl(new Date(), Validators.required),
     gstType: new FormControl('without_gst', Validators.required),
-    gstPercentage: new FormControl({ value: '', disabled: true }, [Validators.min(0), Validators.max(100)]),
-    gstNumber: new FormControl({ value: '', disabled: true }, [
-      Validators.pattern('^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')
+    gstPercentage: new FormControl({
+      value: '',
+      disabled: true
+    }, [
+      Validators.pattern('^[0-9]{1,2}$'),  // This ensures only 1-2 digits
+      Validators.max(99)
+    ]),
+    gstNumber: new FormControl({
+      value: '',
+      disabled: true
+    }, [
+      // This pattern ensures only numbers and CAPITAL letters
+      Validators.pattern('^[0-9A-Z]{15}$')
     ]),
     partyName: new FormControl(''),
-    amount: new FormControl('', [Validators.required, Validators.min(0)]),
+    amount: new FormControl('', [
+      Validators.required,
+      Validators.min(0),
+      Validators.pattern('^[0-9]*$')
+    ]),
     total: new FormControl({ value: '', disabled: true }),
-    hsnCode: new FormControl(''),
+    // hsnCode: new FormControl(''),
     paymentMode: new FormControl('', Validators.required),
     referenceNo: new FormControl(''),
     remark: new FormControl('')
@@ -265,8 +289,7 @@ export class IncomeExpenseComponent implements OnInit {
 
 
 
-
-  private loadInitialData() {
+ loadInitialData() {
     this.incomeExpenseService.getData(1).subscribe({
       next: (res) => {
         this.data = res;
@@ -290,7 +313,15 @@ export class IncomeExpenseComponent implements OnInit {
     });
   }
 
+  numberOnly(event: KeyboardEvent): boolean {
+    const inputChar = String.fromCharCode(event.charCode);
 
+    if (!/^[0-9]$/.test(inputChar)) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
 
 
   private loadCustomeData(page: number, startDate?: Date, endDate?: Date): void {
@@ -309,11 +340,7 @@ export class IncomeExpenseComponent implements OnInit {
   });
   }
 
-
-
-
-
-  private setupFormListeners() {
+ setupFormListeners() {
 
     this.categoryFilter.valueChanges.subscribe((value) => {
       if (this.data?.data?.results) {
@@ -620,7 +647,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
 
   submitExpenseForm() {
     if (!this.expenseForm.valid) {
-      // Check each required field and show specific error messages
       const controls = this.expenseForm.controls;
 
       if (!controls.category.valid) {
@@ -666,10 +692,10 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
           return;
         }
 
-        if (controls.hsnCode.value === '') {
-          this.toster.error('Please enter HSN/SAC code');
-          return;
-        }
+        // if (controls.hsnCode.value === '') {
+        //   this.toster.error('Please enter HSN/SAC code');
+        //   return;
+        // }
       }
 
       return;
@@ -692,7 +718,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         ? (Number(formValues.amount) * Number(formValues.gstPercentage) / 100)
         : 0,
       gstn_number: formValues.gstNumber,
-      hsn_sac_code: formValues.hsnCode,
+      // hsn_sac_code: formValues.hsnCode,
       party_name: formValues.partyName,
       payment_mode: formValues.paymentMode,
       reference_no: formValues.referenceNo,
@@ -745,6 +771,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
           next: () => {
             this.toster.success('Transaction deleted successfully!', 'Success');
             this.allTransactions = this.allTransactions.filter(t => t.id !== transaction.id);
+            this.loadCustomeData(this.currentPage, this.selectedStartDate ?? undefined, this.selectedEndDate ?? undefined);
         this.applyFilters();
           },
           error: () => {
@@ -951,6 +978,7 @@ resetMoreFilters(): void {
       this.transactions = [...this.data.data.results];
   }
 }
+
 
 changePage(page: number) {
   this.currentPage = page;

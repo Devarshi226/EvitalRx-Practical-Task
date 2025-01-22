@@ -8,9 +8,9 @@ import { Observable, of } from 'rxjs';
 export class IncomeExpenseService {
   constructor(private http: HttpClient) { }
 
-  private expenseUrladd = "https://staging.evitalrx.in:3000/v3/expenses/add";
+  private readonly baseUrl = 'https://staging.evitalrx.in:3000/v3/expenses';
 
-  private accesstoken = '9f3zwuwwfkzofjoq';
+  private accesstoken = 'bm54csldu20av8jt';
   private deviceId = 'bdc16a3d-2c55-4cd8-94a9-c1af1c3bc167'
   private chemist_id = 1186;
   private login_parent_id = 1186;
@@ -32,7 +32,7 @@ export class IncomeExpenseService {
       "login_parent_id": this.login_parent_id
     }
     const headers = { 'Content-Type': 'application/json' };
-    return this.http.post('https://staging.evitalrx.in:3000/v3/expenses/list', listData, { headers });
+    return this.http.post(`${this.baseUrl}/list`, listData, { headers });
   }
 
 
@@ -68,7 +68,7 @@ export class IncomeExpenseService {
       formData.append('gst_percentage', data.gst_percentage);
       formData.append('hsn_sac_code', data.hsn_sac_code);
     }
-    return this.http.post(this.expenseUrladd, formData);
+    return this.http.post(`${this.baseUrl}/add`, formData);
   }
 
   deleteTransaction(id: number): Observable<any> {
@@ -83,7 +83,7 @@ export class IncomeExpenseService {
     const headers = { 'Content-Type': 'application/json' };
 
     return this.http.post(
-      'https://staging.evitalrx.in:3000/v3/expenses/delete',
+      `${this.baseUrl}/delete`,
       requestBody,
       { headers }
     );

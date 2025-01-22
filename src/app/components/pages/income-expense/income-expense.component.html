@@ -56,7 +56,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-  </div>
+      </div>
       <button mat-button class="filter-btn" (click)="openFilters()">
         <mat-icon>filter_list</mat-icon>
         More Filters
@@ -100,7 +100,7 @@
     <table mat-table [dataSource]="transactions" class="transaction-table">
       <ng-container matColumnDef="entryDate">
         <th mat-header-cell *matHeaderCellDef class="text-left">Entry Date</th>
-        <td mat-cell *matCellDef="let element" class="text-left">{{element.expense_date | date}}</td>
+        <td mat-cell *matCellDef="let element" class="text-left">{{element.expense_date  | date:'dd-MM-yyyy hh:mm a'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="category">
@@ -110,7 +110,7 @@
 
       <ng-container matColumnDef="transactionType">
         <th mat-header-cell *matHeaderCellDef class="text-left">Transaction Type</th>
-        <td mat-cell *matCellDef="let element" class="text-left">{{ element.transaction_type }}</td>
+        <td mat-cell *matCellDef="let element" class="text-left">{{ element.transaction_type | titlecase  }}</td>
       </ng-container>
 
       <ng-container matColumnDef="entryBy">
@@ -130,17 +130,17 @@
 
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef class="text-left">Amount</th>
-        <td mat-cell *matCellDef="let element" class="text-left">₹{{ element.amount }}</td>
+        <td mat-cell *matCellDef="let element" class="text-left">{{ element.amount | currency:'INR' }}</td>
       </ng-container>
 
       <ng-container matColumnDef="gst">
         <th mat-header-cell *matHeaderCellDef class="text-left">GST(%)</th>
-        <td mat-cell *matCellDef="let element" class="text-left">{{ element.gst_percentage }}%</td>
+        <td mat-cell *matCellDef="let element" class="text-left">{{ element.gst_percentage }}</td>
       </ng-container>
 
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef class="text-left">Total</th>
-        <td mat-cell *matCellDef="let element" class="text-left">₹{{element.total}}</td>
+        <td mat-cell *matCellDef="let element" class="text-left">{{element.total | currency:'INR'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="remark">
@@ -227,12 +227,23 @@
           <div class="form-row three-columns" *ngIf="incomeForm.get('gstType')?.value === 'with_gst'">
             <mat-form-field appearance="outline">
               <mat-label>GST(%)</mat-label>
-              <input matInput type="number" formControlName="gstPercentage" placeholder="eg. 0, 5, 12, 18, 28">
+              <input matInput
+         type="text"
+         formControlName="gstPercentage"
+         maxlength="2"
+         pattern="[0-9]*"
+         placeholder="eg. 0, 5, 12, 18, 28"  (keypress)="numberOnly($event)" matTooltip="GST Percentage should be 0, 5, 12, 18, 28"
+         matTooltipPosition="below">
             </mat-form-field>
 
+            <!-- For GST Number -->
             <mat-form-field appearance="outline">
               <mat-label>GST Number</mat-label>
-              <input matInput formControlName="gstNumber" maxlength="15" placeholder="eg. 12ABCD1234E1Z5">
+              <input matInput
+                     formControlName="gstNumber"
+                     maxlength="15"
+                     oninput="this.value = this.value.toUpperCase()"
+                     placeholder="eg. 12ABCD1234E1Z5">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
@@ -244,7 +255,7 @@
           <div class="form-row" [ngClass]="{'three-columns': incomeForm.get('gstType')?.value === 'with_gst', 'two-columns': incomeForm.get('gstType')?.value === 'without_gst'}">
             <mat-form-field appearance="outline">
               <mat-label>Amount (Excluding GST)</mat-label>
-              <input matInput type="number" formControlName="amount" placeholder="eg. 1000, 5000">
+              <input matInput type="number" formControlName="amount" placeholder="eg. 1000, 5000"  (keypress)="numberOnly($event)" >
               <span matPrefix>₹&nbsp;</span>
             </mat-form-field>
 
@@ -328,9 +339,9 @@
       </div>
     </div>
     <div class="sheet-content">
-      <form [formGroup]="expenseForm" class="income-form">
+      <form [formGroup]="expenseForm" class="expense-form">
         <div class="form-row">
-          <div class="form-group" style="width: 40%;">
+          <div class="form-group">
             <h3 class="section-title">Category</h3>
             <mat-radio-group formControlName="category" class="category-options">
               <mat-radio-button *ngFor="let category of expenseCategories" [value]="category.id">
@@ -342,7 +353,7 @@
 
           <div class="form-divider"></div>
 
-          <div class="form-group" style="width: 60%;">
+          <div class="form-group" style="width: 75%;">
             <h3 class="section-title">Expense Date & Payment Date</h3>
             <div class="dates-container">
               <mat-form-field appearance="outline" class="date-field">
@@ -371,7 +382,13 @@
               <div class="form-row three-columns" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
                 <mat-form-field appearance="outline">
                   <mat-label>GST(%)</mat-label>
-                  <input matInput type="number" formControlName="gstPercentage" placeholder="eg. 0, 5, 12, 18, 28">
+                  <input matInput
+                       type="text"
+                       formControlName="gstPercentage"
+                       maxlength="2"
+                       pattern="[0-9]*"
+                       placeholder="eg. 0, 5, 12, 18, 28"  (keypress)="numberOnly($event)"  matTooltip="GST Percentage should be 0, 5, 12, 18, 28"
+                       matTooltipPosition="below">
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
@@ -388,7 +405,7 @@
               <div class="form-row" [ngClass]="{'three-columns': expenseForm.get('gstType')?.value === 'with_gst', 'two-columns': expenseForm.get('gstType')?.value === 'without_gst'}">
                 <mat-form-field appearance="outline">
                   <mat-label>Amount (Excluding GST)</mat-label>
-                  <input matInput type="number" formControlName="amount" placeholder="eg. 1000, 5000">
+                  <input matInput type="number" formControlName="amount" placeholder="eg. 1000, 5000" (keypress)="numberOnly($event)">
                   <span matPrefix>₹&nbsp;</span>
                 </mat-form-field>
 
@@ -398,10 +415,10 @@
                   <span matPrefix>₹&nbsp;</span>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
+                <!-- <mat-form-field appearance="outline" *ngIf="expenseForm.get('gstType')?.value === 'with_gst'">
                   <mat-label>HSN/SAC Code</mat-label>
                   <input matInput formControlName="hsnCode" placeholder="eg. 1234, 5678">
-                </mat-form-field>
+                </mat-form-field> -->
               </div>
 
               <div class="form-row three-columns">
