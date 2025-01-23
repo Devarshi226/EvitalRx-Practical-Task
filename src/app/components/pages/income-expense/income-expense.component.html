@@ -214,7 +214,7 @@
       <div class="form-group">
         <h3 class="section-title">Income Date</h3>
         <mat-form-field appearance="outline" class="date-field">
-          <input matInput [matDatepicker]="picker" formControlName="incomeDate">
+          <input matInput [matDatepicker]="picker" formControlName="incomeDate" [max]="maxDate">
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
@@ -362,14 +362,14 @@
             <div class="dates-container">
               <mat-form-field appearance="outline" class="date-field">
                 <mat-label>Expense Date</mat-label>
-                <input matInput [matDatepicker]="expensePicker" formControlName="expenseDate">
+                <input matInput [matDatepicker]="expensePicker" formControlName="expenseDate" [max]="maxDate">
                 <mat-datepicker-toggle matIconSuffix [for]="expensePicker"></mat-datepicker-toggle>
                 <mat-datepicker #expensePicker></mat-datepicker>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="date-field">
                 <mat-label>Payment Date</mat-label>
-                <input matInput [matDatepicker]="paymentPicker" formControlName="paymentDate">
+                <input matInput [matDatepicker]="paymentPicker" formControlName="paymentDate" [min]="maxDate">
                 <mat-datepicker-toggle matIconSuffix [for]="paymentPicker"></mat-datepicker-toggle>
                 <mat-datepicker #paymentPicker></mat-datepicker>
               </mat-form-field>

@@ -53,19 +53,18 @@ export class IncomeExpenseComponent implements OnInit {
   data: any;
   allTransactions: Transaction[] = [];
   transactions: Transaction[] = [];
-  expenseCategories: any = [
-  ];
-  incomeCategories:  any = [
+  expenseCategories: any = [];
+  incomeCategories:  any = [];
+  paymentMethods: any =  [];
 
-  ];
-  paymentMethods: any =  [
-    { id: 1, value: 'Cash' },
-    { id: 3, value: 'UPI' },
-    { id: null, value: 'Cheque' },
-    { id: 5, value: 'Paytm' },
-    { id: 6, value: 'CC/DC' },
-    { id: null, value: 'RTGS/NEFT' }
-  ];;
+  // paymentMethods: any =  [
+  //   { id: 1, value: 'Cash' },
+  //   { id: 3, value: 'UPI' },
+  //   { id: null, value: 'Cheque' },
+  //   { id: 5, value: 'Paytm' },
+  //   { id: 6, value: 'CC/DC' },
+  //   { id: null, value: 'RTGS/NEFT' }
+  // ];;
   staffList: any[] = [];
 
   categories:any =  [
@@ -92,6 +91,7 @@ export class IncomeExpenseComponent implements OnInit {
   categoryFilter = new FormControl('all');
   selectedStartDate: Date | null = null;
   selectedEndDate: Date | null = null;
+  maxDate = new Date();
 
   // File upload properties
   selectedFile: File | null = null;
@@ -150,14 +150,13 @@ export class IncomeExpenseComponent implements OnInit {
       value: '',
       disabled: true
     }, [
-      Validators.pattern('^[0-9]{1,2}$'),  // This ensures only 1-2 digits
+      Validators.pattern('^[0-9]{1,2}$'),
       Validators.max(99)
     ]),
     gstNumber: new FormControl({
       value: '',
       disabled: true
     }, [
-      // This pattern ensures only numbers and CAPITAL letters
       Validators.pattern('^[0-9A-Z]{15}$')
     ]),
     partyName: new FormControl(''),
@@ -241,17 +240,13 @@ export class IncomeExpenseComponent implements OnInit {
       value: 'currentFY',
       getDateRange: () => {
         const today = new Date();
-        const currentMonth = today.getMonth();
-        let fiscalYearStart: Date;
 
-        if (currentMonth >= 3) {
-          fiscalYearStart = new Date(today.getFullYear(), 3, 1);
-        } else {
-          fiscalYearStart = new Date(today.getFullYear() - 1, 3, 1);
-        }
+        const currentYear = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
+        const fiscalYearStart = new Date(currentYear, 3, 1);
+        const fiscalYearEnd = new Date(currentYear + 1, 2, 31);
 
-        this.loadCustomeData(1, fiscalYearStart, today);
-        return { startDate: fiscalYearStart, endDate: today };
+        this.loadCustomeData(1, fiscalYearStart, fiscalYearEnd);
+        return { startDate: fiscalYearStart, endDate: fiscalYearEnd };
       }
     },
     {
@@ -259,8 +254,9 @@ export class IncomeExpenseComponent implements OnInit {
       value: 'previousFY',
       getDateRange: () => {
         const today = new Date();
-        const fiscalYearStart = new Date(today.getFullYear() - 1, 3, 1);
-        const fiscalYearEnd = new Date(today.getFullYear(), 2, 31);
+        const prevYear = today.getMonth() >= 3 ? today.getFullYear() - 1 : today.getFullYear() - 2;
+        const fiscalYearStart = new Date(prevYear, 3, 1);
+        const fiscalYearEnd = new Date(prevYear + 1, 2, 31);
         this.loadCustomeData(1, fiscalYearStart, fiscalYearEnd);
         return { startDate: fiscalYearStart, endDate: fiscalYearEnd };
       }
@@ -276,7 +272,6 @@ export class IncomeExpenseComponent implements OnInit {
     private incomeExpenseService: IncomeExpenseService,
     private toster: ToastrService
   ) {
-    // Subscribe to date range changes
     this.dateRange.valueChanges.subscribe(range => {
       if (range.start && range.end) {
         this.selectedStartDate = range.start;
@@ -329,7 +324,7 @@ export class IncomeExpenseComponent implements OnInit {
   }
 
 
-  private loadCustomeData(page: number, startDate?: Date, endDate?: Date): void {
+   loadCustomeData(page: number, startDate?: Date, endDate?: Date): void {
     this.incomeExpenseService.getData(page, startDate, endDate).subscribe({
       next: (response) => {
 
@@ -417,7 +412,7 @@ export class IncomeExpenseComponent implements OnInit {
     }
   }
 
-  private calculateTotal(form: FormGroup) {
+ calculateTotal(form: FormGroup) {
     const amount = Number(form.get('amount')?.value) || 0;
     const gstType = form.get('gstType')?.value;
     const gstPercentage = Number(form.get('gstPercentage')?.value) || 0;
@@ -508,7 +503,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
     this.closeSheet();
   }
 
-  // File Upload Methods
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -554,7 +548,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
 
   submitIncomeForm() {
     if (!this.incomeForm.valid) {
-      // Check each required field and show specific error messages
       const controls = this.incomeForm.controls;
 
       if (!controls.category.valid) {
@@ -581,7 +574,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         return;
       }
 
-      // GST related validations when GST type is 'with_gst'
       if (controls.gstType.value === 'with_gst') {
         if (controls.gstPercentage.enabled && !controls.gstPercentage.valid) {
           if (controls.gstPercentage.errors?.['min'] || controls.gstPercentage.errors?.['max']) {
@@ -604,7 +596,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       return;
     }
 
-    // If form is valid, proceed with form submission
     this.calculateTotal(this.incomeForm);
     const formValues = this.incomeForm.getRawValue();
 
@@ -644,115 +635,9 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       }
     });
 
-    if (this.selectedFile) {
-      this.uploadTransactionFile(this.selectedFile);
-    }
+
   }
 
-
-  // submitExpenseForm() {
-  //   if (!this.expenseForm.valid) {
-  //     const controls = this.expenseForm.controls;
-
-  //     if (!controls.category.valid) {
-  //       this.toster.error('Please select an expense category');
-  //       return;
-  //     }
-
-  //     if (!controls.expenseDate.valid) {
-  //       this.toster.error('Please select expense date');
-  //       return;
-  //     }
-
-  //     if (!controls.paymentDate.valid) {
-  //       this.toster.error('Please select payment date');
-  //       return;
-  //     }
-
-  //     if (!controls.amount.valid) {
-  //       if (controls.amount.errors?.['required']) {
-  //         this.toster.error('Please enter amount');
-  //       } else if (controls.amount.errors?.['min']) {
-  //         this.toster.error('Amount must be greater than 0');
-  //       }
-  //       return;
-  //     }
-
-  //     if (!controls.paymentMode.valid) {
-  //       this.toster.error('Please select payment mode');
-  //       return;
-  //     }
-
-  //     // GST related validations when GST type is 'with_gst'
-  //     if (controls.gstType.value === 'with_gst') {
-  //       if (controls.gstPercentage.enabled && !controls.gstPercentage.valid) {
-  //         if (controls.gstPercentage.errors?.['min'] || controls.gstPercentage.errors?.['max']) {
-  //           this.toster.error('GST percentage must be between 0 and 100');
-  //         }
-  //         return;
-  //       }
-
-  //       if (controls.gstNumber.enabled && !controls.gstNumber.valid) {
-  //         this.toster.error('Please enter valid GST number');
-  //         return;
-  //       }
-
-  //       // if (controls.hsnCode.value === '') {
-  //       //   this.toster.error('Please enter HSN/SAC code');
-  //       //   return;
-  //       // }
-  //     }
-
-  //     return;
-  //   }
-
-  //   // Calculate total before submission
-  //   this.calculateTotal(this.expenseForm);
-
-  //   // If form is valid, proceed with form submission
-  //   const formValues = this.expenseForm.getRawValue();
-
-  //   const transactionData = {
-  //     category_id: formValues.category,
-  //     payment_date: formValues.paymentDate,
-  //     expense_date: formValues.expenseDate,
-  //     amount: formValues.amount,
-  //     total: formValues.total,
-  //     gst_percentage: formValues.gstType === 'with_gst' ? formValues.gstPercentage : 0,
-  //     gst: formValues.gstType === 'with_gst'
-  //       ? (Number(formValues.amount) * Number(formValues.gstPercentage) / 100)
-  //       : 0,
-  //     gstn_number: formValues.gstNumber,
-  //     // hsn_sac_code: formValues.hsnCode,
-  //     party_name: formValues.partyName,
-  //     payment_mode: formValues.paymentMode,
-  //     reference_no: formValues.referenceNo,
-  //     remark: formValues.remark,
-  //     transaction_type: 'expense',
-  //     document: this.selectedFile
-  //   };
-
-  //   this.incomeExpenseService.addData(transactionData).subscribe({
-  //     next: (response) => {
-  //       if (response.status_code === "1") {
-  //         this.toster.success('Expense saved successfully');
-  //         this.loadInitialData();
-  //         this.expenseForm.reset()
-  //         this.closeSheet();
-  //       } else {
-  //         this.toster.error('Error saving expense', response.message);
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Error saving expense:', err);
-  //       this.toster.error('Error saving expense. Please try again.');
-  //     }
-  //   });
-
-  //   if (this.expenseSelectedFile) {
-  //     this.uploadTransactionFile(this.expenseSelectedFile);
-  //   }
-  // }
 
   submitExpenseForm() {
     if (!this.expenseForm.valid) {
@@ -787,7 +672,6 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         return;
       }
 
-      // GST related validations when GST type is 'with_gst'
       if (controls.gstType.value === 'with_gst') {
         if (controls.gstPercentage.enabled && !controls.gstPercentage.valid) {
           if (controls.gstPercentage.errors?.['min'] || controls.gstPercentage.errors?.['max']) {
@@ -805,10 +689,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       return;
     }
 
-    // Calculate total before submission
     this.calculateTotal(this.expenseForm);
 
-    // If form is valid, proceed with form submission
     const formValues = this.expenseForm.getRawValue();
 
     const transactionData = {
@@ -847,16 +729,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       }
     });
 
-    if (this.expenseSelectedFile) {
-      this.uploadTransactionFile(this.expenseSelectedFile);
-    }
   }
 
-
-  // Helper method to upload transaction file
-  private uploadTransactionFile(file: File) {
-
-  }
 
   deleteTransaction(transaction: Transaction) {
 
@@ -999,7 +873,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
     return `${this.formatDate(this.selectedStartDate)} - ${this.formatDate(this.selectedEndDate)}`;
   }
 
-  private formatDate(date: Date): string {
+ formatDate(date: Date): string {
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -1023,7 +897,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
 
 
 
-private applyFilters() {
+ applyFilters() {
   if (!this.allTransactions) return;
 
   let filteredTransactions = [...this.allTransactions];
