@@ -289,8 +289,8 @@ export class IncomeExpenseComponent implements OnInit {
 
 
  loadInitialData() {
-    this.incomeExpenseService.getData(1).subscribe({
-      next: (res) => {
+    this.incomeExpenseService.executeRequest('list', {page:1},).subscribe({
+      next: (res:any) => {
         this.data = res;
 
         this.allTransactions = res.data.results;
@@ -325,8 +325,8 @@ export class IncomeExpenseComponent implements OnInit {
 
 
    loadCustomeData(page: number, startDate?: Date, endDate?: Date): void {
-    this.incomeExpenseService.getData(page, startDate, endDate).subscribe({
-      next: (response) => {
+    this.incomeExpenseService.executeRequest('list', {'page':page, 'startDate':startDate, 'endDate':endDate}).subscribe({
+      next: (response:any) => {
 
           this.data = response;
           if (this.data?.data?.results) {
@@ -334,7 +334,7 @@ export class IncomeExpenseComponent implements OnInit {
               this.allTransactions = [...this.data.data.results];
           }
       },
-      error: (error) => {
+      error: (error:any) => {
           console.error('Error loading data:', error);
       }
   });
@@ -618,8 +618,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
 
 
 
-    this.incomeExpenseService.addData(transactionData).subscribe({
-      next: (response) => {
+    this.incomeExpenseService.executeRequest('add', transactionData).subscribe({
+      next: (response:any) => {
         if (response.status_code === "1") {
           this.toster.success('Income saved successfully');
           this.loadInitialData();
@@ -629,7 +629,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
           this.toster.error('Error saving expense', response.message);
         }
       },
-      error: (err) => {
+      error: (err:any) => {
         console.error('Error saving income:', err);
         this.toster.error('Error saving income. Please try again.');
       }
@@ -712,7 +712,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       document: this.selectedFile
     };
 
-    this.incomeExpenseService.addData(transactionData).subscribe({
+    this.incomeExpenseService.executeRequest('add', transactionData).subscribe({
       next: (response) => {
         if (response.status_code === "1") {
           this.toster.success('Expense saved successfully');
@@ -745,7 +745,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.incomeExpenseService.deleteTransaction(transaction.id).subscribe({
+        this.incomeExpenseService.executeRequest('delete',{ id:transaction.id}).subscribe({
           next: () => {
             this.toster.success('Transaction deleted successfully!', 'Success');
             this.allTransactions = this.allTransactions.filter(t => t.id !== transaction.id);

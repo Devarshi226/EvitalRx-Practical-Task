@@ -1,112 +1,78 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class IncomeExpenseService {
-  constructor(private http: HttpClient) { }
-
   private readonly baseUrl = 'https://staging.evitalrx.in:3000/v3/expenses';
+  private readonly headers = new HttpHeaders().set('Content-Type', 'application/json');
+  private readonly config = {
+    accesstoken: 'bm54csldu20av8jt',
+    device_id: 'bdc16a3d-2c55-4cd8-94a9-c1af1c3bc167',
+    chemist_id: 1186,
+    login_parent_id: 1186
+  };
 
-  private accesstoken = 'bm54csldu20av8jt';
-  private deviceId = 'bdc16a3d-2c55-4cd8-94a9-c1af1c3bc167'
-  private chemist_id = 1186;
-  private login_parent_id = 1186;
+  constructor(private http: HttpClient) {}
 
+  executeRequest(endpoint: string, requestData: any = {}): Observable<any> {
+    let payload: any;
 
-
-  getData(page: number, startDate?: Date, endDate?: Date): Observable<any> {
-    const today = new Date();
-    const defaultStartDate = startDate ? this.timeConverter(startDate) : this.timeConverter(today);
-    const defaultEndDate = endDate ? this.timeConverter(endDate) :this.timeConverter(today);
-
-    const listData: any = {
-      "page": page,
-      "start_date": defaultStartDate,
-      "end_date": defaultEndDate,
-      "accesstoken": this.accesstoken,
-      "device_id": this.deviceId,
-      "chemist_id": this.chemist_id,
-      "login_parent_id": this.login_parent_id
-    }
-    const headers = { 'Content-Type': 'application/json' };
-    return this.http.post(`${this.baseUrl}/list`, listData, { headers });
-  }
+    if (endpoint === 'list') {
+      payload = {
+        ...this.config,
+        page: requestData.page,
+        start_date: this.formatDate(requestData.startDate || new Date()),
+        end_date: this.formatDate(requestData.endDate || new Date())
+      };
+    } else if (endpoint === 'add') {
+      const formData = new FormData();
 
 
+      formData.append('invoice_photo', requestData.document);
+      formData.append('category_id', requestData.category_id);
+      formData.append('expense_date', this.formatDate(requestData.expense_date));
+      formData.append('payment_method_id', requestData.payment_mode);
+      formData.append('amount', requestData.amount);
+      formData.append('remark', requestData.remark);
+      formData.append('account_id', requestData.account_id);
+      formData.append('cheque_date', requestData.cheque_date);
+      formData.append('reference_no', requestData.reference_no);
+      formData.append('transaction_type', requestData.transaction_type);
+      formData.append('party_name', requestData.party_name);
+      if (requestData.gstn_number) {
+        formData.append('gstn_number', requestData.gstn_number);
+        formData.append('gst_percentage', requestData.gst_percentage);
+      }
+      const allData = {
+        ...this.config,
+        payment_date: this.formatDate(requestData.paymentDate || requestData.expense_date)
+      };
 
-  addData(data: any): Observable<any> {
-    debugger
-    console.log(data);
-
-    const PaymentDate = data.paymentDate
-      ? this.timeConverter(data.paymentDate)
-      : this.timeConverter(data.expense_date);
 
 
-    const formData = new FormData();
-    formData.append('accesstoken', this.accesstoken);
-    formData.append('invoice_photo', data.document);
-    formData.append('category_id', data.category_id);
-    formData.append('expense_date', this.timeConverter(data.expense_date));
-    formData.append('payment_method_id', data.payment_mode);
-    formData.append('amount', data.amount);
-    formData.append('remark', data.remark);
-    formData.append('account_id', data.account_id);
-    formData.append('cheque_date', data.cheque_date);
-    formData.append('reference_no', data.reference_no);
-    formData.append('payment_date', PaymentDate);
-    formData.append('transaction_type', data.transaction_type);
-    formData.append('party_name', data.party_name);
-    formData.append('chemist_id', this.chemist_id.toString());
-    formData.append('device_id', this.deviceId);
-    formData.append('login_parent_id', this.login_parent_id.toString());
-    if (data.gstn_number) {
-      formData.append('gstn_number', data.gstn_number);
-      formData.append('gst_percentage', data.gst_percentage);
-if(data.hsn_sac_code){
-  formData.append('hsn_sac_code', data.hsn_sac_code);
-}else{
-  formData.append('hsn_sac_code', '00000');
-}
+      Object.entries(allData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) formData.append(key, value.toString());
+      });
 
+      if (requestData.gstn_number) {
+        formData.append('hsn_sac_code', requestData.hsn_sac_code || '00000');
+      }
+
+      return this.http.post(`${this.baseUrl}/${endpoint}`, formData)
+    } else if (endpoint === 'delete') {
+      payload = {
+        ...this.config,
+        expense_id: requestData.id
+      };
     }
 
-    return this.http.post(`${this.baseUrl}/add`, formData);
-  }
-
-  deleteTransaction(id: number): Observable<any> {
-    const requestBody = {
-      accesstoken: this.accesstoken,
-      device_id: this.deviceId,
-      login_parent_id: this.login_parent_id,
-      chemist_id: this.chemist_id,
-      expense_id: id
-    };
-    const headers = { 'Content-Type': 'application/json' };
-
-    return this.http.post(
-      `${this.baseUrl}/delete`,
-      requestBody,
-      { headers }
-    );
-  }
-
-  timeConverter(data:any){
-    return data.toISOString().split('T')[0]
+    return this.http.post(`${this.baseUrl}/${endpoint}`, payload, { headers: this.headers })
   }
 
 
 
-
-
-
-
-
-
+  private formatDate = (date: Date): string => date.toISOString().split('T')[0];
 }
-
-
 
