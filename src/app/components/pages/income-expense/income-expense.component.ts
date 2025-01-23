@@ -56,35 +56,8 @@ export class IncomeExpenseComponent implements OnInit {
   expenseCategories: any = [];
   incomeCategories:  any = [];
   paymentMethods: any =  [];
-
-  // paymentMethods: any =  [
-  //   { id: 1, value: 'Cash' },
-  //   { id: 3, value: 'UPI' },
-  //   { id: null, value: 'Cheque' },
-  //   { id: 5, value: 'Paytm' },
-  //   { id: 6, value: 'CC/DC' },
-  //   { id: null, value: 'RTGS/NEFT' }
-  // ];;
   staffList: any[] = [];
-
-  categories:any =  [
-    // { id: 1, value: 'Bank fee and charges' },
-    // { id: 2, value: 'Employee salaries & Advances' },
-    // { id: 3, value: 'Printing and stationery' },
-    // { id: 4, value: 'Raw material' },
-    // { id: 5, value: 'Rent or mortgage payments' },
-    // { id: 6, value: 'Repair & maintenances' },
-    // { id: 7, value: 'Utilities & phone' },
-    // { id: 8, value: 'Taxes / licenses / fees' },
-    // { id: 9, value: 'Food & Beverage' },
-    // { id: 15, value: 'Missing cash(cash loss)' },
-    // { id: 10, value: 'Other' },
-    // { id: 16, value: 'Extra cash' },
-    // { id: 18, value: 'Advertisement' },
-    // { id: 19, value: 'Scrap material' },
-    // { id: 20, value: 'Any rental income' },
-    // { id: 21, value: 'Interest income' }
-  ];;
+  categories:any =  [];;
 
   // Form controls and form groups
   dateFilter = new FormControl('today');
@@ -289,6 +262,7 @@ export class IncomeExpenseComponent implements OnInit {
 
 
  loadInitialData() {
+  this.currentPage = 1;
     this.incomeExpenseService.executeRequest('list', {page:1},).subscribe({
       next: (res:any) => {
         this.data = res;
@@ -306,6 +280,7 @@ export class IncomeExpenseComponent implements OnInit {
 
 
         this.onDateFilterChange();
+
       },
       error: (err) => {
         console.error('Error fetching data:', err);
@@ -621,7 +596,7 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
     this.incomeExpenseService.executeRequest('add', transactionData).subscribe({
       next: (response:any) => {
         if (response.status_code === "1") {
-          this.toster.success('Income saved successfully');
+          this.toster.success('Income saved successfully',response.message);
           this.loadInitialData();
           this.incomeForm.reset()
           this.closeSheet();
@@ -630,8 +605,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         }
       },
       error: (err:any) => {
-        console.error('Error saving income:', err);
-        this.toster.error('Error saving income. Please try again.');
+
+        this.toster.error('Error saving income. Please try again.',err);
       }
     });
 
@@ -724,8 +699,8 @@ this.bottomSheetRef.afterDismissed().subscribe(() => {
         }
       },
       error: (err) => {
-        console.error('Error saving expense:', err);
-        this.toster.error('Error saving expense. Please try again.');
+
+        this.toster.error('Error saving expense. Please try again.',err);
       }
     });
 
